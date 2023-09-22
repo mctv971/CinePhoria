@@ -5,7 +5,7 @@ output: html_document
 
 BENOSMANE YACINE yacine.benosmane@etu.univ-montp3.fr
 BENMOULOUD MEHDI mehdi.benmouloud@etu.univ-montp3.fr
-MALCOM CARLET malcom.carlet@etu.univ-montp3.fr
+CARLET MALCOM malcom.carlet@etu.univ-montp3.fr
 EL RIFAI AMIR amir-nassouh.el-rifai@etu.univ-montp3.fr
 LASSOUANI MOHAMED-YACINE mohamed-yacine.lassouani@etu.univ-montp3.fr
 
