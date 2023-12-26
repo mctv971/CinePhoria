@@ -7,65 +7,108 @@ const searchInput = document.getElementById("search-input");
 const searchForm = document.getElementById("search-form");
 const categoryTitle = document.getElementById("category-title");
 
-async function fetchMoviesNowPlaying() {
-    const response = await fetch(`${apiBaseUrl}/movie/now_playing?api_key=${apiKey}`);
-    const jsonResponse = await response.json();
+// Appel de la fonction pour afficher les dernières sorties au chargement de la page
+fetchLatestReleases();
+
+async function fetchLatestReleases() {
+    // Requête pour récupérer les dernières sorties de films
+    const moviesResponse = await fetch(`${apiBaseUrl}/movie/now_playing?api_key=${apiKey}`);
+    const moviesJsonResponse = await moviesResponse.json();
+    
+    // Requête pour récupérer les dernières sorties de séries TV
+    const showsResponse = await fetch(`${apiBaseUrl}/tv/on_the_air?api_key=${apiKey}`);
+    const showsJsonResponse = await showsResponse.json();
+
+    // Traitement des résultats
     const movies = await Promise.all(
-        jsonResponse.results.map(async (result) => ({
+        moviesJsonResponse.results.map(async (result) => ({
             id: result.id,
             title: result.title,
             poster_path: result.poster_path,
             vote_average: result.vote_average,
-            IMDbId: await getIMDbId(result.id),
+            IMDbId: await getIMDbId(result.id, "movie"),
         }))
     );
-    displayMovies(movies);
-}
 
-async function searchMovies(query) {
-    const response = await fetch(`${apiBaseUrl}/search/movie?api_key=${apiKey}&query=${query}`);
-    const jsonResponse = await response.json();
-    const movies = await Promise.all(
-        jsonResponse.results.map(async (result) => ({
+    const shows = await Promise.all(
+        showsJsonResponse.results.map(async (result) => ({
             id: result.id,
-            title: result.title,
+            name: result.name,
             poster_path: result.poster_path,
             vote_average: result.vote_average,
-            IMDbId: await getIMDbId(result.id),
+            IMDbId: await getIMDbId(result.id, "tv"),
         }))
     );
-    displayMovies(movies);
+
+    // Combinaison des résultats
+    const combinedResults = movies.concat(shows);
+
+    // Affichage des résultats
+    displayMoviesAndShows(combinedResults);
 }
 
-function displayMovies(movies) {
-    moviesGrid.innerHTML = movies
+function displayMoviesAndShows(results) {
+    moviesGrid.innerHTML = results
         .map(
-            (movie) =>
+            (result) =>
                 `<div class="movie-card">
-                    <a href="https://www.imdb.com/title/${movie.IMDbId}/">
-                        <img src="${imageBaseUrl}${movie.poster_path}"/>
-                        <p>⭐${movie.vote_average}</p>
-                        <h1>${movie.title}<h1/>
+                    <a href="https://www.imdb.com/title/${result.IMDbId}/">
+                        <img src="${imageBaseUrl}${result.poster_path}"/>
+                        <p>⭐${result.vote_average}</p>
+                        <h1>${result.title || result.name}<h1/>
                     </a>
                  </div>`
-                 //MODIFIER LE HREF POUR ALLER SUR LA PAGE FILM 
         )
         .join("");
 }
 
-function handleSearchFormSubmit(event) {
+async function handleSearchFormSubmit(event) {
     event.preventDefault();
-    categoryTitle.innerHTML = "Search Results";
+    categoryTitle.innerHTML = "Résultat :";
     const searchQuery = searchInput.value;
-    searchMovies(searchQuery);
+    await fetchMoviesAndTVShows(searchQuery);
 }
 
-async function getIMDbId(movieId) {
-    const response = await fetch(`${apiBaseUrl}/movie/${movieId}/external_ids?api_key=${apiKey}`);
+async function getIMDbId(movieId, type) {
+    const response = await fetch(`${apiBaseUrl}/${type}/${movieId}/external_ids?api_key=${apiKey}`);
     const jsonResponse = await response.json();
     const IMDbId = jsonResponse.imdb_id;
     return IMDbId;
 }
+async function fetchMoviesAndTVShows(query) {
+    const moviesResponse = await fetch(`${apiBaseUrl}/search/movie?api_key=${apiKey}&query=${query}`);
+    const moviesJsonResponse = await moviesResponse.json();
+
+    const showsResponse = await fetch(`${apiBaseUrl}/search/tv?api_key=${apiKey}&query=${query}`);
+    const showsJsonResponse = await showsResponse.json();
+
+    const movies = await Promise.all(
+        moviesJsonResponse.results.map(async (result) => ({
+            id: result.id,
+            title: result.title,
+            poster_path: result.poster_path,
+            vote_average: result.vote_average,
+            IMDbId: await getIMDbId(result.id, "movie"),
+        }))
+    );
+
+    const shows = await Promise.all(
+        showsJsonResponse.results.map(async (result) => ({
+            id: result.id,
+            name: result.name,
+            poster_path: result.poster_path,
+            vote_average: result.vote_average,
+            IMDbId: await getIMDbId(result.id, "tv"),
+        }))
+    );
+
+    const combinedResults = movies.concat(shows);
+
+    displayMoviesAndShows(combinedResults);
+}
 
 searchForm.addEventListener("submit", handleSearchFormSubmit);
-fetchMoviesNowPlaying();
+
+// Reste du code inchangé...
+
+searchForm.addEventListener("submit", handleSearchFormSubmit);
