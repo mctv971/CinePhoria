@@ -1,0 +1,18 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="Etudiant.codepays" />
+          <option value="Etudiant.codeinscrit" />
+          <option value="Etudiant._Notemath" />
+          <option value="Etudiant._Noteprog" />
+          <option value="Etudiant._Notestage" />
+          <option value="fr.um3.miashs.tp6.etudiant.__init__" />
+          <option value="dash_bootstrap_components" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

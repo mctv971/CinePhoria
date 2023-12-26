@@ -10,7 +10,7 @@ EL RIFAI AMIR amir-nassouh.el-rifai@etu.univ-montp3.fr
 LASSOUANI MOHAMED-YACINE mohamed-yacine.lassouani@etu.univ-montp3.fr
 
 
-#Cinéphoria (modifiable au cours de l’année)
+#Filmaxium
 
 Ce projet représente une avancée significative dans le domaine de l'exploration cinématographique et télévisuelle. Il s'agit d'une plateforme en ligne novatrice qui promet une expérience riche et immersive pour tous les amateurs de films et de séries.Notre site web sera une véritable mine d'informations, rassemblant une vaste collection de films et de séries, chacun accompagné de fiches détaillées fournissant un aperçu complet. Nous accordons une grande importance aux personnes derrière l'écran, c'est pourquoi nous proposerons également des fiches complètes sur les acteurs et les réalisateurs. Vous pourrez en apprendre davantage sur leur parcours, leurs réalisations, leurs distinctions et leurs contributions à l'univers cinématographique.
 
