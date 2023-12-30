@@ -18,18 +18,29 @@
             <button type="submit">Rechercher</button>
         </form>
     </div>
-    
+
     <div id="genre-filters">
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(28, 'movie');">Action</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(35, 'movie');">Comédie</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(12, 'movie');">Aventure</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(18, 'movie');">Drame</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(99, 'movie');">Documentaire</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(10751, 'movie');">Famille</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(14, 'movie');">Fantaisie</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(10759, 'tv');">Action & Aventure (Séries)</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(80, 'tv');">Crime (Séries)</a>
-        <a href="#" onclick="fetchMoviesAndTVShowsByGenre(16, 'tv');">Animation (Séries)</a>
+        <label for="genre-select">Choisissez un genre :</label>
+        <select id="genre-select">
+            <option value="">Tous les genres</option>
+            <option value="28">Action</option>
+            <option value="35">Comédie</option>
+            <option value="12">Aventure</option>
+            <option value="18">Drame</option>
+            <option value="99">Documentaire</option>
+            <option value="10751">Famille</option>
+            <option value="14">Fantaisie</option>
+            <option value="10759">Action & Aventure (Séries)</option>
+            <option value="80">Crime (Séries)</option>
+            <option value="16">Animation (Séries)</option>
+        </select>
+        
+        <label for="media-type-select">Choisissez le type de média :</label>
+        <select id="media-type-select">
+            <option value="movie">Film</option>
+            <option value="tv">Série TV</option>
+        </select>
+        <button onclick="handleGenreAndMediaTypeChange()">Filtrer</button>
     </div>
 
     <div>

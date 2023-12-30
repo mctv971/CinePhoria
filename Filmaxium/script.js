@@ -175,3 +175,92 @@ async function removeFromFavorites(id, IMDbId) {
         alert('Erreur lors de la requête fetch.');
     }
 }
+async function searchMovies(query) {
+    try {
+        const response = await fetch(`${apiBaseUrl}/search/multi?api_key=${apiKey}&query=${query}`);
+        const jsonResponse = await response.json();
+        
+        const searchResults = await Promise.all(
+            jsonResponse.results.map(async (result) => {
+                const type = result.media_type || 'movie'; // Utilisez 'movie' par défaut si le type n'est pas défini
+                return await processResult(result, type);
+            })
+        );
+
+        // Affichage des résultats de la recherche
+        displayMoviesAndShows(searchResults);
+    } catch (error) {
+        console.error('Erreur lors de la recherche de films par nom :', error);
+    }
+}
+async function fetchMoviesAndTVShowsByGenre(genreId, mediaType) {
+    try {
+        const response = await fetch(`${apiBaseUrl}/discover/${mediaType}?api_key=${apiKey}&with_genres=${genreId}`);
+        const jsonResponse = await response.json();
+
+        const genreResults = await Promise.all(
+            jsonResponse.results.map(async (result) => await processResult(result, mediaType))
+        );
+
+        // Affichage des résultats du genre
+        displayMoviesAndShows(genreResults);
+        categoryTitle.innerHTML = "Résultats par Genre";
+    } catch (error) {
+        console.error('Erreur lors de la récupération des résultats par genre :', error);
+    }
+}
+
+async function searchMoviesByGenreAndName(genreId, mediaType, query) {
+    try {
+        const response = await fetch(`${apiBaseUrl}/search/multi?api_key=${apiKey}&query=${query}`);
+        const jsonResponse = await response.json();
+
+        const searchResults = await Promise.all(
+            jsonResponse.results.map(async (result) => {
+                const type = result.media_type || 'movie';
+                return await processResult(result, type);
+            })
+        );
+
+        // Filtrer les résultats par genre
+        const genreFilteredResults = searchResults.filter(result => result.media_type === mediaType);
+
+        // Affichage des résultats de la recherche par genre
+        displayMoviesAndShows(genreFilteredResults);
+        categoryTitle.innerHTML = `Résultats de recherche pour "${query}" dans la catégorie "${mediaType === 'movie' ? 'Film' : 'Série TV'}"`;
+    } catch (error) {
+        console.error('Erreur lors de la recherche de films par nom et genre :', error);
+    }
+}
+// Ajoutez cette fonction dans votre fichier script.js
+function handleGenreAndMediaTypeChange() {
+    const selectedGenre = document.getElementById("genre-select").value;
+    const selectedMediaType = document.getElementById("media-type-select").value;
+
+    if (selectedGenre || selectedMediaType) {
+        fetchMoviesAndTVShowsByGenre(selectedGenre, selectedMediaType);
+    } else {
+        fetchLatestReleases();
+    }
+}
+
+function handleSearchFormSubmit(event) {
+    event.preventDefault();
+    const searchQuery = searchInput.value;
+    
+    const selectedGenre = document.getElementById("genre-select").value;
+    const selectedMediaType = document.getElementById("media-type-select").value;
+
+    if (selectedGenre) {
+        // Recherche par genre
+        fetchMoviesAndTVShowsByGenre(selectedGenre, selectedMediaType);
+    } else if (searchQuery.trim() !== "") {
+        // Recherche par nom
+        searchMoviesByGenreAndName(selectedGenre, selectedMediaType, searchQuery);
+    } else {
+        // Si le champ de recherche est vide et aucun genre n'est sélectionné, affichez les dernières sorties
+        fetchLatestReleases();
+    }
+}
+searchForm.addEventListener("submit", handleSearchFormSubmit);
+fetchMoviesNowPlaying();
