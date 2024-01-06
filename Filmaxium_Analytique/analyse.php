@@ -15,10 +15,10 @@
 <body>
     <header>
         <div>
-            <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
+            <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.html">Analyse</a>
+            <a href="analyse.php">Analyse</a>
             <a href="#">Prediction</a>
             <a href="#">Stats</a>
         </nav>
@@ -41,11 +41,11 @@
 
     <div class="rectangles-container">
         <div class="rectangle">
-            <div class="btn_analyse"><a href="comparer.html"><b>Comparer</b></a></div>
+            <div class="btn_analyse"><a href="comparer.php"><b>Comparer</b></a></div>
             <p>Cliquez sur Comparer pour accéder à une page de comparaison où de nombreux choix s’offrent à vous.</p>
         </div>
         <div class="rectangle">
-            <div class="btn_analyse"><a href="recherche.html"><b>Fiche stats</b></a></div>
+            <div class="btn_analyse"><a href="recherche.php"><b>Fiche stats</b></a></div>
             <p>Cliquez sur Fiche Stats  pour accéder à la page statistique d’un film, d’un collaborateur, d’un genre</p>
         </div>
     </div> 

@@ -16,10 +16,10 @@
 
      <header>
         <div>
-            <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
+            <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.html">Analyse</a>
+            <a href="analyse.php">Analyse</a>
             <a href="#">Prediction</a>
             <a href="#">Stats</a>
         </nav>

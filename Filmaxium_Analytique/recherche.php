@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="filmaxium.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap">
-    <title>Analyse - Comparer</title>
+    <title>Analyse - Recherche</title>
     <style>
         body {
-            background: linear-gradient(to bottom, #00113E, #697CA4) no-repeat;
+            background-color: #191919;
         }
     </style>
 </head>
 <body>
+
     <header>
         <div>
-            <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
+            <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.html">Analyse</a>
+            <a href="analyse.php">Analyse</a>
             <a href="#">Prediction</a>
             <a href="#">Stats</a>
         </nav>
@@ -34,32 +35,29 @@
             </div>
         </div>
     </header>
-    <header>
-        <nav class="nav-links2">
-            <div class="nav-buttons2"><a href="#">Film</a></div>
-            <div class="nav-buttons2"><a href="#">Collaborateur</a></div>
-            <div class="nav-buttons2"><a href="#">Genre</a></div>
-        </nav>
-    </header>
-  </div>
 
-    <div class="rectangles-container">
-        <div class="rectangle2">
-            <div class="search-bar2">
-                <input type="text" placeholder="Rechercher...">
-            </div>
-            <p style="margin: 20%;">Veuillez choisir un (...) s'il vous plaît...</p>
-        </div>
-        <div class="rectangle3">
-            <a href="#">Comparer</a>
-        </div>
-        <div class="rectangle2">
-            <div class="search-bar2">
-                <input type="text" placeholder="Rechercher...">
-            </div>
-            <p style="margin: 20%;">Veuillez choisir un (...) s'il vous plaît...</p>
-        </div>
-    </div> 
+    <div class="search-bar">
+        <input type="text" placeholder="Rechercher...">
+        <a class="return" href="analyse.html"><b>Retour</b></a>
+    </div>
+
+    <div class="columns">
+        <ul><b>Film</b>
+            <li><a href="fiche_stats.html">Élément 1</a></li>
+            <li>Élément 2</li>
+            <li>Élément 3</li>
+        </ul>
+        <ul><b>Collaborateur</b>
+            <li><a href="fiche_stats.html">Élément 1</a></li>
+            <li>Élément 2</li>
+            <li>Élément 3</li>
+        </ul>
+        <ul><b>Genre</b>
+            <li><a href="fiche_stats.html">Élément 1</a></li>
+            <li>Élément 2</li>
+            <li>Élément 3</li>
+        </ul>
+    </div>
 
 <button id="scrollToTopBtn" onclick="scrollToTop()">Vers le haut</button>
 

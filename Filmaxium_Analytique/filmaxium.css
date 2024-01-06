@@ -292,6 +292,34 @@ ul > li >a:hover {
     color: #E4CD83;
 }
 
+.search-results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto; /* Ajoutez un défilement si le contenu dépasse */
+}
+
+.search-results-list {
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Créez une grille avec des colonnes automatiques */
+    gap: 10px;
+    justify-content: center;
+}
+
+.search-result-image {
+    width: 100%; /* La largeur de l'image prend toute la largeur de la colonne dans la grille */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease-in-out;
+}
+
+.search-result-image:hover {
+    transform: scale(1.1);
+}
+
 /****************************************************************************************/
 
 #movie-container {
