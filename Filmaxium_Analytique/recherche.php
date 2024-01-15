@@ -10,39 +10,23 @@
         body {
             background-color: #191919;
         }
-        
-        ul {
-            color: white;
-        }
-
-        ul > li:hover {
-            color: #E4CD83;
-        }
-
-        li > a {
-            color: white;
-        }
-
-        ul > li >a:hover {
-            color: #E4CD83;
-        }
     </style>
 </head>
 <body>
 
     <header>
         <div>
-            <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
+            <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.html">Analyses</a>
-            <a href="prediction.html">Prédictions</a>
-            <a href="stats.html">Statistiques</a>
+            <a href="analyse.php">Analyse</a>
+            <a href="#">Prediction</a>
+            <a href="#">Stats</a>
         </nav>
         <div class="nav-buttons">
             <a href="#"><img src="img/films.png" alt="Films btn"></a>
             <div class="dropdown">
-                <a><img src="img/profile.png" alt="Profile btn"></a>
+                <a href="#"><img src="img/profile.png" alt="Profile btn"></a>
                 <div class="dropdown-content">
                     <a href="#">Mon profil</a>
                     <a href="#">Paramètres</a>
@@ -54,27 +38,25 @@
 
     <div class="search-bar">
         <input type="text" placeholder="Rechercher...">
+        <a class="return" href="analyse.html"><b>Retour</b></a>
     </div>
 
     <div class="columns">
         <ul><b>Film</b>
-            <li><a href="fiche_analyse.html">Élément 1</a></li>
+            <li><a href="fiche_stats.html">Élément 1</a></li>
             <li>Élément 2</li>
             <li>Élément 3</li>
         </ul>
         <ul><b>Collaborateur</b>
-            <li><a href="fiche_analyse.html">Élément 1</a></li>
+            <li><a href="fiche_stats.html">Élément 1</a></li>
             <li>Élément 2</li>
             <li>Élément 3</li>
         </ul>
         <ul><b>Genre</b>
-            <li><a href="fiche_analyse.html">Élément 1</a></li>
+            <li><a href="fiche_stats.html">Élément 1</a></li>
             <li>Élément 2</li>
             <li>Élément 3</li>
         </ul>
-    </div>
-    <div>        
-        <a class="return" href="analyse.html"><b>Retour</b></a>
     </div>
 
 <button id="scrollToTopBtn" onclick="scrollToTop()">Vers le haut</button>

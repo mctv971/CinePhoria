@@ -125,7 +125,7 @@ p {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #fff;
+    background-color: #f9f9f9;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -141,7 +141,7 @@ p {
 }
 
 .dropdown-content a:hover {
-    background-color: #E4CD83;
+    background-color: #cfcfcf;
     color: white;
     border-radius: 10px;
 
@@ -151,7 +151,7 @@ p {
     display: block;
 }
 
-/******************************************analyse**********************************************/
+/****************************************************************************************/
  
 .rectangles-container {
     justify-content: center;
@@ -160,9 +160,9 @@ p {
 
 .rectangle {
     width: 40%;
-    height: 400px; 
+    height: 500px; 
     background: linear-gradient(to bottom, #E4CD83, #FFFFFF) no-repeat;
-    margin: 30px;
+    margin: 40px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
@@ -171,23 +171,23 @@ p {
     position: relative;
 }
 
-.btn_analyse > a {
-    width: 150px;
-    height: 50px;
+.btn_analyse {
+    width: 50%;
+    height: 20%;
     background-color: #FFF; 
+    margin: 50px;
     border-radius: 100px; 
     border: solid 1px;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-decoration: none;
 }
 
-.btn_analyse a:hover {
+.btn_analyse > a:hover {
     color: #E4CD83;
 }
 
-/******************************************recherche**********************************************/
+/****************************************************************************************/
 
 .search-bar {
     text-align: center;
@@ -202,13 +202,25 @@ p {
     font-size: 16px;
 }
 
+ul {
+    color: white;
+}
 
+ul > li:hover {
+    color: #E4CD83;
+}
+
+li > a {
+    color: white;
+}
+
+ul > li >a:hover {
+    color: #E4CD83;
+}
 
 .return {
     color: white;
     text-align: center;
-    text-decoration: none;
-    margin-left: 50%;
 }
 
 .return:hover {
@@ -219,7 +231,7 @@ p {
 
 .search-bar2 {
     text-align: center;
-    margin-top: 50px;
+    margin-top: -50%;
 }
 
 .search-bar2 input {
@@ -232,7 +244,7 @@ p {
 
 .rectangle2 {
     width: 30%;
-    height: auto; 
+    height: 600px; 
     background: linear-gradient(to bottom, #E4CD83, #FFFFFF) no-repeat;
     margin: 40px;
     margin-right: auto;
@@ -243,15 +255,15 @@ p {
     align-items: center;
     justify-content: center;
     position: relative;
-    margin-bottom: 15%;
 }
 
-.rectangle3 > a {
-    text-decoration: none;
-    width: 160px;
-    height: 80px; 
+.rectangle3 {
+    width: 20%;
+    height: 100px; 
     background: linear-gradient(to bottom, #888888, #CACACA) no-repeat;
-    margin-top: 150%;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 15%;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
@@ -280,6 +292,34 @@ p {
     color: #E4CD83;
 }
 
+.search-results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto; /* Ajoutez un défilement si le contenu dépasse */
+}
+
+.search-results-list {
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Créez une grille avec des colonnes automatiques */
+    gap: 10px;
+    justify-content: center;
+}
+
+.search-result-image {
+    width: 100%; /* La largeur de l'image prend toute la largeur de la colonne dans la grille */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease-in-out;
+}
+
+.search-result-image:hover {
+    transform: scale(1.1);
+}
+
 /****************************************************************************************/
 
 #movie-container {
@@ -294,7 +334,10 @@ p {
     max-width: 100%;
     height: auto;
     margin-top: 20px;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 20px;
     border-radius: 15px;
+    background-color: black;
 
 }
 
@@ -313,109 +356,6 @@ p {
     margin-top: 20px;
 }
 
-/*****************************************prediction***********************************************/
-
-.dropdown-container {
-    text-align: center;
-    color: #c2ced1;
-    font-weight: bold;
-    margin-top: 5%;
-}
-
-#testDropdown {
-    padding: 8px;
-    font-size: 16px;
-}
-
 .text_left{
     text-align: left;
-}
-
-.rectangle4 {
-    width: 40%;
-    height: auto; 
-    background: linear-gradient(to bottom, #E4CD83, #FFFFFF) no-repeat;
-    margin: 40px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 50px;
-}
-
-.rectangle4 a:hover {
-    color: #E4CD83; 
-}
-
-/***************************************test1*************************************************/
-
-
-#movie-poster2 {
-    max-width: 50%;
-    height: auto;
-    margin-top: 20px;
-    border-radius: 15px;
-}
-
-/***************************************stats*************************************************/
-
-.dropdown-container2 {
-    text-align: center;
-    color: #c2ced1;
-    font-weight: bold;
-    margin-top: 50px;
-    display: flex; 
-    justify-content: center;
-}
-
-.vertical-bar {
-    height: 30px;
-    width: 2px;
-    background-color: #fff;
-    margin-right: 50px;
-    margin-left: 50px;
-}
-
-#variable1Dropdown {
-    padding: 8px;
-    font-size: 16px;
-}
-
-#variable2Dropdown {
-    padding: 8px;
-    font-size: 16px;
-}
-
-.rectangle5 {
-    width: 30%;
-    height: auto; 
-    background: linear-gradient(to bottom, #E4CD83, #FFFFFF) no-repeat;
-    margin: 40px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 50px;
-}
-
-/***************************************stats*************************************************/
-
-#returnBtn {
-    display: block;
-    text-align: center;
-    padding-bottom: 120px;
-}
-
-#returnBtn a {
-    text-decoration: none;
-    color: #c2ced1;
-    font-weight: bold;
-}
-
-#returnBtn a:hover {
-    color: #E4CD83;
 }

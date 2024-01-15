@@ -5,27 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="filmaxium.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap">
-    <title>Prédiction - Test 3</title>
+    <title>Analyse - Fiche stats</title>
     <style>
         body {
             background: linear-gradient(to bottom, #00113E, #697CA4) no-repeat;
-        }
+        }        
     </style>
 </head>
 <body>
+
     <header>
         <div>
-            <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
+            <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.html">Analyses</a>
-            <a href="prediction.html">Prédictions</a>
-            <a href="stats.html">Statistiques</a>
+            <a href="analyse.php">Analyse</a>
+            <a href="#">Prediction</a>
+            <a href="#">Stats</a>
         </nav>
         <div class="nav-buttons">
             <a href="#"><img src="img/films.png" alt="Films btn"></a>
             <div class="dropdown">
-                <a><img src="img/profile.png" alt="Profile btn"></a>
+                <a href="#"><img src="img/profile.png" alt="Profile btn"></a>
                 <div class="dropdown-content">
                     <a href="#">Mon profil</a>
                     <a href="#">Paramètres</a>
@@ -35,29 +36,21 @@
         </div>
     </header>
 
-    <div>
-        <h1>Test 3 : Tendances dans l'industrie</h1>
-    </div>
-    
     <div id="movie-container">
-        <div style="display: flex; flex-direction: row; align-items: center;">
-            <img id="movie-poster2" src="img/la_haine.jpg" alt="Movie Poster">
-            <h1 style="margin-left: 10%;">Titre...</h1>
-        </div>
+
+        <img id="movie-poster" src="img/la_haine.jpg" alt="Movie Poster">
+
+        <p class="text_left">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae metus nec nisl efficitur consequat.
+            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer quis mauris a justo gravida vulputate ut nec nunc.
+        </p>
 
         <div id="separator"></div>
 
-        <img id="centered-image" src="img/test31.png" alt="Centered Image">
-        <img id="centered-image" src="img/test32.png" alt="Centered Image">
+        <h1>(Variable...)</h1>
 
-        <h2>Interpretation : </h2>
-
-        <p class="text_left">
-            Les résultats de notre modèle de régression linéaire suggèrent une relation positive entre le budget de production et les recettes d'un film. Plus précisément, pour chaque million de dollars supplémentaires investis dans le budget de production, nous pouvons nous attendre, selon ce modèle, à une augmentation linéaire des recettes en millions de dollars. Cela implique que, en moyenne, un budget de production plus élevé est associé à des recettes plus élevées,
-        </p>
+        <img id="centered-image" src="img/graph.png" alt="Centered Image">
     </div>
-
-
 
     <button id="scrollToTopBtn" onclick="scrollToTop()">Vers le haut</button>
 
