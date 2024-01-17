@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="filmaxium.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap">
-    <title>Analyse - Fiche stats</title>
+    <title>Analyse - Fiche analyse</title>
     <style>
         body {
             background: linear-gradient(to bottom, #00113E, #697CA4) no-repeat;
@@ -16,17 +16,17 @@
 
     <header>
         <div>
-            <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
+            <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.php">Analyse</a>
-            <a href="prediction.php">Prediction</a>
-            <a href="stats.php">Stats</a>
+            <a href="analyse.php">Analyses</a>
+            <a href="prediction.php">Prédictions</a>
+            <a href="stats.php">Statistiques</a>
         </nav>
         <div class="nav-buttons">
             <a href="#"><img src="img/films.png" alt="Films btn"></a>
             <div class="dropdown">
-                <a href="#"><img src="img/profile.png" alt="Profile btn"></a>
+                <a><img src="img/profile.png" alt="Profile btn"></a>
                 <div class="dropdown-content">
                     <a href="#">Mon profil</a>
                     <a href="#">Paramètres</a>
@@ -37,7 +37,8 @@
     </header>
 
     <div id="movie-container">
-
+        <h1>Titre</h1>
+        
         <img id="movie-poster" src="img/la_haine.jpg" alt="Movie Poster">
 
         <p class="text_left">

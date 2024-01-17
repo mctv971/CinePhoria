@@ -20,8 +20,8 @@
         </div>
         <nav class="nav-links">
             <a href="analyse.php">Analyse</a>
-            <a href="#">Prediction</a>
-            <a href="#">Stats</a>
+            <a href="prediction.php">Prediction</a>
+            <a href="stats.php">Stats</a>
         </nav>
         <div class="nav-buttons">
             <a href="#"><img src="img/films.png" alt="Films btn"></a>
@@ -38,22 +38,22 @@
 
     <div class="search-bar">
         <input type="text" placeholder="Rechercher...">
-        <a class="return" href="analyse.html"><b>Retour</b></a>
+        <a class="return" href="analyse.php"><b>Retour</b></a>
     </div>
 
     <div class="columns">
         <ul><b>Film</b>
-            <li><a href="fiche_stats.html">Élément 1</a></li>
+            <li><a href="fiche_stats.php">Élément 1</a></li>
             <li>Élément 2</li>
             <li>Élément 3</li>
         </ul>
         <ul><b>Collaborateur</b>
-            <li><a href="fiche_stats.html">Élément 1</a></li>
+            <li><a href="fiche_stats.php">Élément 1</a></li>
             <li>Élément 2</li>
             <li>Élément 3</li>
         </ul>
         <ul><b>Genre</b>
-            <li><a href="fiche_stats.html">Élément 1</a></li>
+            <li><a href="fiche_stats.php">Élément 1</a></li>
             <li>Élément 2</li>
             <li>Élément 3</li>
         </ul>

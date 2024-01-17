@@ -187,19 +187,30 @@ p {
     color: #E4CD83;
 }
 
-/****************************************************************************************/
 
-.search-bar {
+/****************************************************************************************/
+.search-bar2 {
     text-align: center;
-    margin-top: 50px;
+    padding: 20px;
+    position: fixed; /* Position fixe pour l'input */
+    width: 100%;
+    background-color: #fff; /* Couleur de fond de l'input */
+    z-index: 1; /* Assure que l'input est au-dessus du reste de la page */
 }
 
-.search-bar input {
-    padding: 10px;
-    width: 60%;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    font-size: 16px;
+#search-results-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Grille de 3 colonnes */
+    gap: 20px;
+    padding: 20px;
+    margin-top: 80px; /* Marge en haut pour éviter de masquer les premières lignes sous l'input */
+}
+
+.search-result-image {
+    width: 100%; /* Ajustez la largeur des images selon vos besoins */
+    height: auto;
+    object-fit: cover; /* Garantit que l'image conserve ses proportions tout en couvrant la zone définie */
+    border-radius: 8px; /* Coins arrondis pour un aspect plus esthétique */
 }
 
 ul {
@@ -242,27 +253,13 @@ ul > li >a:hover {
     font-size: 16px;
 }
 
-.rectangle2 {
-    width: 30%;
-    height: 600px; 
-    background: linear-gradient(to bottom, #E4CD83, #FFFFFF) no-repeat;
-    margin: 40px;
-    margin-right: auto;
-    margin-left: auto;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
 
 .rectangle3 {
     width: 20%;
     height: 100px; 
     background: linear-gradient(to bottom, #888888, #CACACA) no-repeat;
     margin-right: auto;
-    margin-left: auto;
+    margin-left: 20px;
     margin-top: 15%;
     border-radius: 15px;
     display: flex;
@@ -293,20 +290,24 @@ ul > li >a:hover {
 }
 
 .search-results-container {
+    max-height: 200px; /* Ajoute une hauteur maximale */
+    overflow-y: auto; /* Ajoute une barre de défilement vertical si nécessaire */
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: auto; /* Ajoutez un défilement si le contenu dépasse */
 }
 
 .search-results-list {
+    max-height: 300px;
     list-style-type: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Créez une grille avec des colonnes automatiques */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 10px;
     justify-content: center;
 }
+
+
 
 .search-result-image {
     width: 100%; /* La largeur de l'image prend toute la largeur de la colonne dans la grille */

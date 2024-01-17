@@ -16,12 +16,12 @@
 
      <header>
         <div>
-            <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
+            <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.html">Analyses</a>
-            <a href="prediction.html">Prédictions</a>
-            <a href="stats.html">Statistiques</a>
+            <a href="analyse.php">Analyses</a>
+            <a href="prediction.php">Prédictions</a>
+            <a href="stats.php">Statistiques</a>
         </nav>
         <div class="nav-buttons">
             <a href="#"><img src="img/films.png" alt="Films btn"></a>

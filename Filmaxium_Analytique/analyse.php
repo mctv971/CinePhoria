@@ -18,9 +18,9 @@
             <a id="logo" href="analytique_accueil.html"><img src="img/logo.png" alt="Logo"></a>
         </div>
         <nav class="nav-links">
-            <a href="analyse.html">Analyses</a>
-            <a href="prediction.html">Prédictions</a>
-            <a href="stats.html">Statistiques</a>
+            <a href="analyse.php">Analyses</a>
+            <a href="prediction.php">Prédictions</a>
+            <a href="stats.php">Statistiques</a>
         </nav>
         <div class="nav-buttons">
             <a href="#"><img src="img/films.png" alt="Films btn"></a>
@@ -46,15 +46,15 @@
 
     <div class="rectangles-container">
         <div class="rectangle">
-            <div class="btn_analyse"><a href="comparer.html"><b>Comparer</b></a></div>
+            <div class="btn_analyse"><a href="comparer.php"><b>Comparer</b></a></div>
             <p>Cliquez sur Comparer pour accéder à une page de comparaison où de nombreux choix s’offrent à vous.</p>
-            <div class="btn_analyse"><a href="recherche.html"><b>Fiche Analyse</b></a></div>
+            <div class="btn_analyse"><a href="recherche.php"><b>Fiche Analyse</b></a></div>
             <p>Cliquez sur Fiche Analyse  pour accéder à la page statistique d’un film/série, d’un collaborateur, d’un genre.</p>
         </div>
     </div> 
 
     <div id="returnBtn">
-        <a href="analytique_accueil.html">Retour</a>
+        <a href="analytique_accueil.php">Retour</a>
     </div>
 
 
