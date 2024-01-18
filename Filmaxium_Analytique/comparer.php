@@ -101,10 +101,20 @@
     // Masquer l'élément .new-div au départ
     $(".new-div").hide();
 
+    // Détection du changement dans les sélections de films
+    $("#movieSelect1, #movieSelect2").on("change", function () {
+        var selectedMovieId1 = $("#movieSelect1").val();
+        var selectedMovieId2 = $("#movieSelect2").val();
+
+        // Mettre à jour la source de l'iframe de travail avec les nouveaux identifiants
+        var iframeSrc = "compareF.php?movieId1=" + selectedMovieId1 + "&movieId2=" + selectedMovieId2;
+        $(".new-div iframe").attr("src", iframeSrc);
+    });
+
     $("#compare-button").on("click", function () {
         $(".comparer iframe, .rectangle3").fadeOut("slow", function () {
-            $(".new-div iframe").attr("src", "compareF.php"); // Change la source de l'iframe
-            $(".new-div").fadeIn("slow"); // Fait apparaître l'élément .new-div
+            // La source de l'iframe de travail est déjà mise à jour lors du changement de sélections
+            $(".new-div").fadeIn("slow");
             var windowHeight = $(window).height();
             var iframeHeight = $(".new-div iframe").height();
             var marginTop = (windowHeight - iframeHeight) / 2;
