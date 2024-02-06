@@ -17,71 +17,41 @@
         border-radius: 25px;
     }
 
-    /* Tweak to change the look and feel */
     :root {
         --button-background: dodgerblue;
         --button-color: white;
-        --dropdown-highlight: dodgerblue;
-        --dropdown-width: 160px;
-        --dropdown-background: white;
-        --dropdown-color: black;
+        --button-hover: #4682b4;
+        --button-border-radius: 8px;
+        --button-margin: 5px;
     }
 
-    /* Center the planet */
     body {
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
+        min-height: 100%;
         background-color: #222229;
     }
 
-    /* Boring button styles */
-    a.button {
-        /* Frame */
-        display: inline-block;
-        padding: 20px 28px;
-        border-radius: 50px;
-        box-sizing: border-box;
-        /* Style */
-        border: none;
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .button-container button {
         background: var(--button-background);
         color: var(--button-color);
-        font-size: 24px;
-        cursor: pointer;
-    }
-
-    a.button:active {
-        filter: brightness(75%);
-    }
-
-    /* Dropdown styles */
-    .dropdown {
-        position: relative;
-        padding: 0;
-        margin-right: 1em;
         border: none;
+        padding: 10px 20px;
+        border-radius: var(--button-border-radius);
+        cursor: pointer;
+        margin: var(--button-margin);
+        transition: background 0.3s ease;
     }
 
-    .dropdown summary {
-        list-style: none;
-        list-style-type: none;
-    }
-
-    .dropdown > summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .dropdown summary:focus {
-        outline: none;
-    }
-
-    .dropdown summary:focus a.button {
-        border: 2px solid white;
-    }
-
-    .dropdown summary:focus {
-        outline: none;
+    .button-container button:hover {
+        background-color: var(--button-hover);
     }
 
     .dropdown ul {
@@ -118,7 +88,6 @@
         color: var(--dropdown-background);
     }
 
-    /* Dropdown triangle */
     .dropdown ul::before {
         content: ' ';
         position: absolute;
@@ -132,7 +101,6 @@
         border-color: transparent transparent var(--dropdown-background) transparent;
     }
 
-    /* Close the dropdown with outside clicks */
     .dropdown > summary::before {
         display: none;
     }
@@ -148,250 +116,167 @@
         z-index: 1;
     }
 </style>
+
 <body>
 <?php
 session_start();
 ?>
-<details class="dropdown">
-    <summary role="button">
-        <a id="attributeButton" class="button">Attribut !</a>
-    </summary>
-    <ul>
-        <li><a href="#" data-attribute="budget">Budget</a></li>
-        <li><a href="#" data-attribute="ratings">Popularité</a></li>
-        <li><a href="#" data-attribute="awards">Récompenses</a></li>
-    </ul>
-</details>
+<br>
+<br>
 
-<!-- Bouton pour créer le graphique -->
-<button id="createChartButton" class="button">Comparons!</button>
-
-<div style="width: 80%; margin: auto; text-align: center">
-    <canvas id="ratingChart" width="400" height="200"></canvas>
-    <canvas id="votesChart" width="400" height="200"></canvas>
+<div class="button-container">
+    <button id="budgetButton" data-attribute="budget">Budget</button>
+    <button id="ratingsButton" data-attribute="ratings">Popularité</button>
+    <button id="awardsButton" data-attribute="awards">Récompenses</button>
 </div>
 
+
+<div style="width: 80%;height: 100%; margin: auto; text-align: center">
+    <canvas id="budgetChart" width="400" height="200"></canvas>
+    <canvas id="ratingsChart" width="400" height="200"></canvas>
+    <canvas id="awardsChart" width="400" height="200"></canvas>
+</div>
+
+
 <script>
-var selectedAttribute = "budget"; // Par défaut, comparer le budget
-var votesChart; // Ajout d'une variable pour le graphique des votes
+    $(document).ready(function () {
+    $('.button-container button').on('click', function () {
+        var selectedAttribute = $(this).data('attribute');
 
-// Détecter le changement dans le dropdown
-$(".dropdown ul li a").on("click", function () {
-    var newAttribute = $(this).attr("data-attribute");
+        $('#budgetChart').hide();
+        $('#ratingsChart').hide();
+        $('#awardsChart').hide();
+        $(`#${selectedAttribute}Chart`).show();
 
-    // Vérifier si l'attribut a changé
-    if (newAttribute !== selectedAttribute) {
-        // Mettre à jour l'attribut sélectionné
-        selectedAttribute = newAttribute;
+        var selectedMovieId = null;
+        var selectedMovieId2 = null;
 
-        // Mettre à jour le texte du bouton avec le nom de l'attribut sélectionné
-        $("#attributeButton").text($(this).text());
-
-        // Gérer l'affichage du graphique des votes en fonction de l'attribut sélectionné
-        if (selectedAttribute === "ratings") {
-            $("#votesChart").show(); // Afficher le conteneur du graphique des votes
-        } else {
-            // Si l'attribut sélectionné n'est pas "ratings", cacher le graphique des votes
-            if (votesChart) {
-                votesChart.destroy();
-                $("#votesChart").hide();
-            }
+        // Ajoutez une condition pour récupérer les identifiants en fonction du bouton cliqué
+        if (selectedAttribute === 'budget') {
+            selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
+            selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
+        } else if (selectedAttribute === 'ratings') {
+            // Récupérer les identifiants pour Ratings
+            selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
+            selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
+        } else if (selectedAttribute === 'awards') {
+            // Récupérer les identifiants pour Awards
+            selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
+            selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
         }
-    }
+
+        getMovieDetails(selectedMovieId, selectedMovieId2, selectedAttribute);
+    });
 });
 
-$("#createChartButton").on("click", function () {
-    // Récupérer les valeurs de session
-    var selectedMovieId = <?php echo json_encode($_SESSION['selectedMovieId']); ?>;
-    var selectedMovieId2 = <?php echo json_encode($_SESSION['selectedMovieId2']); ?>;
+    function getMovieDetails(selectedMovieId, selectedMovieId2, attribute) {
+        var apiKey = '19daa2c0';
+        var apiUrl = `http://www.omdbapi.com/?i=${selectedMovieId}&apikey=${apiKey}`;
 
-    // Vérifier si les valeurs de session sont définies
-    if (!selectedMovieId || !selectedMovieId2) {
-        alert("Erreur: Les identifiants de film ne sont pas définis.");
-        return;
-    }
+        $.ajax({
+            url: apiUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function (response1) {
+                var data1;
 
-    console.log(selectedMovieId);
-    console.log(selectedMovieId2);
+                if (attribute === 'budget' && response1.BoxOffice) {
+                    data1 = parseInt(response1.BoxOffice.replace(/\D/g, ''));
+                } else if (attribute === 'ratings' && response1.Ratings && response1.Ratings.length > 0) {
+                    data1 = parseFloat(response1.Ratings[0].Value);
+                } else if (attribute === 'awards' && response1.Awards) {
+                    var awardsArray = response1.Awards.match(/\d+/g);
+                    var sum = awardsArray ? awardsArray.reduce((a, b) => parseInt(a) + parseInt(b), 0) : 0;
+                    data1 = sum;
+                } else {
+                    // Si l'information n'est pas disponible, attribuer une valeur nulle
+                    data1 = null;
+                }
 
-    fetchData(selectedMovieId, function (data1) {
-        fetchData(selectedMovieId2, function (data2) {
-            // Supprimer les graphiques existants
-            if (window.myChart) {
-                window.myChart.destroy();
-            }
+                const movie1Name = response1.Title;
 
-            var ctxRating = document.getElementById('ratingChart').getContext('2d');
-            var ctxVotes = document.getElementById('votesChart').getContext('2d');
+                var apiUrl2 = `http://www.omdbapi.com/?i=${selectedMovieId2}&apikey=${apiKey}`;
+                $.ajax({
+                    url: apiUrl2,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (response2) {
+                        var data2;
 
-            // Créer les graphiques en fonction de l'attribut sélectionné
-            if (selectedAttribute === "budget") {
-                var budget1 = data1.titleBoxOffice.budget.amount;
-                var budget2 = data2.titleBoxOffice.budget.amount;
-
-                var gross1 = data1.titleBoxOffice.gross.aggregations.find(item => item.area === "XWW").total.amount;
-                var gross2 = data2.titleBoxOffice.gross.aggregations.find(item => item.area === "XWW").total.amount;
-
-                window.myChart = new Chart(ctxRating, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Film 1', 'Film 2'],
-                        datasets: [
-                            {
-                                label: 'Budget',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1,
-                                data: [budget1, budget2]
-                            },
-                            {
-                                label: 'Gross',
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                data: [gross1, gross2]
-                            }
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+                        if (attribute === 'budget' && response2.BoxOffice) {
+                            data2 = parseInt(response2.BoxOffice.replace(/\D/g, ''));
+                        } else if (attribute === 'ratings' && response2.Ratings && response2.Ratings.length > 0) {
+                            data2 = parseFloat(response2.Ratings[0].Value);
+                        } else if (attribute === 'awards' && response2.Awards) {
+                            var awardsArray2 = response2.Awards.match(/\d+/g);
+                            var sum2 = awardsArray2 ? awardsArray2.reduce((a, b) => parseInt(a) + parseInt(b), 0) : 0;
+                            data2 = sum2;
+                        } else {
+                            // Si l'information n'est pas disponible, attribuer une valeur nulle
+                            data2 = null;
                         }
+
+                        const movie2Name = response2.Title;
+
+                        createChart(attribute, [data1, data2], movie1Name, movie2Name);
+                    },
+                    error: function (xhr2, status2, error2) {
+                        console.error('Erreur lors de la récupération des détails du deuxième film.');
+                        console.log('Status:', status2);
+                        console.log('Error:', error2);
                     }
                 });
-            } else if (selectedAttribute === "ratings") {
-                var rating1 = data1.rating;
-                var rating2 = data2.rating;
-
-                window.myChart = new Chart(ctxRating, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Film 1', 'Film 2'],
-                        datasets: [
-                            {
-                                label: 'Note',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1,
-                                data: [rating1, rating2]
-                            }
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-
-                var votes1 = data1.ratingCount;
-                var votes2 = data2.ratingCount;
-
-                // Créer le graphique des votes
-                votesChart = new Chart(ctxVotes, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Film 1', 'Film 2'],
-                        datasets: [
-                            {
-                                label: 'Nombre de Votes',
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                data: [votes1, votes2]
-                            }
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-
-                $("#votesChart").show();
-            } else if (selectedAttribute === "awards") {
-                var highlighted1 = data1.awardsSummary.highlighted;
-                var otherNominationsCount1 = data1.awardsSummary.otherNominationsCount;
-                var otherWinsCount1 = data1.awardsSummary.otherWinsCount;
-
-                var highlighted2 = data2.awardsSummary.highlighted;
-                var otherNominationsCount2 = data2.awardsSummary.otherNominationsCount;
-                var otherWinsCount2 = data2.awardsSummary.otherWinsCount;
-
-                window.myChart = new Chart(ctxRating, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Film 1', 'Film 2'],
-                        datasets: [
-                            {
-                                label: 'Wins',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 1,
-                                data: [highlighted1.isWinner ? 1 : 0, highlighted2.isWinner ? 1 : 0]
-                            },
-                            {
-                                label: 'Nominations',
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                data: [otherWinsCount1, otherWinsCount2]
-                            }
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
+            },
+            error: function (xhr1, status1, error1) {
+                console.error('Erreur lors de la récupération des détails du premier film.');
+                console.log('Status:', status1);
+                console.log('Error:', error1);
             }
         });
-    });
-});
-
-function fetchData(movieId, callback) {
-    var attributeUrl;
-
-    // Choisir l'URL en fonction de l'attribut sélectionné
-    if (selectedAttribute === "budget") {
-        attributeUrl = "https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=";
-    } else if (selectedAttribute === "ratings") {
-        attributeUrl = "https://imdb8.p.rapidapi.com/title/get-ratings?tconst=";
-    } else if (selectedAttribute === "awards") {
-        attributeUrl = "https://imdb8.p.rapidapi.com/title/get-awards-summary?tconst=";
     }
 
-    // Assurez-vous que l'URL est correctement formée
-    var apiUrl = attributeUrl + movieId;
-    console.log(apiUrl); // Ajoutez cette ligne pour déboguer
+    function createChart(attribute, data, movie1Name, movie2Name) {
+        const ctx = document.getElementById(`${attribute}Chart`).getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [movie1Name, movie2Name],
+                datasets: [{
+                    label: attribute,
+                    data: data,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": apiUrl,
-        "method": "GET",
-        "headers": {
-            "X-RapidAPI-Key": "4af10acecamsh208e06566c5c57dp183d71jsnd3b78c58d16e",
-            "X-RapidAPI-Host": "imdb8.p.rapidapi.com"
+        if (attribute !== 'budget') {
+            $('#budgetChart').hide();
         }
-    };
-
-    $.ajax(settings).done(function (response) {
-        callback(response);
-    });
-}
+        if (attribute !== 'ratings') {
+            $('#ratingsChart').hide();
+        }
+        if (attribute !== 'awards') {
+            $('#awardsChart').hide();
+        }
+    }
 
 </script>
+
 
 </body>
 </html>

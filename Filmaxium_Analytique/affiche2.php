@@ -45,7 +45,7 @@
     }
 
     .movie-item.clicked {
-        transform: scale(1.4); /* Ajustez la valeur pour le niveau de zoom souhaité */
+        transform: scale(1.27); /* Ajustez la valeur pour le niveau de zoom souhaité */
     }
 
     .movie-poster {
@@ -54,61 +54,85 @@
     }
 </style>
 <body>
-    <?php
-    session_start();
-    ?>
+    <?php session_start(); ?>
     <div class="rectangle2"></div>
     <div class="search-container">
-        <input type="text" class="search-input" placeholder="Recherche de film..." id="searchQuery">
-        <button onclick="searchMovies()">Rechercher</button>
+        <input type="text" class="search-input" placeholder="Recherche de film ou série..." id="searchQuery" oninput="searchMedia()">
     </div>
     <br>
     <br> 
     <div class="result-container" id="resultContainer"></div>
 
     <script>
-       function searchMovies() {
-    var searchQuery = document.getElementById('searchQuery').value;
+        function searchMedia() {
+            var searchQuery = document.getElementById('searchQuery').value;
 
-    const settings = {
-        async: true,
-        crossDomain: true,
-        url: `https://imdb8.p.rapidapi.com/title/v2/find?title=${searchQuery}&limit=20&titleType=movie,tvSeries`,
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Key': '4af10acecamsh208e06566c5c57dp183d71jsnd3b78c58d16e',
-            'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+                }
+            };
+
+            // Déterminer le type de média en fonction de l'URL
+            var mediaType = window.location.href.includes('search/tv') ? 'tv' : 'movie';
+
+            var movieUrl = `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=1`;
+            var tvUrl = `https://api.themoviedb.org/3/search/tv?query=${searchQuery}&include_adult=false&language=en-US&page=1`;
+
+            var moviePromise = fetch(movieUrl, options)
+                .then(response => response.json());
+
+            var tvPromise = fetch(tvUrl, options)
+                .then(response => response.json());
+
+            Promise.all([moviePromise, tvPromise])
+                .then(results => {
+                    var combinedResults = results.flatMap(result => result.results);
+                    displayResults(combinedResults);
+                })
+                .catch(err => console.error(err));
         }
-    };
 
-    $.ajax(settings).done(function (response) {
-        displayResults(response.results);
-        console.log(response.results);
-    });
-}
-
-function displayResults(movies) {
+        function displayResults(media) {
     var resultContainer = document.getElementById('resultContainer');
     resultContainer.innerHTML = '';
 
-    if (movies) {
-        movies.forEach(function (movie) {
-            if (movie.image && movie.image.url) {
-                var movieItem = document.createElement('div');
-                movieItem.className = 'movie-item';
-                movieItem.setAttribute('data-movie-id', movie.id); // Ajoutez l'ID du film comme attribut
-                var moviePoster = document.createElement('img');
-                moviePoster.src = movie.image.url;
-                moviePoster.alt = movie.title;
-                moviePoster.className = 'movie-poster';
+    if (media.length > 0) {
+        media.forEach(function (item) {
+            if (item.poster_path) {
+                var mediaItem = document.createElement('div');
+                mediaItem.className = 'movie-item';
+                mediaItem.setAttribute('data-media-id', item.id);
 
-                // Ajoutez l'événement de clic avec l'ID du film à l'affiche
-                moviePoster.addEventListener('click', function () {
-                    onMovieClick(movieItem);
+                // Vérifier la présence de la propriété original_title pour les films et origin_country pour les séries TV
+                var mediaType = 'unknown';
+                if (item.original_title) {
+                    mediaType = 'movie';
+                } else if (item.origin_country) {
+                    mediaType = 'tv';
+                }
+
+                mediaItem.setAttribute('data-media-type', mediaType);
+                var mediaPoster = document.createElement('img');
+                mediaPoster.src = `https://image.tmdb.org/t/p/w500/${item.poster_path}`;
+                mediaPoster.alt = item.title || item.name;
+                mediaPoster.className = 'movie-poster';
+
+                mediaPoster.addEventListener('click', function () {
+                    onMediaClick(mediaItem);
                 });
 
-                movieItem.appendChild(moviePoster);
-                resultContainer.appendChild(movieItem);
+                mediaItem.appendChild(mediaPoster);
+                resultContainer.appendChild(mediaItem);
+
+                console.log('Titre:', item.title || item.name);
+                console.log('ID:', item.id);
+                console.log('Type de média:', mediaType);
+                console.log('Date de sortie:', mediaType === 'tv' ? item.first_air_date : item.release_date);
+                console.log('Vue d\'ensemble:', item.overview);
+                console.log('-------------');
             }
         });
     } else {
@@ -116,37 +140,42 @@ function displayResults(movies) {
     }
 }
 
-function onMovieClick(movieItem) {
-    var movieItems = document.querySelectorAll('.movie-item');
-    var selectedMovieId = movieItem.getAttribute('data-movie-id');
 
-    // Supprimez les 7 premiers caractères et le dernier caractère de l'ID du film
-    var extractedId = selectedMovieId.slice(7, -1);
 
-    if (extractedId) {
-        movieItems.forEach(function (item) {
-            item.classList.remove('clicked');
-        });
+        function onMediaClick(mediaItem) {
+            var mediaItems = document.querySelectorAll('.movie-item');
+            var selectedMediaId = mediaItem.getAttribute('data-media-id');
+            var selectedMediaType = mediaItem.getAttribute('data-media-type');
 
-        movieItem.classList.add('clicked');
-        console.log(extractedId);
-        $.ajax({
-            type: 'POST',
-            url: 'gestion_session2.php',
-            data: { movieId: extractedId },
-            success: function (response) {
-                console.log('ID du film enregistré dans la session avec succès.');
-            },
-            error: function (xhr, status, error) {
-                console.error('Erreur lors de l\'enregistrement de l\'ID du film dans la session.');
-                console.log('Status:', status);
-                console.log('Error:', error);
+            if (selectedMediaId && selectedMediaType) {
+                mediaItems.forEach(function (item) {
+                    item.classList.remove('clicked');
+                });
+
+                mediaItem.classList.add('clicked');
+                console.log(selectedMediaId);
+                console.log(selectedMediaType);
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'gestion_session2.php',
+                    data: {
+                        mediaId: selectedMediaId,
+                        mediaType: selectedMediaType
+                    },
+                    success: function (response) {
+                        console.log('ID du média enregistré dans la session avec succès.');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erreur lors de l\'enregistrement de l\'ID du média dans la session.');
+                        console.log('Status:', status);
+                        console.log('Error:', error);
+                    }
+                });
+            } else {
+                console.error('Impossible d\'extraire l\'ID du média ou le type de média.');
             }
-        });
-    } else {
-        console.error('Impossible d\'extraire l\'ID du film.');
-    }
-}
+        }
     </script>
 </body>
 </html>

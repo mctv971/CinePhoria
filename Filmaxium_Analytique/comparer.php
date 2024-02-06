@@ -27,14 +27,17 @@
             justify-content: space-between;
         }
         .new-div {
-    display: none;
-    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
     top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1; 
+    z-index: 1;
+    width: 80%;
+    max-width: 1200px; /* Par exemple, définissez une largeur maximale si nécessaire */
 }
-
     </style>
 </head>
 <body>
@@ -113,15 +116,24 @@
 
     $("#compare-button").on("click", function () {
         $(".comparer iframe, .rectangle3").fadeOut("slow", function () {
-            // La source de l'iframe de travail est déjà mise à jour lors du changement de sélections
+            // Rechercher l'iframe de travail par son attribut src
+            var compareFrame = $('iframe[src="compareF.php"]')[0];
+
+            // Ajouter une vérification pour s'assurer que l'iframe existe
+            if (compareFrame) {
+                // Ajouter une gestion des erreurs
+                try {
+                    compareFrame.contentWindow.location.reload(true);
+                } catch (e) {
+                    console.error('Erreur lors du rechargement de l\'iframe :', e);
+                }
+            } else {
+                console.error('L\'iframe de comparaison n\'a pas été trouvée.');
+            }
+
             $(".new-div").fadeIn("slow");
-            var windowHeight = $(window).height();
-            var iframeHeight = $(".new-div iframe").height();
-            var marginTop = (windowHeight - iframeHeight) / 2;
-            $(".new-div iframe").css("margin-top", marginTop + "px");
         });
     });
 });
-
 
 </script>
