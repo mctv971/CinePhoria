@@ -7,26 +7,26 @@ file_path = 'C:/Users/nowli/OneDrive/Documents/GitHub/CinePhoria/Filmaxium_Analy
 
 df = pd.read_csv(file_path)
 
-sns.set(style='darkgrid')
+def standardisation_durée(duration):
+    if pd.isna(duration):
+        return None
+    parts = duration.split(' ')
+    minutes = int(parts[0][:-1]) * 60 + int(parts[1][:-1]) if len(parts) > 1 else int(parts[0][:-1])
+    return minutes
 
-oscars_by_award = {
-    'GG': df[df['GG'] == 1]['Oscar'].sum(),
-    'DGA': df[df['DGA'] == 1]['Oscar'].sum(),
-    'PGA': df[df['PGA'] == 1]['Oscar'].sum(),
-    'SAG': df[df['SAG'] == 1]['Oscar'].sum(),
-    'BAFTA': df[df['BAFTA'] == 1]['Oscar'].sum()
-}
+df['Duration'] = df['Duration'].apply(standardisation_durée)
+df['Duration'].fillna(df['Duration'].median(), inplace=True)
+df['Notes TMDB'] = pd.to_numeric(df['Notes TMDB'], errors='coerce')
+df['Notes TMDB'].fillna(df['Notes TMDB'].median(), inplace=True)
 
-# Convertir en DataFrame pour la visualisation
-oscars_by_award_df = pd.DataFrame(list(oscars_by_award.items()), columns=['Award', 'Total Oscars Won'])
 
-# Création du graphique
-plt.figure(figsize=(10, 6))
-sns.barplot(x='Award', y='Total Oscars Won', data=oscars_by_award_df, palette='viridis')
 
-plt.title('Impact des Victoires dans d\'Autres Récompenses sur les Victoires aux Oscars')
-plt.xlabel('Récompense')
-plt.ylabel('Nombre Total d\'Oscars Gagnés')
-plt.xticks(rotation=45)
+X = df.drop(['titre', 'Oscar', 'imdbID'], axis=1)
 
-plt.show()
+X =X = df.drop(['titre', 'Oscar', 'imdbID'], axis=1)
+
+X = X.fillna(X.median())
+# Ensure no NaN values remain
+print(X.isnull().sum())
+
+
