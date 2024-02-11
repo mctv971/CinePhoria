@@ -1,8 +1,9 @@
 import pandas as pd
 
 
-Test_df = pd.read_csv('Data/Test.csv')
-oscar_df = pd.read_csv('Data.the_oscar_award (2).csv')
+
+test_df = pd.read_csv('Data/Test.csv')
+oscar_df = pd.read_csv('Data/the_oscar_award (2).csv')
 
 oscar_nominations = oscar_df.groupby('film').size()
 
@@ -18,8 +19,7 @@ test_df['Nombre de Nominations'] = test_df['Nombre de Nominations'].fillna(0).as
 # Afficher les premières lignes pour vérifier la fusion
 test_df.head()
 
-modified_test_file_path = 'Data/Test.csv'
 
 # Sauvegarder le fichier modifié
-test_df.to_csv(modified_test_file_path, index=False)
+test_df.to_csv('Data/Final.csv', index=False)
 
