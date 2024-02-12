@@ -660,7 +660,7 @@ body {
   z-index: 1000;
   width: 60px;
   height: 60px;
-  opacity: 0.3;
+  opacity: 0.4;
   transition: opacity 0.5s;
 }
 .closeIcon:hover{
@@ -682,6 +682,13 @@ body {
   left: 10px;
   top:unset;
   display: none;
+}
+
+#chatIconDetail{
+  display: block;
+  bottom: 10px; 
+  right: 10px;
+  top:unset;
 }
 
 
@@ -1173,7 +1180,8 @@ body {
 
 }
 
-#commentaires{
+.commentaires{
+  display: none;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -1187,6 +1195,9 @@ body {
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
+}
+.commentaires.active{
+  display: block;
 }
 #commentaires-liste{
   width: 100%;
@@ -1304,4 +1315,9 @@ body {
   flex-direction: row;
   gap: 10px;
 }
-
+.retour-fiche{
+  position: fixed;
+  bottom: 0;
+  right: 10px;
+  cursor: pointer;
+}

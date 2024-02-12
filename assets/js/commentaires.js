@@ -53,6 +53,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     // Afficher les commentaires récupérés
+                    $('.commentaire').remove();
                     afficherCommentaires(response.commentaires, 0);
                 } else {
                     // Erreur lors de la récupération des commentaires
@@ -155,6 +156,8 @@ function afficherCommentaires(commentaires, id_parent) {
             // Sinon, ajouter le commentaire sans id_commentaire_parent
             ajouterCommentaire(id_type, imdb_id, contenu);
         }
+        $('#contenu').val("");
+        
     });
 
     // Au chargement initial de la page, récupérer et afficher les commentaires
@@ -162,17 +165,36 @@ function afficherCommentaires(commentaires, id_parent) {
     var imdb_id_initial = localStorage.getItem('itemId');
     recupererCommentaires(id_type_initial, imdb_id_initial);
     $(document).on('click', '.repondre', function() {
+        if($(this).closest('.commentaire').find('.reponse-message')){
+            $('.reponse-message').remove();
+        }
+        else{
+            alert("zuit")
+        }
+        
         var id_commentaire_parent = $(this).data('id');
         var username_commentaire_parent = $(this).closest('.commentaire').find('.profil-container .username').text();
         var contenu_commentaire_parent = $(this).closest('.commentaire').find('.contenu .content').text();
         
         var message_reponse = '<div class="affiche-repondre"><span class="reponse-intro">Vous répondez à </span><span class="username">' + username_commentaire_parent + ' :</span></div><br>' + contenu_commentaire_parent;
-        
+
+
         var $reponseMessage = $('<div class="reponse-message">' + message_reponse + '</div>');
     
         $('#commentaire-formulaire').before($reponseMessage);
         $('#id_commentaire_parent').val(id_commentaire_parent);
+
     });
+    $(document).on('click', '.retour-fiche', function(){
+        $('.commentaires').removeClass('active');
+        $('#chatIconDetail').css('display', 'block');
+
+    })
+    $(document).on('click', '#chatIconDetail', function(){
+        $('.commentaires').addClass('active');
+        $('#chatIconDetail').css('display', 'none');
+
+    })
     
     
     

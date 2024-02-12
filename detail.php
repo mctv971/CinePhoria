@@ -78,7 +78,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
     <!-- 
       - #SIDEBAR
     -->
-
+    <img src="./assets/images/chat.png" alt="Chat Icone" class="closeIcon" id="chatIconDetail">
 
 
 
@@ -86,7 +86,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
 
 
     <article class="container detail" page-content>
-      <div id="commentaires">
+      <div class="commentaires">
         <h1 id="titre-commentaire">Commentaires</h1>
 
         <div id="commentaires-liste">
@@ -101,6 +101,8 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
           <textarea id="contenu" placeholder="Ajouter un commentaire"></textarea>
           <button type="submit">Envoyer</button>
         </form>
+
+        <p class="retour-fiche">Retour à la fiche</p>
 
         <!-- Section pour afficher les commentaires -->
 
