@@ -54,6 +54,33 @@
         background-color: var(--button-hover);
     }
 
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-content select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        box-sizing: border-box;
+    }
+
     .dropdown ul {
         position: absolute;
         margin: 20px 0 0 0;
@@ -118,165 +145,391 @@
 </style>
 
 <body>
-<?php
-session_start();
-?>
-<br>
-<br>
+    <?php
+    session_start();
+    ?>
+    <br>
+    <br>
 
-<div class="button-container">
-    <button id="budgetButton" data-attribute="budget">Budget</button>
-    <button id="ratingsButton" data-attribute="ratings">Popularité</button>
-    <button id="awardsButton" data-attribute="awards">Récompenses</button>
+    <div class="button-container">
+        <button id="votesButton" data-attribute="votes">Votes</button>
+        <div class="dropdown">
+            <button id="revenueComparisonButton" data-attribute="revenue">Revenus par Régions</button>
+            <div class="dropdown-content">
+                <select id="revenueDropdown">
+                    <option value="<?php echo $_SESSION['selectedMovieId'] ?>">Film 1</option>
+                    <option value="<?php echo $_SESSION['selectedMovieId2'] ?>">Film 2</option>
+                </select>
+            </div>
+        </div>
+        <div class="dropdown">
+    <button id="castComparisonButton" data-attribute="cast">Top Cast</button>
+    <div class="dropdown-content">
+        <select id="castDropdown">
+            <option value="<?php echo $_SESSION['selectedMovieId'] ?>">Film 1</option>
+            <option value="<?php echo $_SESSION['selectedMovieId2'] ?>">Film 2</option>
+        </select>
+    </div>
 </div>
+       
+    </div>
 
+    <div style="width: 80%; height: 100%; margin: auto; text-align: center">
+        <canvas id="combinedChart" width="400" height="200"></canvas>
+    </div>
 
-<div style="width: 80%;height: 100%; margin: auto; text-align: center">
-    <canvas id="budgetChart" width="400" height="200"></canvas>
-    <canvas id="ratingsChart" width="400" height="200"></canvas>
-    <canvas id="awardsChart" width="400" height="200"></canvas>
-</div>
+    <script>
+        $(document).ready(function () {
+            // Créer une instance de Chart
+            var combinedChart = null;
 
+            $('.button-container button').on('click', function () {
+                var selectedAttribute = $(this).data('attribute');
 
-<script>
-    $(document).ready(function () {
-    $('.button-container button').on('click', function () {
-        var selectedAttribute = $(this).data('attribute');
+                var selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
+                var selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
 
-        $('#budgetChart').hide();
-        $('#ratingsChart').hide();
-        $('#awardsChart').hide();
-        $(`#${selectedAttribute}Chart`).show();
+                // Supprimer le graphique existant s'il y en a un
+                destroyChart();
 
-        var selectedMovieId = null;
-        var selectedMovieId2 = null;
-
-        // Ajoutez une condition pour récupérer les identifiants en fonction du bouton cliqué
-        if (selectedAttribute === 'budget') {
-            selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
-            selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
-        } else if (selectedAttribute === 'ratings') {
-            // Récupérer les identifiants pour Ratings
-            selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
-            selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
-        } else if (selectedAttribute === 'awards') {
-            // Récupérer les identifiants pour Awards
-            selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
-            selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
-        }
-
-        getMovieDetails(selectedMovieId, selectedMovieId2, selectedAttribute);
-    });
-});
-
-    function getMovieDetails(selectedMovieId, selectedMovieId2, attribute) {
-        var apiKey = '19daa2c0';
-        var apiUrl = `http://www.omdbapi.com/?i=${selectedMovieId}&apikey=${apiKey}`;
-
-        $.ajax({
-            url: apiUrl,
-            type: 'GET',
-            dataType: 'json',
-            success: function (response1) {
-                var data1;
-
-                if (attribute === 'budget' && response1.BoxOffice) {
-                    data1 = parseInt(response1.BoxOffice.replace(/\D/g, ''));
-                } else if (attribute === 'ratings' && response1.Ratings && response1.Ratings.length > 0) {
-                    data1 = parseFloat(response1.Ratings[0].Value);
-                } else if (attribute === 'awards' && response1.Awards) {
-                    var awardsArray = response1.Awards.match(/\d+/g);
-                    var sum = awardsArray ? awardsArray.reduce((a, b) => parseInt(a) + parseInt(b), 0) : 0;
-                    data1 = sum;
-                } else {
-                    // Si l'information n'est pas disponible, attribuer une valeur nulle
-                    data1 = null;
-                }
-
-                const movie1Name = response1.Title;
-
-                var apiUrl2 = `http://www.omdbapi.com/?i=${selectedMovieId2}&apikey=${apiKey}`;
-                $.ajax({
-                    url: apiUrl2,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (response2) {
-                        var data2;
-
-                        if (attribute === 'budget' && response2.BoxOffice) {
-                            data2 = parseInt(response2.BoxOffice.replace(/\D/g, ''));
-                        } else if (attribute === 'ratings' && response2.Ratings && response2.Ratings.length > 0) {
-                            data2 = parseFloat(response2.Ratings[0].Value);
-                        } else if (attribute === 'awards' && response2.Awards) {
-                            var awardsArray2 = response2.Awards.match(/\d+/g);
-                            var sum2 = awardsArray2 ? awardsArray2.reduce((a, b) => parseInt(a) + parseInt(b), 0) : 0;
-                            data2 = sum2;
-                        } else {
-                            // Si l'information n'est pas disponible, attribuer une valeur nulle
-                            data2 = null;
-                        }
-
-                        const movie2Name = response2.Title;
-
-                        createChart(attribute, [data1, data2], movie1Name, movie2Name);
-                    },
-                    error: function (xhr2, status2, error2) {
-                        console.error('Erreur lors de la récupération des détails du deuxième film.');
-                        console.log('Status:', status2);
-                        console.log('Error:', error2);
+                // Créer le graphique en fonction de l'attribut sélectionné
+                if (selectedAttribute === 'votes') {
+                    getCombinedVotesDetails(selectedMovieId, selectedMovieId2);
+                } else if (selectedAttribute === 'revenue') {
+                    var selectedRevenueMovieId = $('#revenueDropdown').val();
+                getRevenueData(selectedRevenueMovieId);
+                } else if (selectedAttribute === 'cast') {
+                    var selectedTopCastMovieId = $('#castDropdown').val();
+                getTopCastIDs(selectedTopCastMovieId, function (error, topCastIds) {
+                    if (error) {
+                        console.error('Erreur lors de la récupération des IDs du Top Cast:', error);
+                    } else {
+                        // Appeler la fonction pour obtenir les données de popularité pour chaque collaborateur et créer le graphique
+                        getPopularityDataForTopCast(topCastIds);
                     }
                 });
-            },
-            error: function (xhr1, status1, error1) {
-                console.error('Erreur lors de la récupération des détails du premier film.');
-                console.log('Status:', status1);
-                console.log('Error:', error1);
-            }
-        });
-    }
-
-    function createChart(attribute, data, movie1Name, movie2Name) {
-        const ctx = document.getElementById(`${attribute}Chart`).getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: [movie1Name, movie2Name],
-                datasets: [{
-                    label: attribute,
-                    data: data,
-                    backgroundColor: [
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 99, 132, 1)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                } else {
+                    getMovieDetails(selectedMovieId, selectedMovieId2, selectedAttribute);
                 }
-            }
+            });
+
+            $('#castDropdown').on('change', function () {
+            var selectedMovieId = $(this).val();
+
+            // Supprimer le graphique existant s'il y en a un
+            destroyChart();
+
+            // Afficher le graphique pour le film sélectionné
+            getTopCastIDs(selectedMovieId, function (error, topCastIds) {
+                if (error) {
+                    console.error('Erreur lors de la récupération des IDs du Top Cast:', error);
+                } else {
+                    // Appeler la fonction pour obtenir les données de popularité pour chaque collaborateur et créer le graphique
+                    getPopularityDataForTopCast(topCastIds);
+                }
+            });
         });
 
-        if (attribute !== 'budget') {
-            $('#budgetChart').hide();
-        }
-        if (attribute !== 'ratings') {
-            $('#ratingsChart').hide();
-        }
-        if (attribute !== 'awards') {
-            $('#awardsChart').hide();
-        }
-    }
+            // Gérer le changement de film avec le bouton "Switch Movie"
+            $('#switchMovieButton').on('click', function () {
+                // Basculer entre le premier et le deuxième film
+                const currentMovieId = $('#movieSelection').val();
+                const newMovieId = currentMovieId === '<?php echo $_SESSION['selectedMovieId'] ?>'
+                    ? '<?php echo $_SESSION['selectedMovieId2'] ?>'
+                    : '<?php echo $_SESSION['selectedMovieId'] ?>';
 
-</script>
+                // Mettre à jour le menu déroulant
+                $('#movieSelection').val(newMovieId);
 
+                // Supprimer le graphique existant s'il y en a un
+                destroyChart();
 
+                // Afficher le graphique pour le nouveau film
+                getRevenueData(newMovieId);
+            });
+            
+
+            // Gérer le changement de film dans la liste déroulante pour les revenus par région
+            $('#revenueDropdown').on('change', function () {
+                var selectedMovieId = $(this).val();
+
+                // Supprimer le graphique existant s'il y en a un
+                destroyChart();
+
+                // Afficher le graphique pour le film sélectionné
+                getRevenueData(selectedMovieId);
+            });
+            $('#castcDropdown').on('change', function () {
+                var selectedMovieId = $(this).val();
+
+                // Supprimer le graphique existant s'il y en a un
+                destroyChart();
+
+                // Afficher le graphique pour le film sélectionné
+                getRevenueData(selectedMovieId);
+            });
+
+            var chartInstances = [];
+
+            function destroyChart() {
+    // Détruire toutes les instances de graphiques
+    chartInstances.forEach(function (chart) {
+        chart.destroy();
+    });
+    // Effacer le tableau d'instances
+    chartInstances = [];
+}
+
+            function getRevenueData(movieId) {
+                // Appeler votre API ou votre fonction pour obtenir les données de revenus par régions
+                // Utilisez ces données pour créer le graphique des revenus par régions (pie chart)
+                // Assurez-vous d'utiliser la bibliothèque Chart.js pour créer le graphique
+                const settings = {
+                    async: true,
+                    crossDomain: true,
+                    url: 'https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=' + movieId,
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+                    }
+                };
+
+                $.ajax(settings).done(function (response) {
+                    try {
+                        console.log('Raw Response:', response); // Ajout d'un message de débogage
+
+                        // Vérifier si la réponse contient les données attendues
+                        if (response && response.titleBoxOffice && response.titleBoxOffice.gross && response.titleBoxOffice.gross.regional) {
+                            const revenueData = response.titleBoxOffice.gross.regional;
+                            const movieName = response.title;
+
+                            // Utiliser la fonction spécifique pour créer le graphique de revenus par régions
+                            createRevenuePieChart(revenueData, movieName);
+                        } else {
+                            console.error('Invalid or incomplete response structure.');
+                        }
+                    } catch (error) {
+                        console.error('Failed to process revenue data.', error);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error('Failed to fetch revenue data for the movie.');
+                    console.error('Status:', textStatus);
+                    console.error('Error:', errorThrown);
+                });
+            }
+
+            function createCombinedChart(data1, movieName1, data2, movieName2, categories) {
+                const ctx = document.getElementById('combinedChart').getContext('2d');
+                const newChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: categories,
+                        datasets: [{
+                                label: movieName1,
+                                data: data1[0],
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: movieName2,
+                                data: data2[0],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scale: {
+                            ticks: {
+                                beginAtZero: true,
+                                max: 250000
+                            }
+                        }
+                    }
+                });
+                chartInstances.push(newChart);
+            }
+
+            function createRevenuePieChart(data, movieName) {
+                // Récupérer le contexte du canvas
+                const ctx = document.getElementById('combinedChart').getContext('2d');
+
+                // Créer le nouveau graphique
+                const newChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.map(region => region.regionName),
+                        datasets: [{
+                            label: movieName,
+                            data: data.map(region => region.total.amount),
+                            backgroundColor: getRandomColorArray(data.length),
+                            borderColor: 'rgba(255, 255, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                chartInstances.push(newChart);
+            }
+
+            // Fonction pour générer un tableau de couleurs aléatoires
+            function getRandomColorArray(length) {
+                const colorArray = [];
+                for (let i = 0; i < length; i++) {
+                    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                    colorArray.push(randomColor);
+                }
+                return colorArray;
+            }
+
+            function getTopCastIDs(titleId, callback) {
+                const settings = {
+                    async: true,
+                    crossDomain: true,
+                    url: 'https://imdb8.p.rapidapi.com/title/get-top-cast?tconst=' + titleId,
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+                    }
+                };
+
+                $.ajax(settings).done(function (response) {
+                    try {
+                        // Extraire les 5 premiers ID en retirant le dernier caractère et les 6 premiers
+                        const extractedIDs = response.slice(0, 5).map(id => id.slice(0, -1).substring(6));
+                        callback(null, extractedIDs);
+                    } catch (error) {
+                        callback(error, null);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    callback({
+                        status: textStatus,
+                        error: errorThrown
+                    }, null);
+                });
+            }
+
+            function getCombinedVotesDetails(selectedMovieId, selectedMovieId2) {
+                const settings = {
+                    async: true,
+                    crossDomain: true,
+                    url: 'https://imdb8.p.rapidapi.com/title/get-ratings?tconst=' + selectedMovieId,
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+                    }
+                };
+
+                const settings2 = {
+                    async: true,
+                    crossDomain: true,
+                    url: 'https://imdb8.p.rapidapi.com/title/get-ratings?tconst=' + selectedMovieId2,
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+                    }
+                };
+
+                $.when(
+                    $.ajax(settings),
+                    $.ajax(settings2)
+                ).done(function (response1, response2) {
+                    const movieName1 = response1[0].title;
+                    const categories = Object.keys(response1[0].ratingsHistograms['IMDb Users'].histogram);
+                    const data1 = [
+                        Object.values(response1[0].ratingsHistograms['IMDb Users'].histogram),
+                    ];
+
+                    const movieName2 = response2[0].title;
+                    const data2 = [
+                        Object.values(response2[0].ratingsHistograms['IMDb Users'].histogram),
+                    ];
+
+                    createCombinedChart(data1, movieName1, data2, movieName2, categories);
+                }).fail(function () {
+                    console.error('Failed to fetch data for one or both movies.');
+                });
+            }
+
+            // Ajoutez cette fonction pour traiter la récupération de données de popularité
+            function getPopularityData(id) {
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+                    }
+                };
+
+                return fetch('https://api.themoviedb.org/3/find/' + id + '?external_source=imdb_id', options)
+                    .then(response => response.json())
+                    .then(response => response.person_results[0].popularity)
+                    .catch(err => Promise.reject(err));
+            }
+
+            function getPopularityDataForTopCast(topCastIds) {
+                const popularityData = [];
+
+                // Utiliser la fonction asynchrone pour traiter chaque ID du Top Cast
+                (async function loop() {
+                    for (const id of topCastIds) {
+                        try {
+                            // Utiliser l'API pour obtenir les données de popularité pour chaque collaborateur
+                            const popularity = await getPopularityData(id);
+                            popularityData.push({
+                                name: id,
+                                popularity: popularity
+                            });
+                        } catch (error) {
+                            console.error('Failed to fetch popularity data for ID:', id);
+                        }
+                    }
+
+                    // Créer le graphique à barres avec les données de popularité
+                    createPopularityBarChart(popularityData);
+                })();
+            }
+
+            // Fonction pour créer le graphique à barres
+            function createPopularityBarChart(data) {
+                const names = data.map(item => item.name);
+                const scores = data.map(item => item.popularity);
+
+                const ctx = document.getElementById('combinedChart').getContext('2d');
+                const newChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: names,
+                        datasets: [{
+                            label: 'Popularité',
+                            data: scores,
+                            backgroundColor: getRandomColorArray(data.length),
+                            borderColor: 'rgba(255, 255, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                chartInstances.push(newChart);
+            }
+        });
+    </script>
 </body>
 </html>

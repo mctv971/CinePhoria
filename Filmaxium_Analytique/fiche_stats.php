@@ -37,7 +37,7 @@
         .chart-container {
             max-width: 600px;
             margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color:rgba(255, 255, 255, 0.8);
             padding: 20px;
             border-radius: 10px;
             margin: auto;
@@ -60,7 +60,9 @@
 </head>
 
 <body>
-
+<?php
+session_start()
+?>
     <header>
         <div>
             <a id="logo" href="analytique_accueil.php"><img src="img/logo.png" alt="Logo"></a>
@@ -93,177 +95,210 @@
         <div class="chart-dropdown">
             <label for="chartType">Choisir le type de graphique : </label>
             <select id="chartType" onchange="updateChartType()">
-                <option value="revenue" selected>Revenu</option>
                 <option value="popularity">Popularité</option>
-                <option value="awards">Résumé des Awards</option>
+                <option value="revenue">Revenu</option>
+                <option value="gross" selected>Revenu par région </option>
             </select>
         </div>
         <canvas id="statsChart"></canvas>
     </div>
 
-    <br>
-
     <button id="scrollToTopBtn" onclick="scrollToTop()">Vers le haut</button>
 
     <script>
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
+       function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
 
-        const movieContainer = document.getElementById('movie-container');
-        let statsChart;
+let selectedChartType = 'gross'; // par défaut, le type de graphique sélectionné est 'gross'
 
-        var selectedMovieId = "<?php echo $movieId; ?>";
-        var apiKey = '19daa2c0';
-        var apiUrl = `http://www.omdbapi.com/?i=${selectedMovieId}&apikey=${apiKey}&plot=full`;
+const movieContainer = document.getElementById('movie-container');
+let statsChart;
+let imdb_id;
 
-        // Ajout d'une condition pour vérifier le type de graphique choisi
-        var defaultChartType = 'revenue';
-        if (defaultChartType === 'revenue' || defaultChartType === 'popularity' || defaultChartType === 'awards') {
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(movieData => {
-                    const movieHTML = `
-                        <img src="${movieData.Poster}" alt="${movieData.Title}">
-                        <div class="synopsis">
-                            <h2>${movieData.Title}</h2>
-                            <p>${movieData.Plot}</p>
-                            <p>Date de sortie: ${movieData.Released}</p>
-                            <p>Genres: ${movieData.Genre}</p>
-                        </div>
-                    `;
+const options = {
+    method: 'GET',
+    headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+    }
+};
 
-                    movieContainer.innerHTML = movieHTML;
+fetch('https://api.themoviedb.org/3/movie/' + <?php echo $movieId; ?> + '?language=fr-FR', options)
+    .then(response => response.json())
+    .then(movieData => {
+        const movieHTML = `
+            <img src="https://image.tmdb.org/t/p/w500/${movieData.poster_path}" alt="${movieData.title}">
+            <div class="synopsis">
+                <h2>${movieData.title}</h2>
+                <p>${movieData.overview}</p>
+                <p>Date de sortie: ${movieData.release_date}</p>
+                <p>Genres: ${movieData.genres.map(genre => genre.name).join(', ')}</p>
+            </div>
+        `;
+        console.log(movieData.imdb_id)
+        imdb_id = movieData.imdb_id;
 
-                    const statsData = {
-                        revenue: parseInt(movieData.BoxOffice.replace(/\$/g, '').replace(/,/g, '')),
-                        popularity: parseFloat(movieData.imdbRating) * 10,
-                        awardsWins: parseInt(movieData.Awards.match(/\d+ win/)?.[0]) || 0,
-                        awardsNominations: parseInt(movieData.Awards.match(/\d+ nomination/)?.[0]) || 0,
-                    };
+        movieContainer.innerHTML = movieHTML;
 
-                    const statsChartCtx = document.getElementById('statsChart').getContext('2d');
-                    statsChart = new Chart(statsChartCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: Object.keys(statsData),
-                            datasets: [{
-                                label: 'Valeurs',
-                                data: Object.values(statsData),
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.7)',
-                                ],
-                                borderWidth: 1,
-                            }],
-                        },
-                    });
-
-                    // Ajout de la ligne suivante pour simuler le clic sur le bouton Revenu par défaut
-                    updateChartType();
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-
-        function updateChartType() {
-            const chartType = document.getElementById('chartType').value;
-            const chartContainer = document.querySelector('.chart-container');
-
-            if (chartType === 'revenue') {
-                fetch(apiUrl)
-                    .then(response => response.json())
-                    .then(movieData => {
-                        const statsData = {
-                            revenue: parseInt(movieData.BoxOffice.replace(/\$/g, '').replace(/,/g, '')),
-                        };
-
-                        chartContainer.style.display = 'block';
-
-                        statsChart.destroy();
-                        const statsChartCtx = document.getElementById('statsChart').getContext('2d');
-                        statsChart = new Chart(statsChartCtx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Revenu'],
-                                datasets: [{
-                                    label: 'Revenu',
-                                    data: [statsData.revenue],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                                    borderWidth: 1,
-                                }],
-                            },
-                        });
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            } else if (chartType === 'popularity') {
-                fetch(apiUrl)
-                    .then(response => response.json())
-                    .then(movieData => {
-                        const statsData = {
-                            popularity: parseFloat(movieData.imdbRating) * 10,
-                        };
-
-                        chartContainer.style.display = 'block';
-
-                        statsChart.destroy();
-                        const statsChartCtx = document.getElementById('statsChart').getContext('2d');
-                        statsChart = new Chart(statsChartCtx, {
-                            type: 'bar',
-                            data: {
-                                labels: ['Popularité'],
-                                datasets: [{
-                                    label: 'Popularité',
-                                    data: [statsData.popularity],
-                                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                                    borderWidth: 1,
-                                }],
-                            },
-                        });
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            } else if (chartType === 'awards') {
-                fetch(apiUrl)
-                    .then(response => response.json())
-                    .then(movieData => {
-                        const awardsData = {
-                            wins: parseInt(movieData.Awards.match(/\d+ win/)?.[0]) || 0,
-                            nominations: parseInt(movieData.Awards.match(/\d+ nomination/)?.[0]) || 0,
-                        };
-
-                        chartContainer.style.display = 'block';
-
-                        statsChart.destroy();
-                        const statsChartCtx = document.getElementById('statsChart').getContext('2d');
-                        statsChart = new Chart(statsChartCtx, {
-                            type: 'bar',
-                            data: {
-                                labels: Object.keys(awardsData),
-                                datasets: [{
-                                    label: 'Résumé des Awards',
-                                    data: Object.values(awardsData),
-                                    backgroundColor: 'rgba(255, 206, 86, 0.7)',
-                                    borderWidth: 1,
-                                }],
-                            },
-                        });
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            } else if (chartType === 'default') {
-                chartContainer.style.display = 'none';
-                statsChart.destroy(); // Assurez-vous de détruire le graphique actuel s'il y en a un.
+        const url2 = 'https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=' + imdb_id;
+        const options2 = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
             }
-        }
-    </script>
+        };
+
+        fetch(url2, options2)
+            .then(response => response.json())
+            .then(result => {
+                const revenueData = result.titleBoxOffice.gross.regional;
+                createRegionalGrossChart(revenueData);
+                // Appel de la fonction d'actualisation du type de graphique après que imdb_id a été défini
+                updateChartType();
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        const statsData = {
+            popularity: movieData.popularity,
+            revenue: movieData.revenue,
+            duration: movieData.runtime,
+        };
+
+        const statsChartCtx = document.getElementById('statsChart').getContext('2d');
+        statsChart = new Chart(statsChartCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(statsData),
+                datasets: [{
+                    label: 'Valeurs',
+                    data: Object.values(statsData),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                    ],
+                    borderWidth: 1,
+                }],
+            },
+        });
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+function createRegionalGrossChart(regionalGrossData) {
+    statsChart.destroy();
+    const labels = regionalGrossData.map(region => region.regionName);
+    const data = regionalGrossData.map(region => region.total.amount);
+
+    const pieChartCtx = document.getElementById('statsChart').getContext('2d');
+    statsChart = new Chart(pieChartCtx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                ],
+            }],
+        },
+    });
+}
+
+function updateChartType() {
+    const chartType = document.getElementById('chartType').value;
+
+    if (chartType === 'popularity') {
+        fetch('https://api.themoviedb.org/3/movie/' + <?php echo $movieId; ?> + '?language=fr-FR', options)
+            .then(response => response.json())
+            .then(movieData => {
+                const statsData = {
+                    popularity: movieData.popularity,
+                };
+
+                statsChart.destroy();
+                const statsChartCtx = document.getElementById('statsChart').getContext('2d');
+                statsChart = new Chart(statsChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Popularité'],
+                        datasets: [{
+                            label: 'Popularité',
+                            data: [statsData.popularity],
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                            borderWidth: 1,
+                        }],
+                    },
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    } else if (chartType === 'revenue') {
+        fetch('https://api.themoviedb.org/3/movie/' + <?php echo $movieId; ?> + '?language=fr-FR', options)
+            .then(response => response.json())
+            .then(movieData => {
+                const statsData = {
+                    revenue: movieData.revenue,
+                };
+
+                statsChart.destroy();
+                const statsChartCtx = document.getElementById('statsChart').getContext('2d');
+                statsChart = new Chart(statsChartCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Revenu'],
+                        datasets: [{
+                            label: 'Revenu',
+                            data: [statsData.revenue],
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderWidth: 1,
+                        }],
+                    },
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    } else if (chartType === 'gross') {
+        const url2 = 'https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=' + imdb_id;
+        const options2 = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+            }
+        };
+
+        fetch(url2, options2)
+            .then(response => response.json())
+            .then(result => {
+                const revenueData = result.titleBoxOffice.gross.regional;
+                createRegionalGrossChart(revenueData);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+}
+</script>
 
 </body>
 
