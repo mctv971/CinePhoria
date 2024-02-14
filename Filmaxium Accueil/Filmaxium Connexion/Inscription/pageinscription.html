@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="Accueil.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap" rel="stylesheet">
+        <title>Filmaxium </title>
+    </head>
+    <a href="inscription.html">  <img src="../images/logo.png" alt="Logo"></a>
+    
+<body class="pageinscription">
+    <div class="inscription-container">
+        <p id="inscriptionText">Pour avancer ton inscription, lorsque cela sera possible, appuie sur la flèche !</p>
+        <input type="text" id="usernameInput" placeholder="Entrez votre username">  <br /> 
+        <p id="usernamePrompt">Oups! J'ai totalement oublié de me présenter, je suis Mr Popcorn et toi ?<br />(Entres ton username)</p>
+        <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button">
+      </div>
+    
+      <script>
+        setTimeout(function() {
+          document.getElementById('inscriptionText').style.display = 'block';
+        }, 3000);
+        setTimeout(function() {
+                inscriptionText.style.display = 'none';
+            }, 6000);
+    
+        setTimeout(function() {
+          document.getElementById('usernameInput').style.display = 'block';
+          document.getElementById('usernamePrompt').style.display = 'block';
+        }, 8000);
+      </script>
+</body>
+</html>
