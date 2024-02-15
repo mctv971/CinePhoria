@@ -82,7 +82,8 @@
         LEFT JOIN users u ON c.id_user = u.id_user
         LEFT JOIN commentaire r ON c.id_commentaire = r.id_commentaire_parent
         WHERE c.id_type = :id_type AND c.imdb_id = :imdb_id
-        GROUP BY c.id_commentaire";
+        GROUP BY c.id_commentaire
+        ORDER BY c.date DESC";
         $stmt = $bd->prepare($sql);
         $stmt->bindParam(':id_type', $id_type);
         $stmt->bindParam(':imdb_id', $imdb_id);

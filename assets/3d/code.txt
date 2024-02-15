@@ -1,0 +1,321 @@
+    loader.load(
+        'assets/3d/card.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(0, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+            gltf.scene.scale.set(0.02, 0.02, 0.02);
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.x += 0.01;
+                gltf.scene.rotation.z += 0.01;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+    loader.load(
+        'assets/3d/fish.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(5, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+            gltf.scene.scale.set(10, 10, 10);
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.x += 0.01;
+                gltf.scene.rotation.z += 0.01;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+    loader.load(
+        'assets/3d/luffy.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(-5, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+            gltf.scene.scale.set(0.5, 0.5, 0.5);
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.x += 0.01;
+                gltf.scene.rotation.z += 0.01;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+        loader.load(
+        'assets/3d/arbre.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(10, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.x += 0.01;
+                gltf.scene.rotation.z += 0.01;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+    loader.load(
+        'assets/3d/deadpool.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(-10, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+            gltf.scene.scale.set(5, 5, 5);
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.x += 0.01;
+                gltf.scene.rotation.z += 0.01;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+
+
+
+
+
+
+
+
+
+
+
+
+    function initializeScene1(scene, renderer, camera) {
+    cercleImg = document.createElement('img');
+    // Créer et ajouter l'élément d'image #cercle
+    cercleImg.src = 'assets/3d/cercle.png';
+    cercleImg.classList.add('cercle');
+    cercleImg.id = 'cercle';
+    section.appendChild(cercleImg);
+
+    // Créer et ajouter l'élément d'image #cameraman
+    cameramanImg = document.createElement('img');
+    cameramanImg.src = 'assets/3d/cameraman.png';
+    cameramanImg.classList.add('cercle');
+    cameramanImg.id = 'cameraman';
+    section.appendChild(cameramanImg);
+
+
+    gsap.to("#cercle", {
+        duration: 3, // Durée de l'animation en secondes
+        y: 20, // Déplacement vertical de l'image (de haut en bas)
+        repeat: -1, // Répéter l'animation indéfiniment
+        yoyo: true, // Faire rebondir l'image (aller-retour)
+        ease: "power1.inOut" // Effet de lissage de l'animation
+      });
+    gsap.to("#cameraman", {
+    duration: 3, // Durée de l'animation en secondes
+    x: -200, // Déplacement vertical de l'image (de haut en bas)
+    
+
+    repeat: -1, // Répéter l'animation indéfiniment
+    yoyo: true, // Faire rebondir l'image (aller-retour)
+    ease: "power1.inOut" // Effet de lissage de l'animation
+    });  
+ 
+
+
+    
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+        'assets/3d/card.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(20, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+            gltf.scene.scale.set(0.02, 0.02, 0.02);
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.x += 0.01;
+                gltf.scene.rotation.z += 0.01;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+}
+
+
+function initializeScene2(scene, renderer, camera) {
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+        'assets/3d/fish.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(5, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+            gltf.scene.scale.set(10, 10, 10);
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.x += 0.01;
+                gltf.scene.rotation.z += 0.01;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+}
+function initializeScene3(scene,renderer,camera){
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+        'assets/3d/luffy-dead.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(-10, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+            gltf.scene.scale.set(5, 5, 5)
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+            const pointLight = new THREE.PointLight(0xffffff, 1); // Couleur, Intensité
+            pointLight.position.set(-10, 0, 0); // Position de la lumière (la même que l'objet)
+            scene.add(pointLight);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.y += 0.01;
+
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+
+}
+
+function initializeScene4(scene,renderer,camera){
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+        'assets/3d/arbre.glb', // Chemin vers ton fichier 3D
+        function (gltf) {
+            // Modifie la position de l'objet
+            gltf.scene.position.set(-50, 0, 0); // Tu peux ajuster ces valeurs selon tes besoins
+
+
+            // Ajoute le modèle à la scène
+            scene.add(gltf.scene);
+            const pointLight = new THREE.PointLight(0xffffff, 1); // Couleur, Intensité
+            pointLight.position.set(-50, 0, 0); // Position de la lumière (la même que l'objet)
+            scene.add(pointLight);
+
+            // Animation de rotation de l'objet
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Fait tourner l'objet sur lui-même
+                gltf.scene.rotation.y += 0.01;
+                
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+}

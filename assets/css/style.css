@@ -1321,3 +1321,79 @@ body {
   right: 10px;
   cursor: pointer;
 }
+
+.body-analytic {
+  margin: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  
+  background-color: black;
+  background-attachment: fixed;
+  font-family: Arial, sans-serif;
+}
+
+.content-analytic {
+  position: absolute;
+  left:0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+}
+
+
+.sectionBtn{
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: transparent;
+  margin-top: 15px;
+}
+.sectionBtn.active{
+  background-color: white;
+}
+.navBtn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10px;
+}
+.cercle{
+  position: absolute;
+  width: 50vw;
+  height: auto;
+  top: 50%;
+  left: 90%;
+
+  transform: translate(-90%, -50%);
+
+}
+#cameraman{
+  width: auto;
+  height: 80vh;
+  top: 50%;
+  left: 75%;
+
+  transform: translate(-75%, -50%);
+}
+#monTexte::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 10px;
+  background-color: black;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
