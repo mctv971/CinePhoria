@@ -1,0 +1,6 @@
+Dans ce fichier texte je vais expliquer pourquoi j'ai changé mes variables genre et les différentes récompenses en 0 et en 1. Cela vous servira pour comprendre ce que j'ai fait mais aussi 
+pour que prendre des notes et ne pas tout oublié le jour ou je créerais la page !
+Le One-Hot Encoding est une technique de prétraitement courante pour convertir des variables catégorielles en format numérique afin qu'elles puissent être utilisées dans des modèles de machine learning. 
+Chaque catégorie unique d'une caractéristique est transformée en une colonne distincte, et chaque observation reçoit une valeur de 1 (présence de la catégorie) ou de 0 (absence).
+Cette méthode permet de traiter les données catégorielles sans introduire d'ordre artificiel (qui existerait si les catégories étaient simplement codées comme des entiers).
+Ce qui est primordial si j'utilise une regression logistic ou la random forest !

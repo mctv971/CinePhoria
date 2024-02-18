@@ -3,10 +3,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-df = pd.read_csv('Final.csv')
+df = pd.read_csv('../../Data/Final.csv')
 
 df['NotesRottenTomatoes']= pd.to_numeric(df['NotesRottenTomatoes'], errors='coerce')
 df['NotesMetacritic'] = pd.to_numeric(df['NotesMetacritic'], errors='coerce')
+
+# Calcul des moyennes
+mean_rt_non_gagnants = df[df['Oscar'] == 0]['NotesRottenTomatoes'].mean()
+mean_rt_gagnants = df[df['Oscar'] == 1]['NotesRottenTomatoes'].mean()
+mean_mc_non_gagnants = df[df['Oscar'] == 0]['NotesMetacritic'].mean()
+mean_mc_gagnants = df[df['Oscar'] == 1]['NotesMetacritic'].mean()
 
 fig, axs = plt.subplot(2,2 ,figsize=(14,10), sharey='row')
 
