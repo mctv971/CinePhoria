@@ -35,13 +35,15 @@
         }
 
         .chart-container {
-            max-width: 600px;
-            margin-top: 20px;
-            background-color:rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            margin: auto;
-        }
+    max-width: 600px;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    margin: auto;
+    height: 60vh; /* Adjust the percentage as needed */
+    overflow: hidden; /* Add overflow property to prevent infinite scroll */
+}
 
         canvas {
             border-radius: 10px; /* Coins arrondis pour le graphique */
@@ -61,7 +63,8 @@
 
 <body>
 <?php
-session_start()
+session_start();
+include 'config.php';
 ?>
     <header>
         <div>
@@ -86,7 +89,7 @@ session_start()
     </header>
 
     <?php
-    $movieId = isset($_GET['id']) ? $_GET['id'] : null;
+    $movieId = isset($_GET['id']) ? '"' . $_GET['id'] . '"' : null;    
     ?>
 
     <div id="movie-container"></div>
@@ -94,28 +97,19 @@ session_start()
     <div class="chart-container">
         <div class="chart-dropdown">
             <label for="chartType">Choisir le type de graphique : </label>
-            <select id="chartType" onchange="updateChartType()">
-                <option value="popularity">Popularité</option>
-                <option value="revenue">Revenu</option>
-                <option value="gross" selected>Revenu par région </option>
+            <select id="chartType">
+                <option value="votes">Votes</option>
+                <option value="cast">Top Cast</option>
+                <option value="revenue" >Revenu par région </option>
             </select>
         </div>
-        <canvas id="statsChart"></canvas>
+        <canvas id="combinedChart"></canvas>
     </div>
 
     <button id="scrollToTopBtn" onclick="scrollToTop()">Vers le haut</button>
 
     <script>
-       function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-let selectedChartType = 'gross'; // par défaut, le type de graphique sélectionné est 'gross'
-
-const movieContainer = document.getElementById('movie-container');
+        const movieContainer = document.getElementById('movie-container');
 let statsChart;
 let imdb_id;
 
@@ -143,161 +137,295 @@ fetch('https://api.themoviedb.org/3/movie/' + <?php echo $movieId; ?> + '?langua
         imdb_id = movieData.imdb_id;
 
         movieContainer.innerHTML = movieHTML;
+        $(document).ready(function () {
+    var chartInstances = [];
 
-        const url2 = 'https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=' + imdb_id;
-        const options2 = {
-            method: 'GET',
-            headers: {
-                'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
-                'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
-            }
-        };
-
-        fetch(url2, options2)
-            .then(response => response.json())
-            .then(result => {
-                const revenueData = result.titleBoxOffice.gross.regional;
-                createRegionalGrossChart(revenueData);
-                // Appel de la fonction d'actualisation du type de graphique après que imdb_id a été défini
-                updateChartType();
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-        const statsData = {
-            popularity: movieData.popularity,
-            revenue: movieData.revenue,
-            duration: movieData.runtime,
-        };
-
-        const statsChartCtx = document.getElementById('statsChart').getContext('2d');
-        statsChart = new Chart(statsChartCtx, {
-            type: 'bar',
-            data: {
-                labels: Object.keys(statsData),
-                datasets: [{
-                    label: 'Valeurs',
-                    data: Object.values(statsData),
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.7)',
-                        'rgba(54, 162, 235, 0.7)',
-                        'rgba(255, 206, 86, 0.7)',
-                    ],
-                    borderWidth: 1,
-                }],
-            },
+    function destroyChart() {
+        chartInstances.forEach(function (chart) {
+            chart.destroy();
         });
-    })
-    .catch(error => {
-        console.error(error);
-    });
+        chartInstances = [];
+    }
 
-function createRegionalGrossChart(regionalGrossData) {
-    statsChart.destroy();
-    const labels = regionalGrossData.map(region => region.regionName);
-    const data = regionalGrossData.map(region => region.total.amount);
+    document.getElementById('chartType').addEventListener('change', function () {
+            const selectedChartType = this.value;
 
-    const pieChartCtx = document.getElementById('statsChart').getContext('2d');
-    statsChart = new Chart(pieChartCtx, {
-        type: 'pie',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: data,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
-                    'rgba(255, 159, 64, 0.7)',
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                ],
-            }],
-        },
-    });
-}
+            // Destroy existing chart
+            destroyChart();
 
-function updateChartType() {
-    const chartType = document.getElementById('chartType').value;
-
-    if (chartType === 'popularity') {
-        fetch('https://api.themoviedb.org/3/movie/' + <?php echo $movieId; ?> + '?language=fr-FR', options)
-            .then(response => response.json())
-            .then(movieData => {
-                const statsData = {
-                    popularity: movieData.popularity,
-                };
-
-                statsChart.destroy();
-                const statsChartCtx = document.getElementById('statsChart').getContext('2d');
-                statsChart = new Chart(statsChartCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Popularité'],
-                        datasets: [{
-                            label: 'Popularité',
-                            data: [statsData.popularity],
-                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                            borderWidth: 1,
-                        }],
-                    },
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    } else if (chartType === 'revenue') {
-        fetch('https://api.themoviedb.org/3/movie/' + <?php echo $movieId; ?> + '?language=fr-FR', options)
-            .then(response => response.json())
-            .then(movieData => {
-                const statsData = {
-                    revenue: movieData.revenue,
-                };
-
-                statsChart.destroy();
-                const statsChartCtx = document.getElementById('statsChart').getContext('2d');
-                statsChart = new Chart(statsChartCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Revenu'],
-                        datasets: [{
-                            label: 'Revenu',
-                            data: [statsData.revenue],
-                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                            borderWidth: 1,
-                        }],
-                    },
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    } else if (chartType === 'gross') {
-        const url2 = 'https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=' + imdb_id;
-        const options2 = {
-            method: 'GET',
-            headers: {
-                'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
-                'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+            // Fetch data and create corresponding chart based on selected type
+            switch (selectedChartType) {
+                case 'votes':
+                    // Fetch data for votes
+                    getVotesData(imdb_id);
+                    break;
+                case 'cast':
+                    // Fetch data for cast
+                    getTopCastIDs(imdb_id, function (error, topCastIds) {
+                        if (error) {
+                            console.error('Erreur lors de la récupération des IDs du Top Cast:', error);
+                        } else {
+                            getPopularityDataForTopCast(topCastIds);
+                        }
+                    });
+                    break;
+                case 'revenue':
+                    // Fetch data for revenue
+                    getRevenueData(imdb_id);
+                    break;
             }
-        };
+        });
 
-        fetch(url2, options2)
-            .then(response => response.json())
-            .then(result => {
-                const revenueData = result.titleBoxOffice.gross.regional;
-                createRegionalGrossChart(revenueData);
-            })
-            .catch(error => {
-                console.error(error);
+
+
+            
+
+
+                destroyChart();
+
+                getRevenueData(<?php echo isset($_GET['id']) ? '"' . $_GET['id'] . '"' : 'null'; ?>);
             });
+            
+
+            $('#revenueDropdown').on('change', function () {
+                var selectedMovieId = $(this).val();
+
+                destroyChart();
+
+                getRevenueData(selectedMovieId);
+            });
+            var chartInstances = [];
+
+            function destroyChart() {
+    if (chartInstances.length > 0) {
+        chartInstances.forEach(function (chart) {
+            chart.destroy();
+        });
+        chartInstances = []; // Clear the chartInstances array
     }
 }
+
+            function getRevenueData(movieId) {
+                destroyChart();
+                const settings = {
+                    async: true,
+                    crossDomain: true,
+                    url: 'https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=' + movieId,
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': 'dd2c1605c6msh133a8e11ab6acc2p1cdf67jsn5b713979a5f4',
+                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+                    }
+                };
+
+                $.ajax(settings).done(function (response) {
+                    try {
+                        console.log('Raw Response:', response); 
+
+                        if (response && response.titleBoxOffice && response.titleBoxOffice.gross && response.titleBoxOffice.gross.regional) {
+                            const revenueData = response.titleBoxOffice.gross.regional;
+                            const movieName = response.title;
+
+                            createRevenuePieChart(revenueData, movieName);
+                        } else {
+                            console.error('Invalid or incomplete response structure.');
+                        }
+                    } catch (error) {
+                        console.error('Failed to process revenue data.', error);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error('Failed to fetch revenue data for the movie.');
+                    console.error('Status:', textStatus);
+                    console.error('Error:', errorThrown);
+                });
+            }
+
+            function createCombinedChart(data1, movieName1, categories) {
+                const ctx = document.getElementById('combinedChart').getContext('2d');
+                const newChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: categories,
+                        datasets: [{
+                                label: movieName1,
+                                data: data1[0],
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            },
+                        ]
+                    },
+                    options: {
+                        scale: {
+                            ticks: {
+                                beginAtZero: true,
+                                max: 250000
+                            }
+                        }
+                    }
+                });
+                chartInstances.push(newChart);
+            }
+
+            function createRevenuePieChart(data, movieName) {
+                const ctx = document.getElementById('combinedChart').getContext('2d');
+
+                const newChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.map(region => region.regionName),
+                        datasets: [{
+                            label: movieName,
+                            data: data.map(region => region.total.amount),
+                            backgroundColor: getRandomColorArray(data.length),
+                            borderColor: 'rgba(255, 255, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                chartInstances.push(newChart);
+            }
+
+            function getRandomColorArray(length) {
+                const colorArray = [];
+                for (let i = 0; i < length; i++) {
+                    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                    colorArray.push(randomColor);
+                }
+                return colorArray;
+            }
+
+            function getTopCastIDs(titleId, callback) {
+                const settings = {
+                    async: true,
+                    crossDomain: true,
+                    url: 'https://imdb8.p.rapidapi.com/title/get-top-cast?tconst=' + titleId,
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': 'dd2c1605c6msh133a8e11ab6acc2p1cdf67jsn5b713979a5f4',
+                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+                    }
+                };
+
+                $.ajax(settings).done(function (response) {
+                    try {
+                        const extractedIDs = response.slice(0, 5).map(id => id.slice(0, -1).substring(6));
+                        callback(null, extractedIDs);
+                    } catch (error) {
+                        callback(error, null);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    callback({
+                        status: textStatus,
+                        error: errorThrown
+                    }, null);
+                });
+            }
+
+            function getCombinedVotesDetails(selectedMovieId) {
+                const settings = {
+                    async: true,
+                    crossDomain: true,
+                    url: 'https://imdb8.p.rapidapi.com/title/get-ratings?tconst=' + selectedMovieId,
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': 'dd2c1605c6msh133a8e11ab6acc2p1cdf67jsn5b713979a5f4',
+                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+                    }
+                };
+
+                $.when(
+                    $.ajax(settings)
+                ).done(function (response1) {
+                    const movieName1 = response1[0].title;
+                    const categories = Object.keys(response1[0].ratingsHistograms['IMDb Users'].histogram);
+                    const data1 = [
+                        Object.values(response1[0].ratingsHistograms['IMDb Users'].histogram),
+                    ];
+
+                    createCombinedChart(data1, movieName1, categories);
+                }).fail(function () {
+                    console.error('Failed to fetch data for one or both movies.');
+                });
+            }
+
+            function getPopularityData(id) {
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+        }
+    };
+
+    return fetch('https://api.themoviedb.org/3/find/' + id + '?external_source=imdb_id', options)
+        .then(response => response.json())
+        .then(response => {
+            const personResults = response.person_results;
+            if (personResults && personResults.length > 0) {
+                return personResults[0].popularity;
+            } else {
+                throw new Error('Invalid response structure or no person data available.');
+            }
+        })
+        .catch(err => Promise.reject(err));
+}
+
+
+            function getPopularityDataForTopCast(topCastIds) {
+                const popularityData = [];
+
+                (async function loop() {
+                    for (const id of topCastIds) {
+                        try {
+                            const popularity = await getPopularityData(id);
+                            popularityData.push({
+                                name: id,
+                                popularity: popularity
+                            });
+                        } catch (error) {
+                            console.error('Failed to fetch popularity data for ID:', id);
+                        }
+                    }
+
+                    createPopularityBarChart(popularityData);
+                })();
+            }
+
+            function createPopularityBarChart(data) {
+                const names = data.map(item => item.name);
+                const scores = data.map(item => item.popularity);
+
+                const ctx = document.getElementById('combinedChart').getContext('2d');
+                const newChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: names,
+                        datasets: [{
+                            label: 'Popularité',
+                            data: scores,
+                            backgroundColor: getRandomColorArray(data.length),
+                            borderColor: 'rgba(255, 255, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+                chartInstances.push(newChart);
+            }
+        });
 </script>
 
 </body>

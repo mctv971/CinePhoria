@@ -36,7 +36,7 @@
     transform: translate(-50%, -50%);
     z-index: 1;
     width: 80%;
-    max-width: 1200px; /* Par exemple, définissez une largeur maximale si nécessaire */
+    max-width: 1200px;
 }
     </style>
 </head>
@@ -101,27 +101,21 @@
         };
 
         $(document).ready(function () {
-    // Masquer l'élément .new-div au départ
     $(".new-div").hide();
 
-    // Détection du changement dans les sélections de films
     $("#movieSelect1, #movieSelect2").on("change", function () {
         var selectedMovieId1 = $("#movieSelect1").val();
         var selectedMovieId2 = $("#movieSelect2").val();
 
-        // Mettre à jour la source de l'iframe de travail avec les nouveaux identifiants
         var iframeSrc = "compareF.php?movieId1=" + selectedMovieId1 + "&movieId2=" + selectedMovieId2;
         $(".new-div iframe").attr("src", iframeSrc);
     });
 
     $("#compare-button").on("click", function () {
         $(".comparer iframe, .rectangle3").fadeOut("slow", function () {
-            // Rechercher l'iframe de travail par son attribut src
             var compareFrame = $('iframe[src="compareF.php"]')[0];
 
-            // Ajouter une vérification pour s'assurer que l'iframe existe
             if (compareFrame) {
-                // Ajouter une gestion des erreurs
                 try {
                     compareFrame.contentWindow.location.reload(true);
                 } catch (e) {

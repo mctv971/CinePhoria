@@ -35,7 +35,7 @@
 
     .button-container {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         margin-bottom: 20px;
     }
 
@@ -142,12 +142,19 @@
         bottom: 0;
         z-index: 1;
     }
+    #combinedChart {
+        width: 80%;
+        height: 100%;
+        margin: auto;  /* Center the chart horizontally */
+        text-align: center;
+    }
 </style>
 
 <body>
-    <?php
-    session_start();
-    ?>
+<?php
+session_start();
+include 'config.php';
+?>
     <br>
     <br>
 
@@ -162,149 +169,286 @@
                 </select>
             </div>
         </div>
-        <div class="dropdown">
     <button id="castComparisonButton" data-attribute="cast">Top Cast</button>
-    <div class="dropdown-content">
-        <select id="castDropdown">
-            <option value="<?php echo $_SESSION['selectedMovieId'] ?>">Film 1</option>
-            <option value="<?php echo $_SESSION['selectedMovieId2'] ?>">Film 2</option>
-        </select>
-    </div>
 </div>
        
     </div>
 
-    <div style="width: 80%; height: 100%; margin: auto; text-align: center">
+    <div>
         <canvas id="combinedChart" width="400" height="200"></canvas>
     </div>
 
     <script>
         $(document).ready(function () {
-            // Créer une instance de Chart
             var combinedChart = null;
 
-            $('.button-container button').on('click', function () {
-                var selectedAttribute = $(this).data('attribute');
+            $('.button-container button').on('click', async function () {
+    var selectedAttribute = $(this).data('attribute');
 
-                var selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
-                var selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
+    var selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
+    var selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
 
-                // Supprimer le graphique existant s'il y en a un
-                destroyChart();
+    destroyChart();
 
-                // Créer le graphique en fonction de l'attribut sélectionné
-                if (selectedAttribute === 'votes') {
-                    getCombinedVotesDetails(selectedMovieId, selectedMovieId2);
-                } else if (selectedAttribute === 'revenue') {
-                    var selectedRevenueMovieId = $('#revenueDropdown').val();
-                getRevenueData(selectedRevenueMovieId);
-                } else if (selectedAttribute === 'cast') {
-                    var selectedTopCastMovieId = $('#castDropdown').val();
-                getTopCastIDs(selectedTopCastMovieId, function (error, topCastIds) {
-                    if (error) {
-                        console.error('Erreur lors de la récupération des IDs du Top Cast:', error);
-                    } else {
-                        // Appeler la fonction pour obtenir les données de popularité pour chaque collaborateur et créer le graphique
-                        getPopularityDataForTopCast(topCastIds);
-                    }
-                });
-                } else {
-                    getMovieDetails(selectedMovieId, selectedMovieId2, selectedAttribute);
-                }
-            });
+    if (selectedAttribute === 'votes') {
+        var selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
+        var selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
+        await getCombinedVotesDetails(selectedMovieId, selectedMovieId2);
+    } else if (selectedAttribute === 'revenue') {
+        var selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
+        var selectedMovieId2 = '<?php echo $_SESSION['selectedMovieId2'] ?>';
+        var selectedRevenueMovieId = $('#revenueDropdown').val();
+        getRevenueData(selectedRevenueMovieId);
+    } else if (selectedAttribute === 'cast') {
+        const topCastDetailsMovie1 = await getTopCastDetails(selectedMovieId);
+        const topCastDetailsMovie2 = await getTopCastDetails(selectedMovieId2);
 
-            $('#castDropdown').on('change', function () {
-            var selectedMovieId = $(this).val();
+        if (topCastDetailsMovie1 && topCastDetailsMovie2) {
+            createCombinedCastChart(topCastDetailsMovie1, topCastDetailsMovie2);
+        }
 
-            // Supprimer le graphique existant s'il y en a un
-            destroyChart();
+        // Maintenant, vous pouvez attribuer un score de popularité à chaque acteur et utiliser ces données pour créer votre graphique.
+    } else {
+        getMovieDetails(selectedMovieId, selectedMovieId2, selectedAttribute);
+    }
+});
 
-            // Afficher le graphique pour le film sélectionné
-            getTopCastIDs(selectedMovieId, function (error, topCastIds) {
-                if (error) {
-                    console.error('Erreur lors de la récupération des IDs du Top Cast:', error);
-                } else {
-                    // Appeler la fonction pour obtenir les données de popularité pour chaque collaborateur et créer le graphique
-                    getPopularityDataForTopCast(topCastIds);
-                }
-            });
-        });
 
-            // Gérer le changement de film avec le bouton "Switch Movie"
             $('#switchMovieButton').on('click', function () {
-                // Basculer entre le premier et le deuxième film
                 const currentMovieId = $('#movieSelection').val();
                 const newMovieId = currentMovieId === '<?php echo $_SESSION['selectedMovieId'] ?>'
                     ? '<?php echo $_SESSION['selectedMovieId2'] ?>'
                     : '<?php echo $_SESSION['selectedMovieId'] ?>';
 
-                // Mettre à jour le menu déroulant
                 $('#movieSelection').val(newMovieId);
 
-                // Supprimer le graphique existant s'il y en a un
                 destroyChart();
 
-                // Afficher le graphique pour le nouveau film
                 getRevenueData(newMovieId);
             });
             
 
-            // Gérer le changement de film dans la liste déroulante pour les revenus par région
             $('#revenueDropdown').on('change', function () {
                 var selectedMovieId = $(this).val();
 
-                // Supprimer le graphique existant s'il y en a un
                 destroyChart();
 
-                // Afficher le graphique pour le film sélectionné
                 getRevenueData(selectedMovieId);
             });
-            $('#castcDropdown').on('change', function () {
-                var selectedMovieId = $(this).val();
-
-                // Supprimer le graphique existant s'il y en a un
-                destroyChart();
-
-                // Afficher le graphique pour le film sélectionné
-                getRevenueData(selectedMovieId);
-            });
-
             var chartInstances = [];
 
             function destroyChart() {
-    // Détruire toutes les instances de graphiques
     chartInstances.forEach(function (chart) {
         chart.destroy();
     });
-    // Effacer le tableau d'instances
     chartInstances = [];
 }
 
+async function getTopCastDetails(movieId) {
+    const url = 'https://imdb8.p.rapidapi.com/title/get-top-cast?tconst=' + movieId;
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': '4af10acecamsh208e06566c5c57dp183d71jsnd3b78c58d16e',
+            'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+        }
+    };
+
+    try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+            const castIds = data.slice(0, 5).map(id => id.replace('/name/', '').replace('/', ''));
+
+            // Récupérer la popularité pour chaque acteur
+            const popularityData = await Promise.all(castIds.map(id => getActorPopularity(id)));
+
+            return { castIds, popularityData };
+        } else {
+            console.error('Invalid response structure for top cast details. Expected an array.');
+            return null;
+        }
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+async function getActorDetails(actorId) {
+    const options = {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+        }
+    };
+
+    try {
+        const response = await fetch('https://api.themoviedb.org/3/person/' + actorId, options);
+        const data = await response.json();
+        return data.known_for_department;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+
+async function getActorPopularity(actorId) {
+    const options = {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+        }
+    };
+
+    try {
+        const response = await fetch('https://api.themoviedb.org/3/find/' + actorId + '?external_source=imdb_id', options);
+        const data = await response.json();
+        return data.person_results[0].popularity;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function createCombinedCastChart(topCastDetailsMovie1, topCastDetailsMovie2) {
+    const castIds1 = topCastDetailsMovie1.castIds;
+    const castNames1 = await getCastNames(castIds1);
+
+    const popularityData1 = topCastDetailsMovie1.popularityData;
+
+    const castIds2 = topCastDetailsMovie2.castIds;
+    const castNames2 = await getCastNames(castIds2);
+
+    const popularityData2 = topCastDetailsMovie2.popularityData;
+
+    // Function to get the names of the cast members using TMDB API
+    async function getCastNames(castIds) {
+        const names = await Promise.all(castIds.map(async (id) => {
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+                }
+            };
+
+            const response = await fetch('https://api.themoviedb.org/3/find/' + id + '?external_source=imdb_id', options);
+            const data = await response.json();
+            
+            return data.person_results[0].name;
+        }));
+
+        return names;
+    }
+
+    // Fonction pour obtenir l'indice du maximum
+    const getMaxIndex = (data) => {
+        return data.map((_, i) => i).reduce((maxIndex, currentIndex) => data[currentIndex] > data[maxIndex] ? currentIndex : maxIndex, 0);
+    };
+
+    // Trier les données par popularité
+    const sortedIndices1 = castIds1.map((_, i) => i).sort((a, b) => popularityData1[b] - popularityData1[a]);
+    const sortedIndices2 = castIds2.map((_, i) => i).sort((a, b) => popularityData2[b] - popularityData2[a]);
+
+    // Appliquer le tri aux données
+    const sortedCastNames1 = sortedIndices1.map(index => castNames1[index]);
+    const sortedPopularityData1 = sortedIndices1.map(index => popularityData1[index]);
+
+    const sortedCastNames2 = sortedIndices2.map(index => castNames2[index]);
+    const sortedPopularityData2 = sortedIndices2.map(index => popularityData2[index]);
+
+    const ctx = document.getElementById('combinedChart').getContext('2d');
+
+    const barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [...sortedCastNames1, ...sortedCastNames2],
+            datasets: [{
+                label: 'Top 5 Cast - Movie 1',
+                data: [...sortedPopularityData1, ...Array(5).fill(null)],
+                backgroundColor: '#FF5733',
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Top 5 Cast - Movie 2',
+                data: [...Array(5).fill(null), ...sortedPopularityData2],
+                backgroundColor: '#FC33FF',
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 1,
+                borderDash: [5, 5]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            tooltips: {
+                callbacks: {
+                    label: function (context) {
+                        const castIndex = context.dataIndex;
+                        const isMovie1 = castIndex < sortedCastNames1.length;
+
+                        const castDetails = isMovie1 ? topCastDetailsMovie1 : topCastDetailsMovie2;
+                        const castName = castDetails.castNames[castIndex];
+                        const knownForDepartment = castDetails.knownForDepartments[castIndex];
+
+                        return `${castName} - ${knownForDepartment}`;
+                    }
+                }
+            }
+        }
+    });
+
+    chartInstances.push(barChart);
+}
+
+
+function getRandomColorArray(length) {
+    const colorArray = [];
+    for (let i = 0; i < length; i++) {
+        const randomColor = getRandomColor();
+        colorArray.push(randomColor);
+    }
+    return colorArray;
+}
+
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+
             function getRevenueData(movieId) {
-                // Appeler votre API ou votre fonction pour obtenir les données de revenus par régions
-                // Utilisez ces données pour créer le graphique des revenus par régions (pie chart)
-                // Assurez-vous d'utiliser la bibliothèque Chart.js pour créer le graphique
                 const settings = {
                     async: true,
                     crossDomain: true,
                     url: 'https://imdb8.p.rapidapi.com/title/v2/get-business?tconst=' + movieId,
                     method: 'GET',
                     headers: {
-                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                        'X-RapidAPI-Key': 'dd2c1605c6msh133a8e11ab6acc2p1cdf67jsn5b713979a5f4',
                         'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
                     }
                 };
 
                 $.ajax(settings).done(function (response) {
                     try {
-                        console.log('Raw Response:', response); // Ajout d'un message de débogage
+                        console.log('Raw Response:', response); 
 
-                        // Vérifier si la réponse contient les données attendues
                         if (response && response.titleBoxOffice && response.titleBoxOffice.gross && response.titleBoxOffice.gross.regional) {
                             const revenueData = response.titleBoxOffice.gross.regional;
                             const movieName = response.title;
 
-                            // Utiliser la fonction spécifique pour créer le graphique de revenus par régions
                             createRevenuePieChart(revenueData, movieName);
                         } else {
                             console.error('Invalid or incomplete response structure.');
@@ -354,31 +498,44 @@
             }
 
             function createRevenuePieChart(data, movieName) {
-                // Récupérer le contexte du canvas
-                const ctx = document.getElementById('combinedChart').getContext('2d');
+                const filteredData = data.filter(region => region.regionName !== "Domestic");
 
-                // Créer le nouveau graphique
-                const newChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: data.map(region => region.regionName),
-                        datasets: [{
-                            label: movieName,
-                            data: data.map(region => region.total.amount),
-                            backgroundColor: getRandomColorArray(data.length),
-                            borderColor: 'rgba(255, 255, 255, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
-                chartInstances.push(newChart);
-            }
+// Trier les données par ordre décroissant de revenus
+const sortedData = filteredData.sort((a, b) => b.total.amount - a.total.amount);
 
-            // Fonction pour générer un tableau de couleurs aléatoires
+    // Sélectionner les 20 premières régions
+    const top20Regions = sortedData.slice(0, 20);
+
+    // Calculer le total des revenus pour les régions restantes
+    const otherRegionsTotal = sortedData.slice(20).reduce((total, region) => total + region.total.amount, 0);
+
+    // Créer un tableau avec les 20 régions principales et une entrée pour "autre"
+    const finalData = [...top20Regions, { regionName: "Autre", total: { amount: otherRegionsTotal } }];
+
+    const ctx = document.getElementById('combinedChart').getContext('2d');
+
+    const newChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: finalData.map(region => region.regionName),
+            datasets: [{
+                label: movieName,
+                data: finalData.map(region => region.total.amount),
+                backgroundColor: getRandomColorArray(finalData.length),
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+    chartInstances.push(newChart);
+}
+
+
+
             function getRandomColorArray(length) {
                 const colorArray = [];
                 for (let i = 0; i < length; i++) {
@@ -388,33 +545,6 @@
                 return colorArray;
             }
 
-            function getTopCastIDs(titleId, callback) {
-                const settings = {
-                    async: true,
-                    crossDomain: true,
-                    url: 'https://imdb8.p.rapidapi.com/title/get-top-cast?tconst=' + titleId,
-                    method: 'GET',
-                    headers: {
-                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
-                        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
-                    }
-                };
-
-                $.ajax(settings).done(function (response) {
-                    try {
-                        // Extraire les 5 premiers ID en retirant le dernier caractère et les 6 premiers
-                        const extractedIDs = response.slice(0, 5).map(id => id.slice(0, -1).substring(6));
-                        callback(null, extractedIDs);
-                    } catch (error) {
-                        callback(error, null);
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    callback({
-                        status: textStatus,
-                        error: errorThrown
-                    }, null);
-                });
-            }
 
             function getCombinedVotesDetails(selectedMovieId, selectedMovieId2) {
                 const settings = {
@@ -423,7 +553,7 @@
                     url: 'https://imdb8.p.rapidapi.com/title/get-ratings?tconst=' + selectedMovieId,
                     method: 'GET',
                     headers: {
-                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                        'X-RapidAPI-Key': 'dd2c1605c6msh133a8e11ab6acc2p1cdf67jsn5b713979a5f4',
                         'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
                     }
                 };
@@ -434,7 +564,7 @@
                     url: 'https://imdb8.p.rapidapi.com/title/get-ratings?tconst=' + selectedMovieId2,
                     method: 'GET',
                     headers: {
-                        'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+                        'X-RapidAPI-Key': 'dd2c1605c6msh133a8e11ab6acc2p1cdf67jsn5b713979a5f4',
                         'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
                     }
                 };
@@ -460,75 +590,6 @@
                 });
             }
 
-            // Ajoutez cette fonction pour traiter la récupération de données de popularité
-            function getPopularityData(id) {
-                const options = {
-                    method: 'GET',
-                    headers: {
-                        accept: 'application/json',
-                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
-                    }
-                };
-
-                return fetch('https://api.themoviedb.org/3/find/' + id + '?external_source=imdb_id', options)
-                    .then(response => response.json())
-                    .then(response => response.person_results[0].popularity)
-                    .catch(err => Promise.reject(err));
-            }
-
-            function getPopularityDataForTopCast(topCastIds) {
-                const popularityData = [];
-
-                // Utiliser la fonction asynchrone pour traiter chaque ID du Top Cast
-                (async function loop() {
-                    for (const id of topCastIds) {
-                        try {
-                            // Utiliser l'API pour obtenir les données de popularité pour chaque collaborateur
-                            const popularity = await getPopularityData(id);
-                            popularityData.push({
-                                name: id,
-                                popularity: popularity
-                            });
-                        } catch (error) {
-                            console.error('Failed to fetch popularity data for ID:', id);
-                        }
-                    }
-
-                    // Créer le graphique à barres avec les données de popularité
-                    createPopularityBarChart(popularityData);
-                })();
-            }
-
-            // Fonction pour créer le graphique à barres
-            function createPopularityBarChart(data) {
-                const names = data.map(item => item.name);
-                const scores = data.map(item => item.popularity);
-
-                const ctx = document.getElementById('combinedChart').getContext('2d');
-                const newChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: names,
-                        datasets: [{
-                            label: 'Popularité',
-                            data: scores,
-                            backgroundColor: getRandomColorArray(data.length),
-                            borderColor: 'rgba(255, 255, 255, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
-                chartInstances.push(newChart);
-            }
         });
     </script>
 </body>
