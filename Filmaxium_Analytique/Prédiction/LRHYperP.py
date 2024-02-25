@@ -54,3 +54,8 @@ random_search.fit(X_scaled, y)
 # Afficher les meilleurs hyperparamètres et le meilleur score
 print("Meilleurs hyperparamètres:", random_search.best_params_)
 print("Meilleur score:", random_search.best_score_)
+
+#Meilleurs hyperparamètres: {'C': 0.13755408446087358, 'penalty': 'l1'}
+#Meilleur score: 0.872376738305942
+#SVM Meilleur score : 0.8706068268015171
+# Avec l'hypertuning mon modèle de regression linéaire est plus efficace ! 
