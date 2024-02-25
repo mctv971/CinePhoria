@@ -1,0 +1,5 @@
+J'ai standardisé mes données, j'ai créer le premier modèle, j'ai vérifier qu'il n'y avait pas de multicollinéarité, Maintenant je m'attaque à l'étape de l'optimisation des hyperparamètres.
+
+Dans notre nn, le poids et le biais sont appelées paramètres.
+Le nombre de layers, le learning rate, sont quant à eux des hyperparamètres.
+Pour faire court, les paramètres sont des variables qui sont appris au fur et à mesure que le modèle apprend. Tandis que les hyperparamètres, on les rentre à la main !

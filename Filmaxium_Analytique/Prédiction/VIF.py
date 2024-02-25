@@ -1,6 +1,7 @@
 import pandas as pd
 import statsmodels.api as sm
 from sklearn.impute import SimpleImputer
+import numpy as np
 
 # Chemin vers votre fichier CSV
 file_path = 'C:/Users/nowli/OneDrive/Documents/GitHub/CinePhoria/Filmaxium_Analytique/Prédiction/Final.csv'
@@ -37,9 +38,29 @@ def calculate_vif(data):
         vif_df.loc[i] = [x_var_names[i], vif]
     return vif_df.sort_values(by='Vif', axis=0, ascending=False, inplace=False)
 
-# Préparation du DataFrame pour le calcul du VIF
-X = df.drop(['titre', 'Oscar', 'Duration'], axis=1)  # Suppression des colonnes non pertinentes ou non numériques
 
-# Calcul du VIF pour les variables prédictives sélectionnées
-vif_data = calculate_vif(X)
+X = df.drop(['titre', 'Oscar', 'Duration','imdbID'], axis=1)  # Suppression des colonnes non pertinentes ou non numériques
+# Identifier les colonnes contenant des valeurs NaN
+
+
+# Conversion des types pour toutes les colonnes en numériques et traitement des valeurs infinies ou manquantes
+for col in X.columns:
+    X[col] = pd.to_numeric(X[col], errors='coerce')  # Convertir en numérique, 'coerce' transforme les erreurs en NaN
+
+# Remplacer les valeurs infinies par NaN
+X.replace([np.inf, -np.inf], np.nan, inplace=True)
+
+# Appliquer l'imputation sur l'ensemble du DataFrame pour traiter toutes les valeurs NaN restantes
+imputer = SimpleImputer(strategy='median')  # Utiliser 'median' peut être plus robuste que 'mean' pour certaines données
+X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
+
+# Assurer que le DataFrame n'a plus de valeurs NaN
+assert not X_imputed.isnull().values.any(), "Il y a encore des valeurs NaN dans le DataFrame après l'imputation."
+
+# Fonction calculate_vif inchangée...
+
+# Calcul du VIF sur les données imputées
+vif_data = calculate_vif(X_imputed)
 print(vif_data)
+# Calcul du VIF pour les variables prédictives sélectionnées
+
