@@ -836,6 +836,8 @@ body {
 
 .movie-card .card-banner { width: 200px; }
 
+.card-banner-analytic { width: auto; height: 100%; }
+
 .movie-card .title {
   width: 100%;
   white-space: nowrap;
@@ -850,6 +852,9 @@ body {
   position: absolute;
   inset: 0;
   cursor: pointer;
+}
+.movie-card.analytics{
+  width: 15vh; height: 25vh; margin-left: 5px; cursor: pointer;
 }
 
 
@@ -1054,6 +1059,7 @@ body {
   .container { padding-inline: 24px; }
 
   .slider-list { margin-inline: -24px; }
+  .slider-list-analytic { margin-inline: -24px; }
 
   .search-btn { display: none; }
 
@@ -1091,7 +1097,7 @@ body {
     top: 0;
   }
 
-  .movie-detail .slider-list {
+  .movie-detail .slider-list .slider-list-analytic {
     margin-inline-start: 0;
     border-radius: var(--radius-16) 0 0 var(--radius-16);
   }
@@ -1358,42 +1364,252 @@ body {
   top: 50%;
   transform: translateY(-50%);
   left: 10px;
+  z-index: 100000000;
 }
-.cercle{
+#cercle{
   position: absolute;
-  width: 50vw;
   height: auto;
-  top: 50%;
-  left: 90%;
+  width: 50vw;
+  top: 5vh;
+  right: 8%;
+  opacity: 1;
+  z-index: 200;
 
-  transform: translate(-90%, -50%);
 
 }
 #cameraman{
-  width: auto;
-  height: 80vh;
+  position: absolute;
+  height: auto;
+  width: 40vw;
+  top: 10vh;
+  right: 8%;
+  opacity: 1;
+  z-index: 200;
+
+}
+
+.present-analytic {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alignement à gauche */
+  width: 50vw; /* Largeur de 50% de la vue */
+  margin-left: 10%; /* Marge gauche de 10% */
+  justify-content: center; /* Centrage vertical */
   top: 50%;
-  left: 75%;
-
-  transform: translate(-75%, -50%);
+  transform: translateY(-50%);
+  z-index: 1000;
+  position: absolute;
 }
-#monTexte::after {
+
+.stats {
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.5em;
+  font-weight: 100; /* Thin */
+  font-size: 1em; /* Taille de la police */
+  color: rgba(127, 0, 246, 1); /* Couleur bleue */
+  text-shadow: 0px 0px 4px rgba(255, 255, 255, 0.8);
+}
+
+.filma {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700; /* Bold */
+  font-size: 5em; /* Taille de la police */
+  color: white; /* Couleur blanche */
+  margin-right: 10px; /* Marge à droite pour séparer de "Analytics" */
+}
+
+.ana {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700; /* Bold */
+  font-size: 5em; /* Taille de la police */
+  color: transparent; /* Texte transparent */
+  -webkit-text-stroke: 1px white; /* Contour blanc */
+}
+
+.present-ana {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 100; /* Thin */
+  font-size: 1em  ; /* Taille de la police */
+  color: grey; /* Couleur grise */
+  width: 50%;
+}
+.name-site {
+  display: flex; /* Affichage en flex */
+  justify-content: space-between; /* Alignement des éléments avec un espace entre eux */
+  align-items: center; /* Alignement vertical */
+}
+
+
+
+.bouton-ovale {
+
+  display: flex;
+  overflow: hidden;
+  width: 400px;
+  height: 100px;
+  background-color: none; /* couleur de fond par défaut */
+}
+
+.option {
+  border: 1px solid rgba(64, 64, 64, 0.726);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fiche {
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  background-color: none; /* couleur de fond par défaut */
+}
+
+.comparer {
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background-color: none; /* couleur de fond par défaut */
+}
+
+.fiche.active {
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+
+.comparer.active {
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+
+.analyse {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 100% de la hauteur de l'écran */
+}
+
+.analyse-resum {
+  display: flex;
+  flex-direction: row;
+  height: 50%; /* 50% de la hauteur de l'écran */
+}
+
+.analyse-film {
+  display: flex;
+  flex-direction: row;
+  height: 50%; /* 50% de la hauteur de l'écran */
+}
+
+.analyse-explain {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+.analyse-selection{
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+  justify-content: center;
+  gap:15px;
+}
+
+
+
+
+
+.affiche-selection{
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-16);
+}
+
+.delete-selection{
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  padding-top: 5px;
+  cursor: pointer;
+}
+
+.analyse-search{
+  
+  width: 50%;
+}
+.analyse-text{
+  text-align : center;
+  width: 100%;
+  margin-top: 50px ;
+
+
+  font-family: 'Roboto', sans-serif;
+  font-weight: 100; /* Thin */
+  font-size: 1em  ; /* Taille de la police */
+  color: grey; /* Couleur grise */
+}
+
+.analyse-title {
+  background: linear-gradient(to right, #ff0000 35%, #0000ff 65%); /* Dégradé de couleur */
+  -webkit-background-clip: text; /* Utilisation du dégradé comme clip de fond pour le texte */
+  -webkit-text-fill-color: transparent; /* Masque la couleur du texte */
+  margin-bottom: 10px;
+  text-align : center;
+  font-size: 5em;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  margin-top: 40px;
+}
+
+.analyse-btn {
+  display: flex;
+  justify-content: center; /* Centre l'élément horizontalement */
+  align-items: center;
+  width: 50%; /* 50% de la largeur de la div */
+}
+
+
+
+.slider-list-analytic {
+  position: absolute;
+  border-radius: var(--radius-24);
+  padding-top: 2%;
+  margin-inline: -20px;
+  overflow-x: overlay;
+  padding-block-end: 16px;
+  margin-block-end: -16px;
+  width: 50vw;
+  height: 40vh;
+  background: linear-gradient(to right, hsla(349, 69%, 51%, 1), #4053ff);
+
+
+  
+}
+
+.slider-list-analytic::-webkit-scrollbar-thumb { background-color: transparent; }
+
+.slider-list-analytic:is(:hover, :focus-within)::-webkit-scrollbar-thumb {
+  background-color: var(--banner-background);
+}
+
+.slider-list-analytic::-webkit-scrollbar-button { width: 20px; }
+
+.slider-list-analytic .slider-inner {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  margin-top: 70px;
+}
+
+.slider-list-analytic .slider-inner::before,
+.slider-list-analytic .slider-inner::after {
   content: "";
-  display: inline-block;
-  width: 2px;
-  height: 10px;
-  background-color: black;
-  animation: blink 1s infinite;
+  min-width: 4px;
 }
 
-@keyframes blink {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+.analyse-film-selection{
+  background-color: rgb(21 19 19 / 94%);
+  position: relative;
+  width: 30%;
+  height: 75%;
+  margin-top: 32px;
+  border-radius: var(--radius-16);
 }

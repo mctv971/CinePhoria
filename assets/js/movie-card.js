@@ -3,6 +3,7 @@
 import { imageBaseURL } from "./api.js";
 
 
+
 /**
  * movie card
  */
@@ -465,6 +466,223 @@ function removeFromFavorites(idType, imdbId) {
       console.error('Erreur lors de l\'envoi de la requête AJAX :', error);
       return false;
   });
+}
+
+
+export function createMovieCardAna(movie) {
+  const {
+    poster_path,
+    title,
+    vote_average,
+    release_date,
+    id
+  } = movie;
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+  card.classList.add("analytics");
+
+  card.addEventListener("mouseover", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "flex";
+    }
+  });
+
+  card.addEventListener("mouseout", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "none";
+    }
+  });
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner-analytic">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${title}</h4>
+    <a class="card-btn" title="${title}" tmdb-id="${id}" type="movie" img="${imageBaseURL}w342${poster_path}"></a>
+    
+  `;
+  
+  const iconFavorite = card.querySelector(".iconFavorite");
+
+  if (iconFavorite) {
+    // Vérifier si l'élément est déjà un favori
+    checkIfFavorite("movie",id).then(isFavorite => {
+      if (isFavorite) {
+        // Si c'est déjà un favori, définir la source de l'icône sur "./assets/images/like.png"
+        iconFavorite.src = "./assets/images/like.png";
+
+        // Ajouter un gestionnaire d'événements pour la suppression des favoris
+        iconFavorite.addEventListener("click", function() {
+          removeFromFavorites("movie", id).then(success => {
+            if (success) {
+              iconFavorite.src = "./assets/images/nolike.png"; // Modifier l'icône si la suppression réussit
+            }
+          });
+        });
+      } else {
+        // Si ce n'est pas un favori, ajouter les gestionnaires d'événements pour l'ajout aux favoris
+        iconFavorite.addEventListener("click", function() {
+          iconFavorite.src = "./assets/images/like.png";
+          addToFavorites("movie", id);
+        });
+
+        iconFavorite.addEventListener("mouseover", function() {
+          iconFavorite.src = "./assets/images/like_hover.png";
+        });
+
+        iconFavorite.addEventListener("mouseout", function() {
+          iconFavorite.src = "./assets/images/nolike.png";
+        });
+      }
+    }).catch(error => {
+      console.error("Erreur lors de la vérification si c'est un favori :", error);
+    });
+  }
+
+  return card;
+}
+
+
+
+// Fonction pour créer les cartes de séries TV
+export function createTvCardAna(tvShow) {
+  const {
+    poster_path,
+    name,
+    vote_average,
+    first_air_date,
+    id
+  } = tvShow;
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+  card.classList.add("analytics");
+  card.addEventListener("mouseover", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "flex";
+    }
+  });
+
+  card.addEventListener("mouseout", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "none";
+    }
+  });
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner-analytic">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    <a class="card-btn" title="${title}" tmdb-id="${id}" type="tv"  img="${imageBaseURL}w342${poster_path}"></a>
+    
+  `;
+
+
+
+  return card;
+}
+
+// Fonction pour créer les cartes d'animés
+export function createAnimCardAna(anime) {
+  const {
+    poster_path,
+    name,
+    vote_average,
+    first_air_date,
+    id
+  } = anime;
+
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+  card.classList.add("analytics");
+
+  card.addEventListener("mouseover", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "flex";
+    }
+  });
+
+  card.addEventListener("mouseout", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "none";
+    }
+  });
+  card.innerHTML = `
+    <figure class="poster-box card-banner-analytic" >
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    <a class="card-btn" title="${title}" tmdb-id="${id}" type="tv"  img="${imageBaseURL}w342${poster_path}"></a>
+    
+
+
+  `;
+
+
+  return card;
+}
+
+// Fonction pour créer les cartes de réalisateurs et d'acteurs
+export function createPeopleCardAna(person) {
+  const {
+    profile_path,
+    name,
+    known_for_department,
+    id
+  } = person;
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+  card.classList.add("analytics");
+  card.addEventListener("mouseover", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "flex";
+    }
+  });
+
+  card.addEventListener("mouseout", function() {
+    const favoriteElement = card.querySelector(".favorite");
+
+    if (favoriteElement) {
+      favoriteElement.style.display = "none";
+    }
+  });
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner-analytic">
+      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy">
+
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    <a class="card-btn" title="${title}" tmdb-id="${id}" type="people"  img="${imageBaseURL}w342${poster_path}"></a>
+
+  `;
+
+
+
+  return card;
 }
 
 
