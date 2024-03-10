@@ -15,7 +15,7 @@ def standardisation_durée(duration):
     return minutes
 
 
-file_path = 'C:/Users/nowli/OneDrive/Documents/GitHub/CinePhoria/Filmaxium_Analytique/Prédiction/Final.csv'
+file_path = r'C:\Users\nowli\OneDrive\Bureau\Filmaxium\CinePhoria\Filmaxium_Analytique\Prédiction\Final1.csv'
 df = pd.read_csv(file_path)
 
 # Prétraitement des données d'entraînement
@@ -27,7 +27,7 @@ imputer = SimpleImputer(strategy='mean')
 df[['NotesIMDb', 'NotesRottenTomatoes', 'NotesMetacritic']] = imputer.fit_transform(df[['NotesIMDb', 'NotesRottenTomatoes', 'NotesMetacritic']])
 
 
-predictors = ['GG', 'DGA', 'PGA', 'SAG', 'BAFTA', 'NotesIMDb', 'NotesRottenTomatoes', 'NotesMetacritic'] + \
+predictors = ['GG', 'DGA', 'PGA', 'SAG', 'BAFTA', 'NotesIMDb', 'NotesRottenTomatoes', 'NotesMetacritic','Oscar_Nominations'] + \
              ['Action', 'Adventure', 'Animation', 'Biography', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy', \
               'History', 'Horror', 'Musical', 'Mystery & thriller', 'Romance', 'Sci-fi', 'War', 'Western']
 X = df[predictors]
