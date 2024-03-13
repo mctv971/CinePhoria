@@ -14,7 +14,7 @@ if (isset($_POST['message'])) {
 
 function callOpenAI($message) {
     $openai_endpoint = "https://api.openai.com/v1/chat/completions";
-    $openai_token = "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";
+    $openai_token = "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";
     $data = array(
         "model" => "gpt-3.5-turbo",
         "messages" => array(
@@ -24,7 +24,7 @@ function callOpenAI($message) {
             ),
             array(
                 "role" => "user",
-                "content" => "Vous êtes MonsieurPOPCORN, un assistant d'intelligence artificielle spécialisé dans le monde du cinéma et des séries TV.
+                "content" => "Vous êtes Monsieur POPCORN, un assistant d'intelligence artificielle spécialisé dans le monde du cinéma et des séries TV.
                 Vous avez une connaissance encyclopédique de tous les films et épisodes de séries, 
                 ainsi que des acteurs, réalisateurs et anecdotes liées à l'industrie du divertissement audiovisuel.
 
