@@ -420,7 +420,30 @@ function stopScene3(){
    
 }
 function stopScene4(){
-    // Sortis des élements de la scène 
+    // Animation de sortie pour analyseDiv (opacity)
+    gsap.to(analyseDiv, { duration: 1, opacity: 0, onComplete: removeElement });
+
+    // Animation de sortie pour analyseResumDiv (déplacement vers la gauche)
+    gsap.to(analyseResumDiv, { duration: 1, x: -1000 });
+
+    // Animation de sortie pour analyseFilmDiv (déplacement vers le haut)
+    gsap.to(analyseFilmDiv, { duration: 1, y: -500 });
+
+    // Animation de sortie pour analyseSelectionDiv (opacity)
+    gsap.to(analyseSelectionDiv, { duration: 1, opacity: 0 });
+
+    // Animation de sortie pour analyseSearchDiv (déplacement vers la gauche et vers le haut)
+    
+
+    // Définition de la fonction pour supprimer l'élément
+    function removeElement() {
+        // Supprimez l'élément de son parent
+        analyseDiv.parentNode.removeChild(analyseDiv);
+    }
+
+        // Sortis des élements de la scène 
+
+     
 }
 
 
@@ -990,12 +1013,64 @@ function initializeScene2(scene, renderer, camera) {
 function initializeScene3(scene,renderer,camera){
 // Element de la scène 
 
-}
+} console.log("salut");
 
 function initializeScene4(scene,renderer,camera){
-// Element de la scène 
-}
-
+   console.log("salut");
+       /*  // Création des éléments
+        var prediction = document.createElement('div');
+        var title = document.createElement('h1');
+        var predictionText = document.createElement('p');
+        var button = document.createElement('button');
+      
+        // Ajout de classes pour le style (optionnel, dépend du CSS existant)
+        prediction.classList.add('content-analytic');
+        title.classList.add('analyse-title');
+        predictionText.classList.add('prediction-texte');
+        button.classList.add('getPrediction');
+      
+        // Attribution des styles pour l'animation
+        prediction.style.opacity = '0';
+        prediction.style.transition = 'opacity 1s ease-out';
+        setTimeout(function() {
+          prediction.style.opacity = '1';
+        }, 100); // Délai avant le début de l'animation
+      
+        // Configuration des éléments
+        title.textContent = 'Prédiction';
+        title.style.position = 'absolute';
+        title.style.top = '30%';
+        title.style.transform = 'translateY(-50%)';
+        title.style.width = '100%';
+        title.style.textAlign = 'center';
+      
+        predictionText.textContent = 'Découvrez qui sera le gagnant des oscars grâce à notre modèle de Prédiction';
+        predictionText.style.position = 'absolute';
+        predictionText.style.top = '40%';
+        predictionText.style.width = '100%';
+        predictionText.style.textAlign = 'center';
+        predictionText.style.fontSize = '30px';
+      
+        button.textContent = "C'est ici que ça se passe";
+        button.style.position = 'absolute';
+        button.style.top = '60%';
+        button.style.left = '50%';
+        button.style.transform = 'translateX(-50%)';
+        button.style.borderRadius = '20px';
+        button.style.backgroundColor = 'grey';
+        button.style.width = '20%';
+        button.style.textAlign = 'center';
+        button.style.fontSize = '25px';
+      
+        // Assemblage des éléments
+        prediction.appendChild(title);
+        prediction.appendChild(predictionText);
+        prediction.appendChild(button);
+      
+        // Ajout au document
+        document.body.appendChild(prediction);
+      };
+      */
 async function fetchIMDbId(type, tmdbId) {
     // Remplacez 'YOUR_API_KEY' par votre clé API TMDB
     const apiKey = api_key;
@@ -1018,7 +1093,152 @@ async function fetchIMDbId(type, tmdbId) {
 }
 
 
+const oscars_nominés = [
+      
+
+    { title : 'Barbie' , year: '2023', winner : 'False', itemId :346698 },
+
+    { title : 'Maestro' , year: '2023',winner : 'False',itemId :523607},
+
+    { title : 'The Zone of Interest' , year: '2023',winner : 'False',itemId :467244},
+
+    { title : 'American Fiction' , year: '2023',winner : 'False',itemId :1056360},
+
+    { title : 'Killers of the flower Moon' , year: '2023',winner : 'False',itemId :466420},
+
+    { title : 'Oppenheimer' , year: '2023',winner : 'True',itemId :872585},
+
+    { title : 'Past Lives' , year: '2023',winner : 'False',itemId :666277},
+
+    { title : 'Poor Things' , year: '2023',winner : 'False',itemId :792307},
+
+    { title : 'The Holdovers' , year: '2023',winner : 'False',itemId :840430},
+
+    { title : 'Anatomy Of a Fall' , year: '2023',winner : 'False',itemId :915935}
+
+
+];
+function displayMovieDetails(item, itemType) {
+    const pageContent = document.querySelector('.page-content');
+    pageContent.innerHTML = ''; // Vide les détails précédents
+
+    // Extraire les données nécessaires de l'objet item
+    const {
+        backdrop_path,
+        poster_path,
+        title,
+        name,
+        release_date,
+        first_air_date,
+        runtime,
+        episode_run_time,
+        vote_average,
+        genres,
+        overview,
+        number_of_seasons,
+        credits: { cast, crew },
+        videos: { results: videos },
+        seasons
+    } = item;
+
+    document.title = `${title || name} - Filmaxium`;
+
+    const itemDetail = document.createElement("div");
+    itemDetail.classList.add("movie-detail");
+
+    // Appliquer un style spécifique si le film est "Oppenheimer"
+    if (title === "Oppenheimer" || name === "Oppenheimer") {
+        itemDetail.style.border = "2px solid yellow"; // Par exemple, ajouter une bordure jaune
+    }
+
+    itemDetail.innerHTML = `
+        <div class="backdrop-image" style="background-image: url('https://image.tmdb.org/t/p/w1280${backdrop_path || poster_path}')"></div>
+        
+        <figure class="poster-box movie-poster">
+          <img src="https://image.tmdb.org/t/p/w342${poster_path}" alt="${title || name} poster" class="img-cover">
+        </figure>
+        
+        <div class="detail-box">
+        
+          <div class="detail-content">
+            <h1 class="heading">${title || name}</h1>
+        
+            <div class="meta-list">
+        
+              <div class="meta-item">
+                <img src="./assets/images/star.png" width="20" height="20" alt="rating">
+                <span class="span">${vote_average.toFixed(1)}</span>
+              </div>
+        
+              <div class="separator"></div>
+        
+              <div class="meta-item">${runtime || episode_run_time?.[0] || number_of_seasons} ${itemType === "tv" ? `Seasons` : "Min"}
+              </div>
+        
+              <div class="separator"></div>
+        
+              <div class="meta-item">${release_date?.split("-")[0] || first_air_date?.split("-")[0] || "Not Released"}</div>
+        
+            </div>
+        
+            <p class="genre">${genres.map(genre => genre.name).join(', ')}</p>
+        
+            <p class="overview">${overview}</p>
+        
+            <div class="casting">
+              <p><strong>Cast:</strong> ${cast.slice(0, 5).map(actor => actor.name).join(', ')}</p>
+              <p><strong>Director(s):</strong> ${crew.filter(person => person.job === 'Director').map(director => director.name).join(', ')}</p>
+            </div>
+        
+          </div>
+        </div>
+    `;
+
+    // Ajout des vidéos (trailers, clips)
+    const videoContainer = document.createElement("div");
+    videoContainer.classList.add("video-container");
+    videos.forEach(video => {
+        if (video.site === "YouTube") {
+            const iframe = document.createElement("iframe");
+            iframe.src = `https://www.youtube.com/embed/${video.key}`;
+            iframe.width = "500";
+            iframe.height = "280";
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            videoContainer.appendChild(iframe);
+        }
+    });
+
+    itemDetail.appendChild(videoContainer);
+    pageContent.appendChild(itemDetail);
+}
+
+
+document.querySelector('.getPrediction').addEventListener('click', displayOscarNominations);
+
+async function displayOscarNominations() {
+  const nominationsContainer = document.createElement('div');
+  nominationsContainer.classList.add('nominations-container');
+
+  for (let film of oscars_nominés) {
+      const imdbId = await fetchIMDbId('movie', film.itemId);
+      const filmElement = document.createElement('div');
+      filmElement.classList.add('film-nomination');
+      filmElement.innerHTML = `
+          <p>Title: ${film.title}</p>
+          <p>Year: ${film.year}</p>
+          <p>Winner: ${film.winner}</p>
+          <p>IMDb ID: ${imdbId}</p>
+      `;
+      nominationsContainer.appendChild(filmElement);
+  }
+
+  document.body.appendChild(nominationsContainer);
+}
 
 
 
 
+
+}
