@@ -5,48 +5,67 @@
  */
 
 import { sidebar } from "./sidebar.js";
-import { api_key, imageBaseURL, fetchDataFromServer } from "./api.js";
+import { fetchAPIKeys, imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard, createAnimCard, createPeopleCard, createTvCard } from "./movie-card.js";
 import { search } from "./search.js";
+import { popcorn } from "./popcorn.js";
 
 
+
+let api_key;
 const pageContent = document.querySelector("[page-content]");
 
 sidebar();
 
+fetchAPIKeys().then(keys => {
+  api_key = keys;
+  initializePage(); // Initialise la page une fois que les clés sont disponibles
+});
 
+const initializePage = () => {
 
-/**
+  console.log(api_key); // Vous pouvez maintenant utiliser les clés API ici en toute sécurité
+
+  const homePageSections = [
+
+    {
+      title: "Movies",
+      path: "/movie/popular",
+      createCardFunction: createMovieCard
+    },
+    {
+      title: "TV Shows",
+      path: "/tv/popular",
+      createCardFunction: createTvCard
+    },
+  
+    {
+      title: "Anime",
+      path: "/discover/tv",
+      queryParams: "with_genres=16",
+      createCardFunction: createAnimCard
+    },
+    {
+      title: "People",
+      path: "/person/popular",
+      createCardFunction: createPeopleCard
+    }
+    
+  
+  ];
+  fetchDataFromServer(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`, function ({ genres }) {
+  for (const { id, name } of genres) {
+    genreList[id] = name;
+  }
+
+  fetchDataFromServer(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=1`, heroBanner);
+  });
+
+  /**
  * Home page sections (Top rated, Upcoming, Trending movies)
  */
 
-const homePageSections = [
 
-  {
-    title: "Movies",
-    path: "/movie/popular",
-    createCardFunction: createMovieCard
-  },
-  {
-    title: "TV Shows",
-    path: "/tv/popular",
-    createCardFunction: createTvCard
-  },
-
-  {
-    title: "Anime",
-    path: "/discover/tv",
-    queryParams: "with_genres=16",
-    createCardFunction: createAnimCard
-  },
-  {
-    title: "People",
-    path: "/person/popular",
-    createCardFunction: createPeopleCard
-  }
-  
-
-];
 
 
 
@@ -69,13 +88,6 @@ const genreList = {
 
 };
 
-fetchDataFromServer(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`, function ({ genres }) {
-  for (const { id, name } of genres) {
-    genreList[id] = name;
-  }
-
-  fetchDataFromServer(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=1`, heroBanner);
-});
 
 
 
@@ -230,6 +242,15 @@ const createContentSection = function ({ results: itemList }, title, createCardF
 
   pageContent.appendChild(section);
 }
+
+
+
+
+};
+
+
+
+
 window.addEventListener('message', function(event) {
   // Vérifie si le message reçu est celui indiquant que le contenu de l'iframe a été modifié
   if (event.data === 'contenuModifie') {
@@ -245,3 +266,4 @@ window.onload = clearLocalStorageIfIframeNotActive;
 
 closeIframe();
 search();
+popcorn();

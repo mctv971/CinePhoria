@@ -52,6 +52,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
   <!-- 
     - custom js link
   -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="./assets/js/global.js" defer></script>
   <script src="./assets/js/index.js" type="module"></script>
@@ -127,6 +128,14 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
 
 
     <article class="container" page-content>
+      <div class="chatbot">
+        <img src="assets/images/close.png"  class="close-chat">
+        <iframe src="chat/chat4.php"  class="chat"></iframe>
+      </div>
+      <div class="popcorn-container">
+      <img src="assets/images/popcorn-vierge.png" alt="Mr Popcorn" class="popcorn">
+      </div>
+
       <!-- 
       - #SIDEBAR
     -->

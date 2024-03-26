@@ -1,6 +1,8 @@
 'use strict';
+let api_key, chatgpt_key, imdb_key;
 
 const imageBaseURL = 'https://image.tmdb.org/t/p/';
+
 
 /**
  * fetch data from a server using the `url` and passes
@@ -14,14 +16,27 @@ const fetchDataFromServer = function (url, callback, optionalParam) {
 }
 
 // Récupérer les clés API depuis le serveur
-fetch('../php/get_key.php')
+fetch('assets/php/get_key.php')
   .then(response => response.json())
   .then(data => {
     // Assigner les clés API aux variables
-    const chatgpt_key = data.chatgpt_key;
-    const api_key = data.tmdb_key;
-    const imdb_key = data.imdb_key;
+    chatgpt_key = data.chatgpt_key;
+    api_key = data.tmdb_key;
+    imdb_key = data.imdb_key;
     
   });
 
-export { imageBaseURL, fetchDataFromServer };
+// Récupérer les clés API depuis le serveur
+const fetchAPIKeys = () => {
+  return fetch('assets/php/get_key.php')
+    .then(response => response.json())
+    .then(data => {
+      // Assigner les clés API aux variables
+      chatgpt_key = data.chatgpt_key;
+      api_key = data.tmdb_key;
+      imdb_key = data.imdb_key;
+      return api_key; // Retourner les clés API
+    });
+}
+
+export { imageBaseURL, fetchDataFromServer, api_key, fetchAPIKeys };

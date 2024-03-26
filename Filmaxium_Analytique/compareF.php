@@ -7,148 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
-<style>
-    body {
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        background: linear-gradient(to bottom, #E4CD83, #FFFFFF) no-repeat;
-        height: 100vh;
-        border-radius: 25px;
-    }
 
-    :root {
-        --button-background: dodgerblue;
-        --button-color: white;
-        --button-hover: #4682b4;
-        --button-border-radius: 8px;
-        --button-margin: 5px;
-    }
-
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100%;
-        background-color: #222229;
-    }
-
-    .button-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .button-container button {
-        background: var(--button-background);
-        color: var(--button-color);
-        border: none;
-        padding: 10px 20px;
-        border-radius: var(--button-border-radius);
-        cursor: pointer;
-        margin: var(--button-margin);
-        transition: background 0.3s ease;
-    }
-
-    .button-container button:hover {
-        background-color: var(--button-hover);
-    }
-
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        padding: 12px 16px;
-        z-index: 1;
-    }
-
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    .dropdown-content select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        box-sizing: border-box;
-    }
-
-    .dropdown ul {
-        position: absolute;
-        margin: 20px 0 0 0;
-        padding: 20px 0;
-        width: var(--dropdown-width);
-        left: 50%;
-        margin-left: calc((var(--dropdown-width) / 2) * -1);
-        box-sizing: border-box;
-        z-index: 2;
-        background: var(--dropdown-background);
-        border-radius: 6px;
-        list-style: none;
-    }
-
-    .dropdown ul li {
-        padding: 0;
-        margin: 0;
-    }
-
-    .dropdown ul li a:link,
-    .dropdown ul li a:visited {
-        display: inline-block;
-        padding: 10px 0.8rem;
-        width: 100%;
-        box-sizing: border-box;
-        color: var(--dropdown-color);
-        text-decoration: none;
-    }
-
-    .dropdown ul li a:hover {
-        background-color: var(--dropdown-highlight);
-        color: var(--dropdown-background);
-    }
-
-    .dropdown ul::before {
-        content: ' ';
-        position: absolute;
-        width: 0;
-        height: 0;
-        top: -10px;
-        left: 50%;
-        margin-left: -10px;
-        border-style: solid;
-        border-width: 0 10px 10px 10px;
-        border-color: transparent transparent var(--dropdown-background) transparent;
-    }
-
-    .dropdown > summary::before {
-        display: none;
-    }
-
-    .dropdown[open] > summary::before {
-        content: ' ';
-        display: block;
-        position: fixed;
-        top: 0;
-        right: 0;
-        left: 0;
-        bottom: 0;
-        z-index: 1;
-    }
-    #combinedChart {
-        width: 80%;
-        height: 100%;
-        margin: auto;  /* Center the chart horizontally */
-        text-align: center;
-    }
-</style>
 
 <body>
 <?php
@@ -179,10 +38,10 @@ include 'config.php';
     </div>
 
     <script>
-        $(document).ready(function () {
-            var combinedChart = null;
+    $(document).ready(function () {
+        var combinedChart = null;
 
-            $('.button-container button').on('click', async function () {
+        $('.button-container button').on('click', async function () {
     var selectedAttribute = $(this).data('attribute');
 
     var selectedMovieId = '<?php echo $_SESSION['selectedMovieId'] ?>';
@@ -446,7 +305,7 @@ function getRandomColor() {
                         console.log('Raw Response:', response); 
 
                         if (response && response.titleBoxOffice && response.titleBoxOffice.gross && response.titleBoxOffice.gross.regional) {
-                            const revenueData = response.titleBoxOffice.gross.regional;
+                            const revenueData = response.titleBoxOffice.gross.aggregations;
                             const movieName = response.title;
 
                             createRevenuePieChart(revenueData, movieName);
@@ -498,41 +357,41 @@ function getRandomColor() {
             }
 
             function createRevenuePieChart(data, movieName) {
-                const filteredData = data.filter(region => region.regionName !== "Domestic");
+                const filteredData = data.filter(area => area.areaName !== "Domestic" && area.areaName !== "World-wide" && area.areaName !== "International"  );
 
 // Trier les données par ordre décroissant de revenus
-const sortedData = filteredData.sort((a, b) => b.total.amount - a.total.amount);
+                const sortedData = filteredData.sort((a, b) => b.total.amount - a.total.amount);
 
-    // Sélectionner les 20 premières régions
-    const top20Regions = sortedData.slice(0, 20);
+                    // Sélectionner les 20 premières régions
+                    const top20Regions = sortedData.slice(0, 20);
 
-    // Calculer le total des revenus pour les régions restantes
-    const otherRegionsTotal = sortedData.slice(20).reduce((total, region) => total + region.total.amount, 0);
+                    // Calculer le total des revenus pour les régions restantes
+                    const otherRegionsTotal = sortedData.slice(20).reduce((total, area) => total + area.total.amount, 0);
 
-    // Créer un tableau avec les 20 régions principales et une entrée pour "autre"
-    const finalData = [...top20Regions, { regionName: "Autre", total: { amount: otherRegionsTotal } }];
+                    // Créer un tableau avec les 20 régions principales et une entrée pour "autre"
+                    const finalData = [...top20Regions, { areaName: "Autre", total: { amount: otherRegionsTotal } }];
 
-    const ctx = document.getElementById('combinedChart').getContext('2d');
+                    const ctx = document.getElementById('combinedChart').getContext('2d');
 
-    const newChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: finalData.map(region => region.regionName),
-            datasets: [{
-                label: movieName,
-                data: finalData.map(region => region.total.amount),
-                backgroundColor: getRandomColorArray(finalData.length),
-                borderColor: 'rgba(255, 255, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-    chartInstances.push(newChart);
-}
+                    const newChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: finalData.map(area => area.areaName),
+                            datasets: [{
+                                label: movieName,
+                                data: finalData.map(area => area.total.amount),
+                                backgroundColor: getRandomColorArray(finalData.length),
+                                borderColor: 'rgba(255, 255, 255, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                    chartInstances.push(newChart);
+                }
 
 
 

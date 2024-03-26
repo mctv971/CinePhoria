@@ -585,7 +585,7 @@ export function createTvCardAna(tvShow) {
     </figure>
     
     <h4 class="title">${name}</h4>
-    <a class="card-btn" title="${title}" tmdb-id="${id}" type="tv"  img="${imageBaseURL}w342${poster_path}"></a>
+    <a class="card-btn" title="${name}" tmdb-id="${id}" type="tv"  img="${imageBaseURL}w342${poster_path}"></a>
     
   `;
 
@@ -631,7 +631,7 @@ export function createAnimCardAna(anime) {
     </figure>
     
     <h4 class="title">${name}</h4>
-    <a class="card-btn" title="${title}" tmdb-id="${id}" type="tv"  img="${imageBaseURL}w342${poster_path}"></a>
+    <a class="card-btn" title="${name}" tmdb-id="${id}" type="tv"  img="${imageBaseURL}w342${poster_path}"></a>
     
 
 
@@ -676,7 +676,7 @@ export function createPeopleCardAna(person) {
     </figure>
     
     <h4 class="title">${name}</h4>
-    <a class="card-btn" title="${title}" tmdb-id="${id}" type="people"  img="${imageBaseURL}w342${poster_path}"></a>
+    <a class="card-btn" title="${name}" tmdb-id="${id}" type="people"  img="${imageBaseURL}w342${profile_path}"></a>
 
   `;
 

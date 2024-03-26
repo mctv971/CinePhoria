@@ -1450,6 +1450,86 @@ body {
   background-color: none; /* couleur de fond par défaut */
 }
 
+.choix-ovale {
+  margin-top: 5%;
+  display: flex;
+  overflow: hidden;
+  width: 400px;
+  height: 100px;
+  background-color: none; /* couleur de fond par défaut */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.choix-ovale-revenu {
+  margin-top: 5%;
+  display: none;
+  overflow: hidden;
+  width: 25vw;
+  height: 10vh;
+  background-color: none; /* couleur de fond par défaut */
+  margin-left: auto;
+  margin-right: auto;
+}
+.choix-ovale-revenu.active{
+  display: flex;
+}
+
+.contenu1.active {
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+
+.contenu2.active {
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+
+
+.choix {
+  border: 1px solid rgba(64, 64, 64, 0.726);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.votes{
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  background-color: none; /* couleur de fond par défaut */
+}
+.casting{
+  display: flex;
+  flex-direction: column;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background-color: none; /* couleur de fond par défaut */
+}
+
+.revenus{
+  display: flex;
+  flex-direction: column;
+  background-color: none; /* couleur de fond par défaut */
+}
+
+.revenus.active {
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+
+.votes.active {
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+.casting.active {
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+
+
+
+
+
 .option {
   border: 1px solid rgba(64, 64, 64, 0.726);
   flex: 1;
@@ -1460,32 +1540,79 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.fiche {
+
+
+.contain{
+  display: flex;
+  flex-direction: column;
   border-top-left-radius: 30px;
   border-bottom-left-radius: 30px;
   background-color: none; /* couleur de fond par défaut */
 }
-
-.comparer {
+.filtre{
+  display: flex;
+  flex-direction: column;
   border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
   background-color: none; /* couleur de fond par défaut */
 }
 
-.fiche.active {
+.comparerbtn{
+
+  margin-top: 10px;
+  height: 40%;
+}
+
+.comparer{
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1; ;
+}
+
+
+.contenu-text{
+  margin-top: 10%;
+  text-align: center;
+}
+.contenu-text2{
+  height: 25%;
+  color: rgb(114, 110, 110);
+  font-size: 0.8em;
+
+}
+
+.contain.active {
   background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
 }
 
-.comparer.active {
+.filtre.active {
   background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
 }
 
 .analyse {
   position: absolute;
   top: 0;
-  display: flex;
+  display: none;
   flex-direction: column;
   height: 100vh; /* 100% de la hauteur de l'écran */
+}
+.analyse.active{
+  display: flex;
+}
+.analyseResult{
+  position: absolute;
+  top: 0;
+  left: 5vw;
+  display: none;
+  flex-direction: row;
+  height: 100vh; /* 100% de la hauteur de l'écran */
+  width: 95vw;
+}
+.analyseResult.active{
+  display: flex;
 }
 
 .analyse-resum {
@@ -1495,9 +1622,20 @@ body {
 }
 
 .analyse-film {
-  display: flex;
+  display: none;
   flex-direction: row;
   height: 50%; /* 50% de la hauteur de l'écran */
+}
+.analyse-film.active{
+  display: flex;
+}
+.analyse-genre {
+  display: none;
+  flex-direction: column;
+  height: 60%; /* 50% de la hauteur de l'écran */
+}
+.analyse-genre.active{
+  display: flex;
 }
 
 .analyse-explain {
@@ -1507,10 +1645,18 @@ body {
 }
 .analyse-selection{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 50%;
   justify-content: center;
+
+}
+
+.analyse-selection-film{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   gap:15px;
+  height: 80%;
 }
 
 
@@ -1561,6 +1707,7 @@ body {
 
 .analyse-btn {
   display: flex;
+  flex-direction: column;
   justify-content: center; /* Centre l'élément horizontalement */
   align-items: center;
   width: 50%; /* 50% de la largeur de la div */
@@ -1610,6 +1757,313 @@ body {
   position: relative;
   width: 30%;
   height: 75%;
-  margin-top: 32px;
   border-radius: var(--radius-16);
+}
+
+.rounded-square-btn {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: auto;
+  width: 200px; /* Largeur du bouton */
+  height: 50px; /* Hauteur du bouton */
+  border-radius: var(--radius-16); /* Rayon des coins */
+  border: none; /* Supprimer les bordures */
+  background: linear-gradient(to right, hsla(349, 69%, 51%, 1), #4053ff);
+  color: white; /* Couleur du texte */
+  font-size: 16px; /* Taille de la police */
+  cursor: pointer; /* Curseur de la souris */
+  transition: background 0.3s; /* Transition de couleur */
+}
+
+.rounded-square-btn:hover {
+  background: linear-gradient(to right, rgba(216, 44, 76, 0.318), #4053ff72);
+}
+
+
+.button-container{
+  top:0px;
+  position: absolute;
+
+}
+#combinedChart{
+  position: absolute;
+  top:100px;
+  width: 50vw;
+  height: 50vh;
+}
+.graph{
+  width: 50vw;
+  height: 50vh;
+}
+
+.popcorn-container{
+  bottom: 20vh;
+  right: 0px;
+  position: fixed;
+  z-index: 1000000;
+  height: 200px;
+  width: 250px;
+}
+.popcorn{
+  position: absolute;
+  height: 100px;
+  right:-40px;
+  opacity:0.2;
+  bottom: 0px;
+}
+.popcorn.hidden{
+  display: none;
+}
+.chatbot{
+  display: none;
+  border: none;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 75vh;
+  width: 40vw;
+  z-index: 1000000;
+
+}
+.chatbot.active{
+  display: block;
+}
+.chat{
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+.close-chat{
+  position: fixed;
+  right: 50px;
+}
+
+
+.analyse-genre {
+  padding: 20px;
+  justify-content: center;
+}
+
+.selection-form {
+  width: 95vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; /* Aligne les éléments sur toute la largeur */
+  height: 20vh;
+
+}
+
+.selection-label-form{
+  display: flex;
+  flex-direction: row;
+  gap:2em;
+}
+
+
+
+.dropdown{
+  width: 20%;
+  position: relative;
+  margin: auto;
+
+}
+.dropdown{
+  box-sizing: border-box;
+}
+.select{
+  min-height: 100px;
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px #2a2f3b solid;
+  border-radius: 0.5em;
+  padding: 1em;
+  cursor:pointer;
+  transition: background 0.3s ;
+}
+.select.dated{
+  flex-direction: column;
+}
+
+.select-clicked{
+  border: 2px white solid;
+  box-shadow: 0 0 0.8em white;
+}
+.select:hover{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+
+.caret{
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #fff;
+  transition: 0.3s;
+}
+
+.caret-rotate{
+  transform: rotate(180deg);
+}
+
+.menu{
+  list-style: none;
+  padding: 0.2em 0.5em;
+  background-color: rgba(44, 43, 96, 1);
+  border: 1px #363a43;
+  box-shadow: 0 0.5em 1em rgba(0,0,0,0.2);
+  border-radius: 0.5em;
+  color: #9fa5b5;
+  position: absolute;
+  top: 4em;
+  left: 50%;
+  width: 100%;
+  transform:translateX(-50%);
+  opacity: 0;
+  display: none;
+  transition: 0.2s;
+  z-index: 1;
+  max-height: 20vh;
+  overflow-y: auto;
+
+}
+
+.menu li{
+  padding: 0.7em 0.5em;
+  margin: 0.3em 0;
+  border-radius: 0.5em;
+  cursor: pointer;
+}
+.menu li:hover{
+  background: #2a2d35;
+}
+.activedrop{
+  background: #23242a;
+}
+
+.menu-open{
+  display: block;
+  opacity: 1;
+}
+.title-test{
+  margin: auto;
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+  -webkit-background-clip: text; /* Utilise le texte comme masque pour le dégradé */
+  color: transparent; /* Cache le texte original */
+}
+
+
+.analyseResultPresent{
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.analyseResultGraph{
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.analyseResultSubject{
+  height: 50%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+}
+
+.analyseResultChiffre{
+  height: 50%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.analyseResultGraphique{
+  height: 48%;
+  width: 97%;
+  background-color: rgba(37, 35, 38, 0.62);
+  border-radius: var(--radius-24);
+
+}
+.analyseResultExplain{
+  height: 48%;
+  width: 100%;
+}
+.backSearch{
+  position: fixed;
+  bottom: 0;
+  left:2vw;
+  width: 5vw;
+  height: auto;
+}
+
+
+.graph-ana {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 100; /* Thin */
+  font-size: 1em  ; /* Taille de la police */
+  color: grey; /* Couleur grise */
+  width: 80%;
+  text-align: center;
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  
+}
+.versus{
+  width: 10%;
+  height: auto;
+}
+.choixFilm{
+  position: relative;
+  width: 30%;
+  height: 75%;
+  border-radius: var(--radius-16);
+  
+}
+.chartGlobal{
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  height: 90%;
+}
+
+.chartNumbers{
+  position: relative;
+  top:13%;
+  gap:20%;
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  height: 90%;
+}
+
+.statsInfo{
+  text-align: center;
+  font-size: 1.2em;
+  font-family: "Bungee", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.chartGraph{
+  height: 100%;
+  width: 100%;
+}
+.chartDiv{
+  height: 20%;
 }
