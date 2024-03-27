@@ -1,7 +1,7 @@
 <?php
 function getBD(){
-$bdd = new PDO('mysql:host=localhost;dbname=filmaxium;charset=utf8',
-'root', '');
+$bdd = new PDO('mysql:host=localhost;dbname=Filmaxium;charset=utf8',
+'root', 'root');
 return $bdd;
 }
 ?>

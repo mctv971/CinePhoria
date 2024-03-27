@@ -5,19 +5,23 @@
  */
 
 import { sidebar } from "./sidebar.js";
-import { api_key, imageBaseURL, fetchDataFromServer } from "./api.js";
+import { fetchAPIKeys, imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard } from "./movie-card.js";
 import { search } from "./search.js";
 
-
+let api_key;
 const pageContent = document.querySelector("[page-content]");
 
 sidebar();
-
+fetchAPIKeys().then(keys => {
+  api_key = keys;
+  initializePage(); // Initialise la page une fois que les clés sont disponibles
+});
 /**
  * fetch all genres eg: [ { "id": "123", "name": "Action" } ]
  * then change genre format eg: { 123: "Action" }
  */
+const initializePage = () => {
 const genreList = {
 
   // create genre string from genre_id eg: [23, 43] -> "Action, Romance".
@@ -104,3 +108,4 @@ const createMovieList = function ({ results: movieList }, title) {
 
 closeIframe();
 search();
+}

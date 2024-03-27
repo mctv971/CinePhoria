@@ -16,7 +16,6 @@ let api_key;
 const pageContent = document.querySelector("[page-content]");
 
 sidebar();
-
 fetchAPIKeys().then(keys => {
   api_key = keys;
   initializePage(); // Initialise la page une fois que les clés sont disponibles

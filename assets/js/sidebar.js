@@ -1,10 +1,20 @@
 'use strict';
+import { fetchAPIKeys, imageBaseURL, fetchDataFromServer } from "./api.js";
+let api_key
 
-import { api_key, fetchDataFromServer } from "./api.js";
+fetchAPIKeys().then(keys => {
+  api_key = keys;
+  initializePage(); // Initialise la page une fois que les clés sont disponibles
+});
 
 
+const initializePage = () => {
+  // Votre code JavaScript ici
+  
+  // Exemple : Vous pouvez appeler votre fonction sidebar ici
+  sidebar();
+};
 export function sidebar() {
-
   /**
    * fetch all genres eg: [ { "id": "123", "name": "Action" } ]
    * then change genre formate eg: { 123: "Action" }

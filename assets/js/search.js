@@ -1,8 +1,19 @@
 'use strict';
 
-import { api_key, fetchDataFromServer } from "./api.js";
+
+import { fetchAPIKeys, imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard, createPeopleCard, createTvCard } from "./movie-card.js";
 
+let api_key
+
+fetchAPIKeys().then(keys => {
+  api_key = keys;
+  initializePage(); // Initialise la page une fois que les clés sont disponibles
+});
+
+const initializePage = () => {
+  search();
+};
 
 export function search() {
   const searchWrapper = document.querySelector("[search-wrapper]");
