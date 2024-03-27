@@ -11,11 +11,11 @@
 
 <button onclick="genererGraphique1()">Graphique 1</button>
 <button onclick="genererGraphique2()">Graphique 2</button>
+<button onclick="genererGraphique3()">Graphique 3</button>
 
 <canvas id="myChart" width="400" height="400"></canvas>
 
 <script>
-// Fonction pour générer le graphique 1
 function genererGraphique1() {
     // IDs IMDB des deux acteurs
     const idIMDBActeur1 = "nm0000138"; // Exemple
@@ -153,73 +153,190 @@ const myChart = new Chart(ctx, {
         });
     });
 }
+
 function genererGraphique2() {
-    const idIMDBActeurs = ["nm0000138", "nm0000148"]; // Tableau contenant les IDs IMDB des acteurs
-    const promises = idIMDBActeurs.map(id => {
-        return new Promise((resolve, reject) => {
-            const settings = {
-                async: true,
-                crossDomain: true,
-                url: `https://imdb8.p.rapidapi.com/actors/v2/get-did-you-know-summary?nconst=${id}`,
-                method: 'GET',
-                headers: {
-                    'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
-                    'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
-                }
-            };
+    const settingsActeur1 = {
+        async: true,
+        crossDomain: true,
+        url: 'https://imdb8.p.rapidapi.com/actors/v2/get-did-you-know-summary?nconst=nm0000138',
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+            'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+        }
+    };
 
-            $.ajax(settings).done(function (response) {
-                resolve(response);
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                reject(errorThrown);
-            });
-        });
-    });
+    const settingsActeur2 = {
+        async: true,
+        crossDomain: true,
+        url: 'https://imdb8.p.rapidapi.com/actors/v2/get-did-you-know-summary?nconst=nm0000148',
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': '8cc2cf9290mshe7b85af954aa563p182979jsnfe362503c6de',
+            'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+        }
+    };
 
-    Promise.all(promises).then(responses => {
-        const datasets = responses.map(response => {
-            const data = response.data;
-            const name = data.name;
-            const trivia = name.trivia;
-            const edges = trivia.edges;
-            const labels = edges.map(edge => edge.node.text.plainText);
-            const usersInterested = edges.map(edge => edge.node.interestScore.usersInterested);
-            return {
-                labels: labels,
-                data: usersInterested
-            };
-        });
+    $.when($.ajax(settingsActeur1), $.ajax(settingsActeur2)).done(function(responseActeur1, responseActeur2) {
+        const nomActeur1 = responseActeur1[0].data.name.nameText.text;
+        const nomActeur2 = responseActeur2[0].data.name.nameText.text;
+        const usersInterestedActeur1 = responseActeur1[0].data.name.trivia.edges[0].node.interestScore.usersInterested;
+        const usersInterestedActeur2 = responseActeur2[0].data.name.trivia.edges[0].node.interestScore.usersInterested;
 
-        // Calcul de la somme des intérêts pour chaque acteur
-        const sums = datasets.map(dataset => dataset.data.reduce((acc, curr) => acc + curr, 0));
-        
-        // Calcul de la somme totale des intérêts
-        const totalSum = sums.reduce((acc, curr) => acc + curr, 0);
-
-        // Calcul de la part de chaque acteur par rapport à la somme totale
-        const percentages = sums.map(sum => (sum / totalSum) * 100);
-
-        // Création du graphique
+        // Création du doughnut chart
         const ctx = document.getElementById('myChart').getContext('2d');
-        const mySecondChart = new Chart(ctx, {
+        const myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                datasets: datasets.map((dataset, index) => {
-                    return {
-                        label: `Acteur ${index + 1}`,
-                        data: dataset.data.map((value, i) => (value / sums[index]) * percentages[index]),
-                        backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.2)`,
-                        borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`,
-                        borderWidth: 1
-                    };
-                }),
-                labels: datasets[0].labels // Utilisation des mêmes libellés pour tous les ensembles de données
+                labels: [nomActeur1, nomActeur2],
+                datasets: [{
+                    label: 'Users Interested',
+                    data: [usersInterestedActeur1, usersInterestedActeur2],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
             }
         });
-    }).catch(error => {
-        console.error('Une erreur s\'est produite :', error);
     });
 }
+
+
+function genererGraphique3() {
+    
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+        }
+    };
+
+    // Fonction pour récupérer l'ID TMDB à partir de l'ID IMDb
+    function getIdTMDB(imdbId) {
+        const fetchUrl = `https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id`;
+        return fetch(fetchUrl, options)
+            .then(response => response.json())
+            .then(data => {
+                // Vérification si des résultats ont été trouvés
+                if (data.person_results.length > 0) {
+                    // Renvoyer l'ID TMDB du premier résultat trouvé
+                    return data.person_results[0].id;
+                } else {
+                    // Si aucun résultat trouvé, renvoyer une erreur
+                    throw new Error("Aucun résultat trouvé pour cet ID IMDb.");
+                }
+            });
+    }
+
+    // Fonction pour récupérer le nom de l'acteur à partir de l'ID TMDB
+    function getActorName(tmdbId) {
+        const fetchUrl = `https://api.themoviedb.org/3/person/${tmdbId}?language=fr-FR`;
+        return fetch(fetchUrl, options)
+            .then(response => response.json())
+            .then(data => {
+                // Vérification si des résultats ont été trouvés
+                if (data.name) {
+                    // Renvoyer le nom de l'acteur
+                    return data.name;
+                } else {
+                    // Si aucun résultat trouvé, renvoyer une erreur
+                    throw new Error("Aucun nom trouvé pour cet ID TMDB.");
+                }
+            });
+    }
+
+    // ID IMDb des deux acteurs à comparer
+    const imdbIdActeur1 = 'nm0000138'; // ID IMDb de Leonardo DiCaprio
+    const imdbIdActeur2 = 'nm0000148'; // ID IMDb de Harrison Ford
+
+    // Traduction des ID IMDb en ID TMDB pour les deux acteurs
+    Promise.all([getIdTMDB(imdbIdActeur1), getIdTMDB(imdbIdActeur2)])
+        .then(([tmdbIdActeur1, tmdbIdActeur2]) => {
+            // Récupération des noms des acteurs
+            return Promise.all([getActorName(tmdbIdActeur1), getActorName(tmdbIdActeur2)])
+                .then(([nomActeur1, nomActeur2]) => {
+                    // URLs des crédits de films et de séries pour chaque acteur avec les ID TMDB correspondants
+                    const apiUrlActeur1Films = `https://api.themoviedb.org/3/person/${tmdbIdActeur1}/movie_credits?language=fr-FR`;
+                    const apiUrlActeur1Series = `https://api.themoviedb.org/3/person/${tmdbIdActeur1}/tv_credits?language=fr-FR`;
+                    const apiUrlActeur2Films = `https://api.themoviedb.org/3/person/${tmdbIdActeur2}/movie_credits?language=fr-FR`;
+                    const apiUrlActeur2Series = `https://api.themoviedb.org/3/person/${tmdbIdActeur2}/tv_credits?language=fr-FR`;
+
+                    // Requêtes pour récupérer les crédits de films et de séries pour chaque acteur
+                    const promises = [
+                        fetch(apiUrlActeur1Films, options),
+                        fetch(apiUrlActeur1Series, options),
+                        fetch(apiUrlActeur2Films, options),
+                        fetch(apiUrlActeur2Series, options)
+                    ];
+
+                    // Récupération des données une fois que toutes les requêtes sont terminées
+                    return Promise.all(promises)
+                        .then(responses => Promise.all(responses.map(response => response.json())))
+                        .then(data => {
+                            const nbFilmsActeur1 = data[0].cast.length;
+                            const nbSeriesActeur1 = data[1].cast.length;
+                            const nbFilmsActeur2 = data[2].cast.length;
+                            const nbSeriesActeur2 = data[3].cast.length;
+
+                            // Création du bar chart
+                            const ctx = document.getElementById('myChart').getContext('2d');
+                            const myChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: [`${nomActeur1} (Films)`, `${nomActeur1} (Séries)`, `${nomActeur2} (Films)`, `${nomActeur2} (Séries)`],
+                                    datasets: [{
+                                        label: 'Nombre de films/séries joués',
+                                        data: [nbFilmsActeur1, nbSeriesActeur1, nbFilmsActeur2, nbSeriesActeur2],
+                                        backgroundColor: [
+                                            'rgba(255, 99, 132, 0.2)',
+                                            'rgba(255, 159, 64, 0.2)',
+                                            'rgba(54, 162, 235, 0.2)',
+                                            'rgba(75, 192, 192, 0.2)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(255, 159, 64, 1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(75, 192, 192, 1)'
+                                        ],
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        });
+                });
+        })
+        .catch(error => console.error('Erreur lors de la récupération des données:', error));
+}
+
+
+
+
 
 
 </script>
