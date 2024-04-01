@@ -1,7 +1,8 @@
 'use strict';
 
-import { api_key, fetchDataFromServer } from "./api.js";
+import { fetchDataFromServer } from "./api.js";
 import { createMovieCardAna, createPeopleCardAna, createTvCardAna } from "./movie-card.js";
+const api_key = "4bff542b068c0fff85589d72c363051d";
 
 
 export function search() {

@@ -1073,9 +1073,9 @@ function initializeScene2(scene, renderer, camera) {
         divSelectionLabelForm.classList.add("selection-label-form");
 
         const dropdowns = [
-            { label: "* Type :", options: ["movie", "tv"] },
-            { label: "Genre :", id: "genre-menu" },
-            { label: "Pays d'origine :", id: "country-menu" },
+            { label: "* Type :", options: ["movie", "tv"], datatype:"type" },
+            { label: "Genre :", id: "genre-menu" , datatype:"genre"},
+            { label: "Pays d'origine :", id: "country-menu" , datatype:"pays"},
             { label: "Date de départ :", inputType: "date", id: "date_depart" },
             { label: "Date de fin :", inputType: "date", id: "date_fin" }
         ];
@@ -1100,6 +1100,7 @@ function initializeScene2(scene, renderer, camera) {
     
                 const ulMenu = document.createElement("ul");
                 ulMenu.classList.add("menu");
+                if(dropdown.datatype) spanSelected.setAttribute("data-type",dropdown.datatype)
 
                 if (dropdown.id) ulMenu.id = dropdown.id;
 
@@ -1519,7 +1520,7 @@ window.backSearch = function (){
     recreateAnalyseResultDiv();
 }
 
-window.activeSearch = function (){
+window.activeSearch = async function (){
     
     const comparerbtnOn = document.querySelector('.comparerbtn').alt == "switch2";
     const containOn = document.querySelector('.option.contain.active');
@@ -1638,6 +1639,16 @@ window.activeSearch = function (){
 
         }
 
+    }
+    else if(!containOn && !comparerbtnOn){
+        const filmsData = await fetchDetails();
+        createFilmBubbleChart(filmsData);
+        document.querySelector(".analyse").classList.remove("active");
+        document.querySelector(".analyseResult").classList.add("active");
+
+    }
+    else if(!containOn && comparerbtnOn){
+        
     }
 
 
@@ -2673,13 +2684,13 @@ function recreateAnalyseResultDiv() {
 
 function getFilterValues() {
     // Récupération du type (film ou série)
-    const type = document.querySelector('.dropdown .selected[data-value]').dataset.value;
+    const type = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
     
     // Récupération du genre
-    const genre = document.querySelector('#genre-menu .selected[data-value]').dataset.value;
+    const genre = document.querySelector('.selected[data-type="genre"]').getAttribute("data-value");
     
     // Récupération du pays
-    const country = document.querySelector('#country-menu .selected[data-value]').dataset.value;
+    const country = document.querySelector('.selected[data-type="pays"]').getAttribute("data-value");
     
     // Récupération des dates
     const startDate = document.getElementById('date_depart').value;
@@ -2713,14 +2724,15 @@ async function fetchData() {
       break; // Arrêter la boucle en cas d'erreur
     }
   }
+  console.log(allIds);
 
   return allIds; // Faire quelque chose avec les IDs récupérés
 }
 
 
-function buildRequestUrl({ type, genre, country, startDate, endDate }) {
+function buildRequestUrl({ type, genre, country, startDate, endDate, page }) {
     const baseUrl = 'https://api.themoviedb.org/3/discover';
-    const apiKey = 'VOTRE_CLÉ_API';
+    const apiKey = api_key;
     let url = `${baseUrl}/${type}?api_key=${apiKey}`;
     
     // Ajouter conditionnellement chaque paramètre s'il est défini
@@ -2736,14 +2748,20 @@ function buildRequestUrl({ type, genre, country, startDate, endDate }) {
     if (endDate) {
       url += `&release_date.lte=${endDate}`;
     }
+    if(page){
+        url += `&page=${page}`
+    }
     
     return url;
   }
 
-async function fetchDetails(ids, type) {
-    const apiKey = 'VOTRE_CLÉ_API';
+async function fetchDetails() {
+    const ids = await fetchData();
+    const type = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
+    const apiKey = api_key;
     const baseUrl = 'https://api.themoviedb.org/3';
     let details = [];
+
 
     // Limiter le nombre de requêtes simultanées pour éviter le rate limiting
     const MAX_SIMULTANEOUS_REQUESTS = 20;
@@ -2857,42 +2875,64 @@ function calculateSeriesIndicators(series) {
 }
 
 function createFilmBubbleChart(filmsData) {
-    const ctx = document.getElementById('filmBubbleChart').getContext('2d');
-    const data = {
-      datasets: [{
-        label: 'Films',
-        data: filmsData.map(film => ({
-          x: film.averagePopularity,
-          y: film.averageVoteAverage,
-          r: film.averageRuntime / 10 // Réduire la taille pour l'affichage
-        })),
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1
-      }]
+    const ctx = document.querySelector('.chartGraph').getContext('2d');
+    
+    // Pour différencier les couleurs par genre, créez une map de genres à couleurs
+    const genreColors = {
+      'Action': 'rgba(255, 99, 132, 0.6)',
+      'Drama': 'rgba(54, 162, 235, 0.6)',
+      'Comedy': 'rgba(255, 206, 86, 0.6)',
+      // Ajoutez d'autres genres et couleurs selon vos besoins
     };
+  
+    // Préparer les données pour chaque film
+    const datasets = filmsData.map(film => ({
+      label: film.title, // Ou 'Film' si le titre n'est pas disponible
+      data: [{
+        x: film.popularity,
+        y: film.vote_average,
+
+      }],
+      backgroundColor: genreColors[film.genre] || 'rgba(201, 203, 207, 0.6)', // Couleur par défaut
+      borderColor: 'rgba(0, 0, 0, 0.1)',
+      borderWidth: 1
+    }));
+    console.log(datasets)
   
     new Chart(ctx, {
       type: 'bubble',
-      data: data,
+      data: { datasets },
       options: {
+        plugins: {
+            legend:{
+                display:false
+            },
+          tooltip: {
+            callbacks: {
+
+            }
+          }
+        },
         scales: {
           x: {
             title: {
               display: true,
-              text: 'Popularité Moyenne'
-            }
+              text: 'Popularité'
+            },
+            beginAtZero: false,
           },
           y: {
             title: {
               display: true,
               text: 'Note Moyenne'
-            }
+            },
+            beginAtZero: false,
           }
         }
       }
     });
-}
+  }
+  
 function createFilmRevenueBudgetChart(filmsData) {
     const ctx = document.getElementById('filmRevenueBudgetChart').getContext('2d');
     const data = {
