@@ -1,11 +1,10 @@
-                        titre  Chance_to_Win
-0                     Maestro       0.146222
-1                      Barbie       0.153178
-2        The Zone of Interest       0.154030
-3            American Fiction       0.143596
-4  Killers of the Flower Moon       0.144838
-5                 Oppenheimer       0.332307
-6                 Poor Things       0.156631
-7           Anatomy of a Fall       0.143473
-8                  Past Lives       0.146443
-9               The Holdovers       0.143390
+0                     Maestro       0.126850
+1                      Barbie       0.171951
+2        The Zone of Interest       0.181076
+3            American Fiction       0.115698
+4  Killers of the Flower Moon       0.138966
+5                 Oppenheimer       0.477260
+6                 Poor Things       0.184251
+7           Anatomy of a Fall       0.115684
+8                  Past Lives       0.134018
+9               The Holdovers       0.117836

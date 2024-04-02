@@ -456,10 +456,19 @@ function stopScene21(){
 function stopScene3(){
 
     // Sortis des élements de la scène 
-   
+
 }
 function stopScene4(){
-    // Sortis des élements de la scène 
+     // Utiliser GSAP pour animer la div .prediction avant de la supprimer
+  gsap.to('.prediction', {
+    duration: 0.2, // Durée de l'animation en secondes
+    opacity: 0, // Animer l'opacité à 0 pour la faire disparaître
+    ease: "power2.in", // Type d'effet d'animation pour un effet d'estompage
+onComplete: function() {
+    document.querySelector('.prediction').remove();
+    nominationsLoaded = false; // Assurez-vous de réinitialiser cet état si nécessaire
+}
+  });
 }
 
 
@@ -1404,7 +1413,6 @@ function initializeScene2(scene, renderer, camera) {
 
 
 
- 
     
 
 
@@ -1415,9 +1423,176 @@ function initializeScene3(scene,renderer,camera){
 
 }
 
-function initializeScene4(scene,renderer,camera){
-// Element de la scène 
+let nominationsLoaded = false;
+
+function initializeScene4() {
+    // Créez et configurez les éléments HTML seulement si les nominations n'ont pas encore été chargées
+    if (!nominationsLoaded) {
+        const contentAnalytic = document.createElement('div');
+        contentAnalytic.className = 'content-analytic';
+
+        const predictionDiv = document.createElement('div');
+        predictionDiv.className = 'prediction';
+
+        const titleH1 = document.createElement('h1');
+        titleH1.className = 'analyse-title';
+        titleH1.style.cssText = 'position: absolute; top: 30%; transform: translateY(-50%); width: 100%; text-align: center;';
+        titleH1.textContent = 'Prédiction';
+
+        const predictionText = document.createElement('p');
+        predictionText.className = 'prediction-texte';
+        predictionText.style.cssText = 'position: absolute; top: 40%; width: 100%; text-align: center; font-size: 30px;';
+        predictionText.textContent = 'Découvrez qui sera le gagnant des oscars grâce à notre modèle de Prédiction';
+
+        const pageContent = document.createElement('div');
+        pageContent.className = 'page-content';
+        pageContent.style.cssText = 'display: flex; flex-wrap: wrap; position: absolute;';
+
+        const getPredictionButton = document.createElement('button');
+        getPredictionButton.className = 'getPrediction';
+        getPredictionButton.style.cssText = 'position: absolute; top: 60%; left: 50%; transform: translateX(-50%); border-radius: 20px; background-color: grey; width: 30%; text-align: center; font-size: 25px;';
+        getPredictionButton.textContent = "C'est ici que ça se passe";
+
+        getPredictionButton.addEventListener('click', async () => {
+            gsap.to('.analyse-title, .prediction-texte, .getPrediction', {
+                y: '-100%', opacity: 0, duration: 1.5,
+                onComplete: async () => {
+                    const nominationsContainer = document.querySelector('.page-content');
+                    nominationsContainer.innerHTML = ''; 
+                    await displayOscarNominations();
+                    nominationsLoaded = true; // Important : Mettez à jour cette variable après le chargement des données
+                    animateNominationsEntry();
+                }
+            });
+        });
+        predictionDiv.appendChild(titleH1);
+        predictionDiv.appendChild(predictionText);
+        predictionDiv.appendChild(pageContent);
+        predictionDiv.appendChild(getPredictionButton);
+
+        contentAnalytic.appendChild(predictionDiv);
+
+        document.body.appendChild(contentAnalytic); 
+    } else {
+        // Si les nominations ont déjà été chargées, vous pouvez directement afficher la scène des nominations
+        displayOscarNominations();
+    }
+
+
+    async function fetchPosterPath(itemId) {
+        const url = `https://api.themoviedb.org/3/movie/${itemId}?api_key=${api_key}`;
+    
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            return `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+        } catch (error) {
+            console.error('Error fetching movie details:', error);
+            return null; 
+        }
+    }
+    const oscars_nominés = [
+        { title : 'Barbie' , year: '2023', winner : 'False', itemId :346698,itemType: 'movie'  },
+    
+        { title : 'Maestro' , year: '2023',winner : 'False',itemId :523607, itemType:'movie'},
+    
+        { title : 'The Zone of Interest' , year: '2023',winner : 'False',itemId :467244, itemType: 'movie'},
+    
+        { title : 'American Fiction' , year: '2023',winner : 'False',itemId :1056360,itemType: 'movie'},
+    
+        { title : 'Killers of the flower Moon' , year: '2023',winner : 'False',itemId :466420,itemType: 'movie'},
+    
+        { title : 'Oppenheimer' , year: '2023',winner : 'True',itemId :872585, itemType: 'movie'},
+    
+        { title : 'Past Lives' , year: '2023',winner : 'False',itemId :666277, itemType: 'movie'},
+    
+        { title : 'Poor Things' , year: '2023',winner : 'False',itemId :792307, itemType: 'movie'},
+    
+        { title : 'The Holdovers' , year: '2023',winner : 'False',itemId :840430, itemType: 'movie'},
+    
+        { title : 'Anatomy Of a Fall' , year: '2023',winner : 'False',itemId :915935, itemType: 'movie'}
+    
+    
+    ];
+
+    async function displayOscarNominations() {
+        const nominationsContainer = document.querySelector('.page-content');
+    
+        // Styles pour le conteneur pour s'assurer que les films sont sur 2 lignes avec 5 films par ligne
+        nominationsContainer.style.display = 'flex';
+        nominationsContainer.style.flexWrap = 'wrap';
+        nominationsContainer.style.justifyContent = 'center';
+        nominationsContainer.style.alignItems = 'flex-start'; // Alignement au début pour éviter des espacements verticaux inégaux
+        nominationsContainer.style.gap = '20px'; // Espacement entre les films
+    
+        nominationsContainer.style.maxWidth = '1080px';
+        nominationsContainer.style.marginTop = '180px';
+        nominationsContainer.style.marginLeft = '200px';
+        nominationsContainer.style.marginRight = 'auto';
+    
+        for (let i = 0; i < oscars_nominés.length; i++) {
+            const film = oscars_nominés[i];
+            const posterPath = await fetchPosterPath(film.itemId);
+            if (posterPath) {
+                const filmElement = document.createElement('div');
+                filmElement.classList.add('film-nomination');
+                // Ajouter la classe 'right' ou 'left' basée sur l'index de l'élément
+                if (i < 5) { // Première ligne
+                    filmElement.classList.add('right');
+                } else { // Deuxième ligne
+                    filmElement.classList.add('left');
+                }
+    
+                const completePosterPath = `https://image.tmdb.org/t/p/w500${posterPath}`;
+    
+                
+                const imgElement = document.createElement('img');
+                imgElement.src = completePosterPath;
+                imgElement.alt = `${film.title} Poster`;
+                imgElement.style.width = '200px'; 
+                imgElement.style.height = '280px';
+                imgElement.style.objectFit = 'cover';
+                
+                filmElement.appendChild(imgElement);
+                nominationsContainer.appendChild(filmElement);
+            }
+        }
+    
+        const predictionButton = document.createElement('button');
+        predictionButton.textContent = 'Découvrez comment fonctionne le système de Prédiction';
+        predictionButton.style.marginTop = '20px'; 
+        predictionButton.style.padding = '10px 20px'; 
+        predictionButton.style.border = 'none'; 
+        predictionButton.style.cursor = 'pointer'; 
+        predictionButton.style.borderRadius = '5px'; 
+        predictionButton.style.backgroundColor = '#808080';
+        predictionButton.style.color = 'white'; 
+        predictionButton.style.fontSize = '16px'; 
+    
+        // Optionnel : Ajoute un gestionnaire d'événement au bouton pour faire quelque chose quand il est cliqué
+        predictionButton.addEventListener('click', function() {
+        window.location.href = 'prédiction.php';
+        });
+    
+        // Ajoute le bouton au conteneur des nominations
+        nominationsContainer.appendChild(predictionButton);
+    
+    }
+
+    function animateNominationsEntry() {
+        gsap.from('.right', { x: '100%', opacity: 0, duration: 1.5, stagger: 0.1 });
+        gsap.from('.left', { x: '-100%', opacity: 0, duration: 1.5, stagger: 0.1 });
+    }
+
+
+
+
 }
+
+
+
+
+
 
 
 
@@ -1538,7 +1713,7 @@ window.activeSearch = async function (){
 
         const containOn = document.querySelector('.option.contain.active');
         if (!(div1ContainsImage && div2ContainsImage)) {
-             alert("ZUT IL MANQUE UN FILM")
+            alert("ZUT IL MANQUE UN FILM")
         }
         else{
             const tmdbId1 = localStorage.getItem("tmdbId1");
@@ -1595,7 +1770,7 @@ window.activeSearch = async function (){
     else if(!comparerbtnOn && containOn){
         const containOn = document.querySelector('.option.contain.active');
         if (!(div1ContainsImage )) {
-             alert("ZUT IL FAUT METTRE UN FILM")
+            alert("ZUT IL FAUT METTRE UN FILM")
         }
         else{
             const tmdbId1 = localStorage.getItem("tmdbId1");
@@ -3112,21 +3287,5 @@ function createSeriesPopularityOverTimeChart(seriesData) {
       }
     });
 }
-  
-  
-  
-  
-  
-  
-  
-     
-
-
-
-
-
-
-
-
 
 
