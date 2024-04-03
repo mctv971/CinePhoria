@@ -55,10 +55,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     document.querySelector(".analyse-film").classList.remove("active");
                     document.querySelector(".analyse-genre").classList.add("active");
+                    document.querySelector(".comparer").style.display = 'none';
                 }
                 else{
                     document.querySelector(".analyse-genre").classList.remove("active");
                     document.querySelector(".analyse-film").classList.add("active");
+                    document.querySelector(".comparer").style.display = 'flex';
                 }
             }
         }
@@ -69,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if(event.target.classList.contains("comparerbtn")){
             var img = document.querySelector('.comparerbtn')
             filmSelections[1].style.display = 'none';
-            formSelections[1].style.display = 'none';
+
             if(img.alt==="switch1"){
                 img.src="assets/images/switch2.png"
                 img.alt="switch2"
@@ -429,6 +431,7 @@ function stopScene1(){
 }
 
 function stopScene2(){
+
     // Sélection de l'élément div avec la classe "analyse"
     const divAnalyse = document.querySelector(".analyse");
 
@@ -1039,7 +1042,6 @@ function initializeScene2(scene, renderer, camera) {
     pContenuText2X.style.marginLeft = "10vw";
 
     const divSelectionForm1 = createSelectionForm(1, "Test 1");
-    const divSelectionForm2 = createSelectionForm(2, "Test 2");
 
     const buttonRoundedSquareBtnC = document.createElement("button");
     buttonRoundedSquareBtnC.classList.add("rounded-square-btn");
@@ -1056,7 +1058,7 @@ function initializeScene2(scene, renderer, camera) {
 
     divAnalyseGenre.appendChild(pContenuText2X);
     divAnalyseGenre.appendChild(divSelectionForm1);
-    divAnalyseGenre.appendChild(divSelectionForm2);
+
     divAnalyseGenre.appendChild(buttonRoundedSquareBtnC);
 
     // Fonction pour créer un formulaire de sélection
@@ -1065,9 +1067,7 @@ function initializeScene2(scene, renderer, camera) {
         divSelectionForm.classList.add("selection-form");
         divSelectionForm.setAttribute("data-selection", selectionNumber);
 
-        const h1Title = document.createElement("h1");
-        h1Title.classList.add("title-test");
-        h1Title.textContent = title;
+
 
         const divSelectionLabelForm = document.createElement("div");
         divSelectionLabelForm.classList.add("selection-label-form");
@@ -1144,7 +1144,6 @@ function initializeScene2(scene, renderer, camera) {
             divSelectionLabelForm.appendChild(divDropdown);
         });
 
-        divSelectionForm.appendChild(h1Title);
         divSelectionForm.appendChild(divSelectionLabelForm);
 
         return divSelectionForm;
@@ -1385,14 +1384,12 @@ function initializeScene2(scene, renderer, camera) {
 
 
     loadCountries();
-    loadCountries2();
     loadGenres();
 
     dropdown();
     search();
-    document.querySelector('.selection-form[data-selection="2"]').style.display ="none";
+
     document.querySelector('.dropdown:nth-child(1) .menu').addEventListener('click', loadGenres);
-    document.querySelector('.selection-form[data-selection="2"] .selection-label-form .dropdown:nth-child(1) .menu').addEventListener('click', loadGenres2);
 
 
 
@@ -1421,12 +1418,13 @@ function initializeScene4(scene,renderer,camera){
 
 
 
-
+let filmdetails;
 
 // GESTION DU LANCEMENT DES DIFFERENTS GRAPHIQUES - PAGE ANALYSE-RESULT
 
 window.changeStats = async function(number){
     const comparerbtnOn = document.querySelector('.comparerbtn').alt == "switch2";
+    const containOn = document.querySelector('.option.contain.active');
 
     if (number==changeStatActive){
         return;
@@ -1447,11 +1445,34 @@ window.changeStats = async function(number){
 
     if(number==1){
         document.querySelector(".choix.votes").classList.add("active");
-        if(comparerbtnOn){
-            getCombinedVotesDetails(imdb1,imdb2);
+        if(containOn){
+            if(comparerbtnOn){
+                getCombinedVotesDetails(imdb1,imdb2);
+            }
+            else{
+                getSingleMovieVotesDetails(imdb1);
+            }
         }
         else{
-            getSingleMovieVotesDetails(imdb1);
+            const filmsData = await fetchDetails();
+            const type = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
+            if(type =="movie"){
+                createFilmBubbleChart(filmsData);
+                
+    
+
+
+            }
+            else{
+                createSeriesBubbleChart(filmsData);
+
+               
+                
+        
+
+            }
+            
+
         }
 
 
@@ -1459,30 +1480,67 @@ window.changeStats = async function(number){
 
     }
     else if(number==2){
-        document.querySelector(".choix.revenus").classList.add("active");
-        document.querySelector(".choix-ovale-revenu").classList.add("active");
-        document.querySelector(".choix.contenu1").classList.add("active");
-        getRevenueData(imdb1);
+        if(containOn){
+            document.querySelector(".choix.revenus").classList.add("active");
+            document.querySelector(".choix-ovale-revenu").classList.add("active");
+            document.querySelector(".choix.contenu1").classList.add("active");
+            getRevenueData(imdb1);
+        }
+        else{
+            const filmsData = await fetchDetails();
+            const type = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
+            if(type =="movie"){
+                createFilmRevenueBudgetChart(moyennesParGenre(filmsData));
+            }
+            else{
+                createGenreSeasonsChart(filmsData);
+                
+            }
+          
+
+
+            
+        }
         
 
     }
     else if(number==3){
         document.querySelector(".choix.casting").classList.add("active");
-        if(comparerbtnOn){
-            const topCastDetailsMovie1 = await getTopCastDetails(imdb1);
-            const topCastDetailsMovie2 = await getTopCastDetails(imdb2);
-    
-            if (topCastDetailsMovie1 && topCastDetailsMovie2) {
-                createCombinedCastChart(topCastDetailsMovie1, topCastDetailsMovie2);
+        if(containOn){
+            if(comparerbtnOn){
+                const topCastDetailsMovie1 = await getTopCastDetails(imdb1);
+                const topCastDetailsMovie2 = await getTopCastDetails(imdb2);
+        
+                if (topCastDetailsMovie1 && topCastDetailsMovie2) {
+                    createCombinedCastChart(topCastDetailsMovie1, topCastDetailsMovie2);
+                }
             }
+            else{
+                
+                const topCastDetailsMovie1 = await getTopCastDetails(imdb1);
+        
+                if (topCastDetailsMovie1) {
+                    createSingleCastChart(topCastDetailsMovie1);
+                }
+            }
+
         }
         else{
-            const topCastDetailsMovie1 = await getTopCastDetails(imdb1);
-    
-            if (topCastDetailsMovie1) {
-                createSingleCastChart(topCastDetailsMovie1);
+            const filmsData = await fetchDetails();
+            const type = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
+            if(type =="movie"){
+                createRuntimeByYearChart(groupFilmsByYearAndGenre(filmsData));
+
             }
+            else{
+
+                createSeriesSeasonsEpisodesChart(filmsData);
+                
+            }
+            
+
         }
+
 
 
 
@@ -1518,6 +1576,16 @@ window.backSearch = function (){
     document.querySelector(".analyseResult").classList.remove("active");
     document.querySelector(".analyse").classList.add("active");
     recreateAnalyseResultDiv();
+}
+window.closeGenre = function (){
+
+    document.querySelector(".choixGenre").classList.remove("active");
+    document.querySelector(".choixFilm.open").classList.remove("open")
+}
+window.openGenre = function (element){
+
+    element.classList.add("open")
+    document.querySelector(".choixGenre").classList.add("active");
 }
 
 window.activeSearch = async function (){
@@ -1643,8 +1711,95 @@ window.activeSearch = async function (){
     else if(!containOn && !comparerbtnOn){
         const filmsData = await fetchDetails();
         createFilmBubbleChart(filmsData);
+
+
         document.querySelector(".analyse").classList.remove("active");
         document.querySelector(".analyseResult").classList.add("active");
+
+        // Création de la nouvelle div
+        var newDiv1 = document.createElement("div");
+        newDiv1.classList.add("choixFilmGenre");
+        
+
+        // Création du nouveau paragraphe
+        var newParagraph1 = document.createElement("p");
+        newParagraph1.classList.add("TextChoixFilmGenre");
+
+        // Texte à ajouter au paragraphe
+        var paragraphText1 = document.createTextNode("Choisis un genre");
+
+        // Ajout du texte au paragraphe
+        newParagraph1.appendChild(paragraphText1);
+
+        // Ajout du paragraphe à la div
+        newDiv1.appendChild(newParagraph1);
+
+        // Recherche de l'élément où vous souhaitez insérer la nouvelle div
+        var targetElement1 = document.querySelector(".choixFilm[data-choix='1']");
+
+        // Insérer la nouvelle div avant l'élément ciblé
+        if (targetElement1) {
+            targetElement1.appendChild(newDiv1);
+        } else {
+            console.error("L'élément ciblé n'a pas été trouvé.");
+        }
+
+        // Création de la nouvelle div pour la deuxième insertion
+        var newDiv2 = document.createElement("div");
+        newDiv2.classList.add("choixFilmGenre");
+        targetElement1.setAttribute("onclick", "openGenre(this)");
+  
+
+        // Création du nouveau paragraphe pour la deuxième insertion
+        var newParagraph2 = document.createElement("p");
+        newParagraph2.classList.add("TextChoixFilmGenre");
+
+        // Texte à ajouter au paragraphe pour la deuxième insertion
+        var paragraphText2 = document.createTextNode("Choisis un autre genre");
+
+        // Ajout du texte au paragraphe pour la deuxième insertion
+        newParagraph2.appendChild(paragraphText2);
+
+        // Ajout du paragraphe à la div pour la deuxième insertion
+        newDiv2.appendChild(newParagraph2);
+
+        // Recherche de l'élément où vous souhaitez insérer la nouvelle div pour la deuxième insertion
+        var targetElement2 = document.querySelector(".choixFilm[data-choix='2']");
+        targetElement2.setAttribute("onclick", "openGenre(this)");
+
+        // Insérer la nouvelle div avant l'élément ciblé pour la deuxième insertion
+        if (targetElement2) {
+            targetElement2.appendChild(newDiv2);
+        } else {
+            console.error("L'élément ciblé n'a pas été trouvé.");
+        }
+
+        // Création de la nouvelle div
+        var newDiv3 = document.createElement("div");
+        newDiv3.classList.add("choixGenre");
+
+        var newDiv5 = document.createElement("div");
+        newDiv5.classList.add("cardGenreGrid");
+        
+        var newH1 = document.createElement("h1");
+        newH1.classList.add("cardGenreTitle");
+        newH1.textContent = "Choisis ton Genre :";
+
+        var closeBtn = document.createElement("img");
+        closeBtn.src = "assets/images/close_black.png";
+        closeBtn.classList.add("closeBtn");
+        closeBtn.setAttribute("onclick", "closeGenre()");
+        newDiv3.appendChild(closeBtn);
+
+        newDiv3.appendChild(newH1);
+        newDiv3.appendChild(newDiv5);
+        document.querySelector(".analyseResultSubject").appendChild(newDiv3);
+        loadGenresCard();
+        document.querySelectorAll('.choixFilm').forEach(choixFilm => {
+            choixFilm.setAttribute("filter", "no");
+        });
+
+
 
     }
     else if(!containOn && comparerbtnOn){
@@ -1658,6 +1813,132 @@ window.activeSearch = async function (){
 
 
 }
+window.selectGenre = function(genreName, genreColor) {
+
+    const canvas = document.querySelector('.chartGraph');
+    const chartInstance = canvas.chartInstance;
+    console.log(filmdetails)
+    cleartChartGenre();
+    
+
+    if (genreName === "Tous") {
+        document.querySelectorAll('.TextChoixFilmGenre').forEach(p => {
+            p.textContent = "Tous";
+        });
+
+        if (chartInstance) {
+            chartInstance.data.datasets = originalData.datasets;
+            chartInstance.update();
+        }
+
+        // Réinitialiser les attributs filter à "no"
+        document.querySelectorAll('.choixFilm').forEach(choixFilm => {
+            choixFilm.setAttribute("filter", "no");
+        });
+        remplirStatsFilm1("","","");
+        remplirStatsFilm2("","","");
+    } else {
+        // Mise à jour du genre sélectionné
+        const type = document.querySelector('.dropdown:nth-child(1) .selected').getAttribute('data-value');
+        const choixFilm = document.querySelector('.choixFilm.open');
+        const dataChoix = choixFilm.getAttribute('data-choix');
+        choixFilm.setAttribute("filter", genreName);
+
+        // Calculer les moyennes en fonction du type (film ou série)
+        let stats;
+        if (type === 'movie') {
+            stats = calculerMoyennesParGenreFilm(genreName, filmdetails); // Assurez-vous que filmsDetails est correctement défini et accessible
+        } else if (type === 'tv') {
+            stats = calculerMoyennesParGenreSerie(genreName, filmdetails); // Assurez-vous que seriesDetails est correctement défini et accessible
+        }
+
+        // Remplir les stats en fonction de data-choix et du type
+        if (dataChoix === '1') {
+            if (type === 'movie') {
+                remplirStatsFilm1(stats.roundedMoyennePopularity, stats.roundedMoyenneRuntime, stats.roundedMoyenneVoteAverage);
+            } else if (type === 'tv') {
+                remplirStatsSerie1(stats.roundedMoyennePopularity, stats.roundedMoyenneEpisode, stats.roundedMoyenneVoteAverage);
+            }
+        } else if (dataChoix === '2') {
+            if (type === 'movie') {
+                remplirStatsFilm2(stats.roundedMoyennePopularity, stats.roundedMoyenneRuntime, stats.roundedMoyenneVoteAverage);
+            } else if (type === 'tv') {
+                remplirStatsSerie2(stats.roundedMoyennePopularity, stats.roundedMoyenneEpisode, stats.roundedMoyenneVoteAverage);
+            }
+        }
+            // Vérifier si un autre genre est déjà sélectionné
+            const choixFilms = document.querySelectorAll('.choixFilm:not(.open)');
+            const autresChoixFilms = Array.from(choixFilms).filter(choixFilm => choixFilm.getAttribute("filter") && choixFilm.getAttribute("filter") !== "no");
+        if (autresChoixFilms.length > 0) {
+            // Un autre genre est sélectionné, récupérer son nom et calculer ses statistiques
+            const autreGenreName = autresChoixFilms[0].getAttribute("filter");
+            let stats2 = type === 'movie' ? calculerMoyennesParGenreFilm(autreGenreName, filmdetails) : calculerMoyennesParGenreSerie(autreGenreName, filmdetails);
+
+            // Utiliser chartStats pour comparer deux genres
+            if(dataChoix === '1'){
+                chartStats("Popularity", stats.roundedMoyennePopularity, stats2.roundedMoyennePopularity, "chartPopularity");
+                if(type === 'movie'){
+                    chartStats("Budget", stats.roundedMoyenneRuntime, stats2.roundedMoyenneRuntime, "chartBudget");
+                }
+                else{
+                    chartStats("Budget", stats.roundedMoyenneEpisode, stats2.roundedMoyenneEpisode, "chartBudget");
+                }
+                
+                chartStats("Awards", stats.roundedMoyenneVoteAverage, stats2.roundedMoyenneVoteAverage, "chartNomination");
+            }
+            else{
+                chartStats("Popularity", stats2.roundedMoyennePopularity, stats.roundedMoyennePopularity, "chartPopularity");
+                if(type === 'movie'){
+                    chartStats("Budget", stats2.roundedMoyenneRuntime, stats.roundedMoyenneRuntime, "chartBudget");
+                }
+                else{
+                    chartStats("Budget", stats2.roundedMoyenneEpisode, stats.roundedMoyenneEpisode, "chartBudget");
+                }
+                
+                chartStats("Awards", stats2.roundedMoyenneVoteAverage, stats.roundedMoyenneVoteAverage, "chartNomination");
+            }
+
+        } else {
+            // Seul ce genre est sélectionné, utiliser chartSingleStat
+            chartSingleStat("Popularity", stats.roundedMoyennePopularity, "chartPopularity");
+            if(type === 'movie'){
+                chartSingleStat("Budget", stats.roundedMoyenneRuntime, "chartBudget");
+            }
+            else{
+                chartSingleStat("Budget", stats.roundedMoyenneEpisode, "chartBudget");
+            }
+            
+            chartSingleStat("Awards", stats.roundedMoyenneVoteAverage, "chartNomination");
+        }
+        
+
+
+
+
+        const textChoixFilmGenre = choixFilm.querySelector('.TextChoixFilmGenre');
+        const choixFilmGenre = choixFilm.querySelector('.choixFilmGenre');
+        textChoixFilmGenre.textContent = genreName;
+        choixFilmGenre.style.background = genreColor;
+
+        if (chartInstance) {
+            const filters = Array.from(document.querySelectorAll('.choixFilm[filter]'))
+                                 .map(el => el.getAttribute('filter'))
+                                 .filter(filter => filter !== "no");
+
+            const filteredData = filters.length > 0 
+                                 ? originalData.datasets.filter(dataset => filters.includes(dataset.label))
+                                 : originalData.datasets;
+
+            chartInstance.data.datasets = filteredData;
+            chartInstance.update();
+        } else {
+            console.log("Instance de graphique non trouvée.");
+        }
+    }
+    closeGenre();
+};
+
+
 
 
 
@@ -1778,6 +2059,34 @@ function remplirStatistiques1(popularite, budget, nominations, victoires) {
     }
 
     document.querySelector('.statsInfo[data="budget1"]').textContent = budgetMillions;
+}
+function remplirStatsFilm1(popularite, runtime, vote) {
+    document.querySelector('.chartNumbers').setAttribute('data', 'contenu1');
+    document.querySelector('.statsInfo[data="popularity1"]').textContent = popularite;
+    document.querySelector('.statsInfo[data="nomi1"]').textContent = runtime;
+
+    document.querySelector('.statsInfo[data="budget1"]').textContent = vote;
+}
+function remplirStatsFilm2(popularite, runtime, vote) {
+    document.querySelector('.chartNumbers').setAttribute('data', 'contenu1');
+    document.querySelector('.statsInfo[data="popularity2"]').textContent = popularite;
+    document.querySelector('.statsInfo[data="nomi2"]').textContent = runtime;
+
+    document.querySelector('.statsInfo[data="budget2"]').textContent = vote;
+}
+function remplirStatsSerie1(popularite, episode, vote) {
+    document.querySelector('.chartNumbers').setAttribute('data', 'contenu1');
+    document.querySelector('.statsInfo[data="popularity1"]').textContent = popularite;
+    document.querySelector('.statsInfo[data="nomi1"]').textContent = episode;
+
+    document.querySelector('.statsInfo[data="budget1"]').textContent = vote;
+}
+function remplirStatsSerie2(popularite, episode, vote) {
+    document.querySelector('.chartNumbers').setAttribute('data', 'contenu1');
+    document.querySelector('.statsInfo[data="popularity2"]').textContent = popularite;
+    document.querySelector('.statsInfo[data="nomi2"]').textContent = episode;
+
+    document.querySelector('.statsInfo[data="budget2"]').textContent = vote;
 }
 
     // AFFICJAGE STATS
@@ -2451,30 +2760,108 @@ function loadGenres() {
       .catch(error => console.error('Erreur lors du chargement des genres :', error));
 }
 
-function loadGenres2() {
-    const type = document.querySelector('.selection-form[data-selection="2"] .selection-label-form .dropdown:nth-child(1) .selected').getAttribute('data-value');
-    const url = `https://api.themoviedb.org/3/genre/${type}/list?api_key=4bff542b068c0fff85589d72c363051d&language=fr-FR`;
-  
+function loadGenresCard() {
+    const type = document.querySelector('.dropdown:nth-child(1) .selected').getAttribute('data-value');
+    const url = `https://api.themoviedb.org/3/genre/${type}/list?api_key=4bff542b068c0fff85589d72c363051d&language=en-EN`;
+
     fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const menu = document.querySelector('.selection-form[data-selection="2"] .selection-label-form .dropdown:nth-child(2) .menu');
-        menu.innerHTML = ''; // Efface les anciennes options
-        
-        // Ajout d'une option par défaut
-        const defaultOption = document.createElement('li');
-        defaultOption.textContent = 'Sélectionner un genre';
-        menu.appendChild(defaultOption);
-  
-        data.genres.forEach(genre => {
-          const option = document.createElement('li');
-          option.textContent = genre.name;
-          option.setAttribute('data-value', genre.id);
-          menu.appendChild(option);
-        });
-      })
-      .catch(error => console.error('Erreur lors du chargement des genres :', error));
+        .then(response => response.json())
+        .then(data => {
+            const genreGrid = document.querySelector('.cardGenreGrid');
+            genreGrid.innerHTML = ''; // Efface les anciennes cartes de genre
+
+            // Ajouter l'option "Tous" au début de la liste des genres
+            const allGenresOption = { id: 'all', name: 'Tous' };
+            data.genres.unshift(allGenresOption); // Ajoute "Tous" au début du tableau des genres
+
+            const genresPerPage = 8; // Nombre de genres par page
+            const totalPages = Math.ceil(data.genres.length / genresPerPage); // Calcul du nombre total de pages
+
+            let currentPage = 1;
+
+            const genreColors = {
+                1: 'linear-gradient(to right, rgba(239, 115, 0, 1), rgba(250, 240, 3, 0.53))',
+                2: 'linear-gradient(to right, #1e5799, #2989d8)',
+                3: 'linear-gradient(to right, #6a3093, #a044ff)',
+                4: 'linear-gradient(to right, #00bfff, #87ceeb)',
+                5: 'linear-gradient(to right, #ff6347, #d00000)',
+                6: 'linear-gradient(to right, #800000, #ff0000)',
+                7: 'linear-gradient(to right, #32cd32, #228b22)',
+                8: 'linear-gradient(to right, #8b4513, #cd853f)',
+                9: 'linear-gradient(to right, #deb887, #a0522d)',
+                10: 'linear-gradient(to right, #483d8b, #9370db)',
+                11: 'linear-gradient(to right, #2f4f4f, #008080)',
+                12: 'linear-gradient(to right, #008000, #32cd32)',
+                13: 'linear-gradient(to right, #000080, #4682b4)',
+                14: 'linear-gradient(to right, #4b0082, #800080)',
+                15: 'linear-gradient(to right, #9932cc, #8a2be2)',
+                16: 'linear-gradient(to right, #ff69b4, #ff1493)',
+                17: 'linear-gradient(to right, #daa520, #ffd700)',
+                18: 'linear-gradient(to right, #b22222, #cd5c5c)',
+                19: 'linear-gradient(to right, #ffc0cb, #ffb6c1)'
+              };
+
+            const displayGenres = (page) => {
+                const start = (page - 1) * genresPerPage;
+                const end = start + genresPerPage;
+                const genres = data.genres.slice(start, end);
+
+                genres.forEach((genre, index) => {
+
+                    var i = Math.floor(Math.random() * 20);
+                    const genreColor =genreColors[i] || 'linear-gradient(to right, #ff0000, #0000ff)';
+                    const cardGenre = document.createElement('div');
+                    cardGenre.classList.add('cardGenre');
+                    cardGenre.style.background = genreColor;
+                    cardGenre.setAttribute('onclick', `selectGenre('${genre.name}', '${genreColor}')`);
+
+                    const cardGenreName = document.createElement('p');
+                    cardGenreName.classList.add('cardGenreName');
+                    cardGenreName.textContent = genre.name;
+
+                    cardGenre.appendChild(cardGenreName);
+                    genreGrid.appendChild(cardGenre);
+                });
+            };
+
+            // Afficher la première page au chargement
+            displayGenres(currentPage);
+
+            // Ajouter des boutons pour permettre à l'utilisateur de naviguer entre les pages
+            const paginationContainer = document.createElement('div');
+            paginationContainer.classList.add('pagination');
+
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Précédent';
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    genreGrid.innerHTML = ''; // Effacer les cartes actuelles
+                    displayGenres(currentPage);
+                }
+            });
+            paginationContainer.appendChild(prevButton);
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Suivant';
+            nextButton.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    genreGrid.innerHTML = ''; // Effacer les cartes actuelles
+                    displayGenres(currentPage);
+                }
+            });
+            paginationContainer.appendChild(nextButton);
+
+            document.querySelector('.choixGenre').appendChild(paginationContainer);
+        })
+        .catch(error => console.error('Erreur lors du chargement des genres :', error));
 }
+
+
+
+
+
   
         // Fonction pour charger les pays depuis l'API TMDB
 function loadCountries() {
@@ -2502,31 +2889,6 @@ function loadCountries() {
 }
 
 
-function loadCountries2() {
-    const url = 'https://api.themoviedb.org/3/configuration/countries?api_key=4bff542b068c0fff85589d72c363051d';
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const menu = document.querySelector('.selection-form[data-selection="2"] .selection-label-form .dropdown:nth-child(3) .menu');
-        menu.innerHTML = ''; // Efface les anciennes options
-
-        
-        // Ajout d'une option par défaut
-        const defaultOption = document.createElement('li');
-        defaultOption.textContent = 'Sélectionner un pays';
-        menu.appendChild(defaultOption);
-  
-        data.forEach(country => {
-       
-          const option = document.createElement('li');
-          option.textContent = country.english_name;
-          option.setAttribute('data-value', country.iso_3166_1);
-          menu.appendChild(option);
-        });
-      })
-      .catch(error => console.error('Erreur lors du chargement des pays :', error));
-}
 
 function dropdown() {
     const dropdowns = document.querySelectorAll(".dropdown");
@@ -2587,6 +2949,21 @@ function clearChart(){
     analyseResultGraphique.appendChild(newCanvas);
     
 }
+
+function cleartChartGenre() {
+    // Sélectionner tous les éléments canvas dans chartGlobal
+    const canvasElements = document.querySelectorAll('.chartGlobal .chart');
+  
+    canvasElements.forEach(canvas => {
+      const chartDiv = canvas.parentElement; // Obtenir le parent div de canvas
+      const newCanvas = document.createElement('canvas'); // Créer un nouveau canvas
+      newCanvas.className = canvas.className; // Copier la classe du canvas existant
+  
+      chartDiv.removeChild(canvas); // Supprimer l'ancien canvas
+      chartDiv.appendChild(newCanvas); // Ajouter le nouveau canvas
+    });
+  }
+  
 
 function recreateAnalyseResultDiv() {
     // Supprimer la div analyseResult si elle existe déjà
@@ -2790,6 +3167,7 @@ async function fetchDetails() {
 
             if (type === 'movie' && item.popularity && item.revenue !== undefined && item.budget !== undefined && item.vote_average && item.vote_count && item.runtime && item.release_date) {
             details.push({
+                title: item.title,
                 id: item.id,
                 genre: genre, // Ajout du genre ici
                 popularity: item.popularity,
@@ -2802,6 +3180,7 @@ async function fetchDetails() {
             });
             } else if (type === 'tv' && item.popularity && item.last_air_date && item.first_air_date && item.number_of_episodes && item.number_of_seasons && item.vote_average && item.vote_count) {
             details.push({
+                name: item.name,
                 id: item.id,
                 genre: genre, // Ajout du genre ici
                 popularity: item.popularity,
@@ -2828,88 +3207,81 @@ function determineGenrePriority(genres) {
     return genres[0]; // Retourne le premier genre par défaut si aucun match n'est trouvé
   }
 
-function calculateFilmIndicators(films) {
-  const totalFilms = films.length;
-  let totalPopularity = 0;
-  let totalRuntime = 0;
-  let totalVoteAverage = 0;
 
-  films.forEach(film => {
-    totalPopularity += film.popularity;
-    totalRuntime += film.runtime;
-    totalVoteAverage += film.vote_average;
-  });
 
-  const averagePopularity = totalPopularity / totalFilms;
-  const averageRuntime = totalRuntime / totalFilms;
-  const averageVoteAverage = totalVoteAverage / totalFilms;
+function groupByGenreFilm(filmsData) {
+    // Créer un objet pour stocker les points de chaque genre
+    const genresMap = {};
 
-  return {
-    averagePopularity,
-    averageRuntime,
-    averageVoteAverage
-  };
-}
-
-function calculateSeriesIndicators(series) {
-    const totalSeries = series.length;
-    let totalPopularity = 0;
-    let totalEpisodes = 0;
-    let totalVoteAverage = 0;
-  
-    series.forEach(serie => {
-      totalPopularity += serie.popularity;
-      totalEpisodes += serie.number_of_episodes;
-      totalVoteAverage += serie.vote_average;
+    // Regrouper les points par genre
+    filmsData.forEach(film => {
+        if (!genresMap[film.genre]) {
+            genresMap[film.genre] = [];
+        }
+      
+        genresMap[film.genre].push({        
+            data: {
+                title: film.title || 'Inconnu',
+                x: film.popularity,
+                y: film.vote_average,
+            }
+        });
     });
-  
-    const averagePopularity = totalPopularity / totalSeries;
-    const averageEpisodes = totalEpisodes / totalSeries;
-    const averageVoteAverage = totalVoteAverage / totalSeries;
-  
-    return {
-      averagePopularity,
-      averageEpisodes,
-      averageVoteAverage
-    };
+
+    return genresMap;
 }
+
+function groupByGenreSerie(seriesData) {
+    // Créer un objet pour stocker les points de chaque genre
+    const genresMap = {};
+
+    // Regrouper les points par genre
+    seriesData.forEach(serie => {
+        if (!genresMap[serie.genre]) {
+            genresMap[serie.genre] = [];
+        }
+      
+        genresMap[serie.genre].push({        
+            data: {
+                title: serie.name || 'Inconnu',
+                x: serie.popularity,
+                y: serie.vote_average,
+            }
+        });
+    });
+
+    return genresMap;
+}
+let originalData;
 
 function createFilmBubbleChart(filmsData) {
     const ctx = document.querySelector('.chartGraph').getContext('2d');
     
-    // Pour différencier les couleurs par genre, créez une map de genres à couleurs
-    const genreColors = {
-      'Action': 'rgba(255, 99, 132, 0.6)',
-      'Drama': 'rgba(54, 162, 235, 0.6)',
-      'Comedy': 'rgba(255, 206, 86, 0.6)',
-      // Ajoutez d'autres genres et couleurs selon vos besoins
-    };
-  
-    // Préparer les données pour chaque film
-    const datasets = filmsData.map(film => ({
-      label: film.title, // Ou 'Film' si le titre n'est pas disponible
-      data: [{
-        x: film.popularity,
-        y: film.vote_average,
+    // Regrouper les points par genre
+    const genresMap = groupByGenreFilm(filmsData);
 
-      }],
-      backgroundColor: genreColors[film.genre] || 'rgba(201, 203, 207, 0.6)', // Couleur par défaut
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-      borderWidth: 1
+    // Préparer les données pour chaque genre
+    const datasets = Object.keys(genresMap).map(genre => ({
+        label: genre || 'Inconnu',
+        data: genresMap[genre].map(item => item.data), // Utiliser uniquement les données
+        backgroundColor: getRandomColor(), // Couleur aléatoire pour chaque genre
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1
     }));
-    console.log(datasets)
-  
-    new Chart(ctx, {
+    originalData = { datasets: datasets };
+    filmdetails = filmsData;
+
+    const myChart = new Chart(ctx, {
       type: 'bubble',
       data: { datasets },
       options: {
         plugins: {
-            legend:{
-                display:false
-            },
           tooltip: {
             callbacks: {
-
+              label: (context) => {
+                const data = context.raw;
+                return `${data.title}: Popularité - ${data.x}, Note Moyenne - ${data.y}`;
+              }
             }
           }
         },
@@ -2931,28 +3303,127 @@ function createFilmBubbleChart(filmsData) {
         }
       }
     });
-  }
+    ctx.canvas.chartInstance = myChart;
+}
+function createSeriesBubbleChart(seriesData) {
+    const ctx = document.querySelector('.chartGraph').getContext('2d');
+    
+    // Regrouper les points par genre
+    const genresMap = groupByGenreFilm(seriesData);
+
+    // Préparer les données pour chaque genre
+    const datasets = Object.keys(genresMap).map(genre => ({
+        label: genre || 'Inconnu',
+        data: genresMap[genre].map(item => item.data), // Utiliser uniquement les données
+        backgroundColor: getRandomColor(), // Couleur aléatoire pour chaque genre
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1
+    }));
+    originalData = { datasets: datasets };
+    filmdetails = filmsData;
+
+    const myChart = new Chart(ctx, {
+      type: 'bubble',
+      data: { datasets },
+      options: {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const data = context.raw;
+                return `${data.title}: Popularité - ${data.x}, Note Moyenne - ${data.y}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Popularité'
+            },
+            beginAtZero: false,
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Note Moyenne'
+            },
+            beginAtZero: false,
+          }
+        }
+      }
+    });
+    ctx.canvas.chartInstance = myChart;
+}
+
+
+
+function moyennesParGenre(data) {
+const moyennes = {};
+const countGenres = {};
+
+data.forEach(movie => {
+    const genre = movie.genre;
+    const budget = movie.budget;
+    const revenue = movie.revenue;
+    
+    if (!moyennes[genre]) {
+        moyennes[genre] = { budgetTotal: 0, revenueTotal: 0, count: 0 };
+    }
+    
+    if (budget !== 0) {
+        moyennes[genre].budgetTotal += budget;
+        moyennes[genre].count++;
+    }
+    
+    if (revenue !== 0) {
+        moyennes[genre].revenueTotal += revenue;
+    }
+    
+    countGenres[genre] = (countGenres[genre] || 0) + 1;
+});
+
+for (const genre in moyennes) {
+    const values = moyennes[genre];
+    const count = values.count;
+    
+    if (count !== 0) {
+        moyennes[genre].budgetMoyen = values.budgetTotal / count;
+        moyennes[genre].revenueMoyen = values.revenueTotal / count;
+    }
+}
+
+return moyennes;
+}
   
 function createFilmRevenueBudgetChart(filmsData) {
-    const ctx = document.getElementById('filmRevenueBudgetChart').getContext('2d');
+    const ctx = document.querySelector('.chartGraph').getContext('2d');
+    const labels = Object.keys(filmsData); // Utiliser les genres comme labels
+    const budgets = labels.map(genre => filmsData[genre].budgetMoyen || 0);
+    const revenues = labels.map(genre => filmsData[genre].revenueMoyen || 0);
+    
     const data = {
-      labels: filmsData.map(film => film.genre), // Utiliser les genres comme labels
+      labels: labels,
       datasets: [{
         label: 'Budget',
-        data: filmsData.map(film => film.averageBudget),
+        data: budgets,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1
       }, {
         label: 'Revenu',
-        data: filmsData.map(film => film.averageRevenue),
+        data: revenues,
         backgroundColor: 'rgba(255, 206, 86, 0.2)',
         borderColor: 'rgba(255, 206, 86, 1)',
         borderWidth: 1
       }]
     };
+    originalData = { datasets: data };
+    filmdetails = filmsData;
+
   
-    new Chart(ctx, {
+    const myChart = new Chart(ctx, {
       type: 'bar',
       data: data,
       options: {
@@ -2966,152 +3437,328 @@ function createFilmRevenueBudgetChart(filmsData) {
         }
       }
     });
+    ctx.canvas.chartInstance = myChart;
 }
-function createFilmDurationPerYearChart(yearlyData) {
-    const ctx = document.getElementById('filmDurationPerYearChart').getContext('2d');
-    const data = {
-      labels: yearlyData.map(data => data.year),
-      datasets: [{
-        label: 'Durée Moyenne',
-        data: yearlyData.map(data => data.averageRuntime),
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }]
-    };
-  
-    new Chart(ctx, {
-      type: 'line',
-      data: data,
-      options: {
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Année'
-            }
-          },
-          y: {
-            title: {
-              display: true,
-              text: 'Durée Moyenne (min)'
-            }
-          }
-        }
-      }
-    });
-  }
-  
 
-function createSeriesBubbleChart(seriesData) {
-    const ctx = document.getElementById('seriesBubbleChart').getContext('2d');
-    const data = {
-      datasets: [{
-        label: 'Séries',
-        data: seriesData.map(serie => ({
-          x: serie.averagePopularity,
-          y: serie.averageVoteAverage,
-          r: serie.averageEpisodes / 10 // Ajustez la taille pour la visualisation
-        })),
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        borderColor: 'rgba(153, 102, 255, 1)',
-        borderWidth: 1
-      }]
-    };
-  
-    new Chart(ctx, {
-      type: 'bubble',
-      data: data,
-      options: {
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Popularité Moyenne'
-            }
-          },
-          y: {
-            title: {
-              display: true,
-              text: 'Note Moyenne'
-            }
-          }
+function groupFilmsByYearAndGenre(filmsData) {
+    const groupedData = {};
+    filmdetails = filmsData;
+
+    filmsData.forEach(film => {
+        const releaseYear = new Date(film.release_date).getFullYear();
+        const yearGroup = Math.floor(releaseYear / 5) * 5; // Groupe par tranche de 5 ans
+        const genre = film.genre;
+
+        if (!groupedData[yearGroup]) {
+            groupedData[yearGroup] = {};
         }
-      }
+
+        if (!groupedData[yearGroup][genre]) {
+            groupedData[yearGroup][genre] = { totalRuntime: 0, count: 0 };
+        }
+
+        groupedData[yearGroup][genre].totalRuntime += film.runtime;
+        groupedData[yearGroup][genre].count++;
     });
-  }
+
+    // Remplir les données manquantes avec une durée moyenne de zéro
+    const allGenres = new Set(filmsData.map(film => film.genre));
+    for (const yearGroup in groupedData) {
+        for (const genre of allGenres) {
+            if (!groupedData[yearGroup][genre]) {
+                groupedData[yearGroup][genre] = { totalRuntime: 0, count: 0 };
+            }
+        }
+    }
+
+    // Calcul de la moyenne pour chaque groupe
+    for (const yearGroup in groupedData) {
+        for (const genre in groupedData[yearGroup]) {
+            groupedData[yearGroup][genre].averageRuntime =
+                groupedData[yearGroup][genre].totalRuntime /
+                groupedData[yearGroup][genre].count;
+        }
+    }
+
+    return groupedData;
+}
+
+
+
+function createRuntimeByYearChart(groupedData) {
+    const ctx = document.querySelector('.chartGraph').getContext('2d');
+    const genres = Object.keys(groupedData[Object.keys(groupedData)[0]]); // Utiliser les genres comme séries de données
+
+    const data = {
+        labels: Object.keys(groupedData),
+        datasets: genres.map(genre => ({
+            label: genre,
+            data: Object.values(groupedData).map(data => data[genre]?.averageRuntime || 0),
+            fill: false,
+            borderColor: getRandomColor(),
+            tension: 0.4
+        }))
+    };
+    originalData = { datasets: data.datasets };
+ 
+
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Durée moyenne (en minutes)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Années'
+                    }
+                }
+            }
+        }
+    });
+    ctx.canvas.chartInstance = myChart;
+}
+  
+function groupByGenreSerie2(seriesData) {
+    // Créer un objet pour stocker les séries de chaque genre
+    const genresMap = {};
+
+    // Regrouper les séries par genre
+    seriesData.forEach(serie => {
+        if (!genresMap[serie.genre]) {
+            genresMap[serie.genre] = [];
+        }
+      
+        genresMap[serie.genre].push({
+            data: {
+                title: serie.name || 'Inconnu', // Nom de la série
+                x: serie.number_of_seasons, // Nombre de saisons
+                y: serie.number_of_episodes, // Nombre d'épisodes
+                r: serie.vote_average*10 // Moyenne des votes
+            }
+        });
+    });
+
+    return genresMap;
+}
+
+
+
 
 function createSeriesSeasonsEpisodesChart(seriesData) {
-const ctx = document.getElementById('seriesSeasonsEpisodesChart').getContext('2d');
-const data = {
-    datasets: [{
-    label: 'Séries',
-    data: seriesData.map(serie => ({
-        x: serie.numberOfSeasons,
-        y: serie.averageEpisodes
-    })),
-    backgroundColor: 'rgba(255, 159, 64, 0.2)',
-    borderColor: 'rgba(255, 159, 64, 1)',
-    }]
-};
+    const ctx = document.querySelector('.chartGraph').getContext('2d');
+    
+    // Regrouper les séries par genre
+    const genresMap = groupByGenreSerie2(seriesData);
 
-new Chart(ctx, {
-    type: 'scatter',
-    data: data,
-    options: {
-    scales: {
-        x: {
-        title: {
-            display: true,
-            text: 'Nombre de Saisons'
+    // Préparer les données pour chaque genre
+    const datasets = Object.keys(genresMap).map(genre => ({
+        label: genre || 'Inconnu',
+        data: genresMap[genre].map(item => item.data), // Utiliser uniquement les données
+        backgroundColor: getRandomColor(), // Couleur aléatoire pour chaque genre
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1
+    }));
+    originalData = { datasets: datasets };
+    filmdetails = seriesData;
+    const myChart = new Chart(ctx, {
+        type: 'scatter',
+        data: { datasets },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: (context) => {
+                            console.log(context);
+                            const data = context.raw;
+                            return `${data.title}: Nombre de Saisons - ${data.x}, Nombre Moyen d’Épisodes - ${data.y}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Nombre de Saisons'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Nombre Moyen d’Épisodes'
+                    }
+                }
+            }
         }
-        },
-        y: {
-        title: {
-            display: true,
-            text: 'Nombre Moyen d’Épisodes'
-        }
-        }
-    }
-    }
-});
+    });
+    ctx.canvas.chartInstance = myChart;
 }
 
-function createSeriesPopularityOverTimeChart(seriesData) {
-    const ctx = document.getElementById('seriesPopularityOverTimeChart').getContext('2d');
-    const sortedData = seriesData.sort((a, b) => a.firstAirDate - b.firstAirDate); // Assurez-vous que firstAirDate est une année pour cela fonctionne
-    const data = {
-      labels: sortedData.map(data => data.firstAirDate),
-      datasets: [{
-        label: 'Popularité Moyenne',
-        data: sortedData.map(data => data.averagePopularity),
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        fill: false,
-      }]
-    };
+function groupByGenreSerie3(seriesData) {
+    const genresMap = {};
+
+    seriesData.forEach(serie => {
+        if (!genresMap[serie.genre]) {
+            genresMap[serie.genre] = [];
+        }
+      
+        genresMap[serie.genre].push(serie);
+    });
+
+    return genresMap;
+}
+
+
+
+
+
+function prepareDataForChart(seriesData) {
+    const genreSeasonsData = {}; // { genre: { yearRange: totalSeasons, count: numberOfSeries }}
   
-    new Chart(ctx, {
+    seriesData.forEach(serie => {
+      const startYear = new Date(serie.first_air_date).getFullYear();
+      // Arrondir l'année de début à la tranche de 5 ans la plus proche
+      const yearRange = startYear - (startYear % 5);
+  
+      if (!genreSeasonsData[serie.genre]) {
+        genreSeasonsData[serie.genre] = {};
+      }
+      if (!genreSeasonsData[serie.genre][yearRange]) {
+        genreSeasonsData[serie.genre][yearRange] = { totalSeasons: 0, count: 0 };
+      }
+  
+      genreSeasonsData[serie.genre][yearRange].totalSeasons += serie.number_of_seasons;
+      genreSeasonsData[serie.genre][yearRange].count += 1;
+    });
+  
+    // Calculer les moyennes
+    const averages = {}; // { genre: { yearRange: averageSeasons }}
+  
+    Object.keys(genreSeasonsData).forEach(genre => {
+      averages[genre] = {};
+      Object.keys(genreSeasonsData[genre]).forEach(yearRange => {
+        const data = genreSeasonsData[genre][yearRange];
+        averages[genre][yearRange] = data.totalSeasons / data.count;
+      });
+    });
+  
+    return averages;
+  }
+
+  function createGenreSeasonsChart(seriesData) {
+    const ctx = document.querySelector('.chartGraph').getContext('2d');
+    const averages = prepareDataForChart(seriesData);
+  
+    const datasets = Object.keys(averages).map(genre => {
+      return {
+        label: genre,
+        data: Object.keys(averages[genre]).map(yearRange => {
+          return { x: yearRange, y: averages[genre][yearRange] };
+        }),
+        fill: false,
+        borderColor: getRandomColor(), // Fonction pour générer des couleurs aléatoires
+        tension: 0.1
+      };
+    });
+    originalData = { datasets: datasets };
+    filmdetails = seriesData;
+
+  
+  
+    const myChart = new Chart(ctx, {
       type: 'line',
-      data: data,
+      data: { datasets },
       options: {
         scales: {
           x: {
             title: {
               display: true,
-              text: 'Année de Première Diffusion'
+              text: 'Période'
             }
           },
           y: {
             title: {
               display: true,
-              text: 'Popularité Moyenne'
+              text: 'Nombre Moyen de Saisons'
             }
           }
         }
       }
     });
-}
+    ctx.canvas.chartInstance = myChart;
+  }
+  
+  function calculerMoyennesParGenreFilm(nomGenre, listeFilms) {
+    // Filtrer les films par le nom de genre
+    const filmsFiltres = listeFilms.filter(film =>
+      film.genre === nomGenre // Comparaison directe du nom du genre
+    );
+  
+    // Calculer les moyennes
+    const totalFilms = filmsFiltres.length;
+    const sommePopularity = filmsFiltres.reduce((acc, film) => acc + film.popularity, 0);
+    const sommeRuntime = filmsFiltres.reduce((acc, film) => acc + film.runtime, 0);
+    const sommeVoteAverage = filmsFiltres.reduce((acc, film) => acc + film.vote_average, 0);
+  
+    const moyennePopularity = totalFilms > 0 ? sommePopularity / totalFilms : 0;
+    const moyenneRuntime = totalFilms > 0 ? sommeRuntime / totalFilms : 0;
+    const moyenneVoteAverage = totalFilms > 0 ? sommeVoteAverage / totalFilms : 0;
+
+    // Arrondir les moyennes à un chiffre après la virgule
+    const roundedMoyennePopularity = parseFloat(moyennePopularity.toFixed(1));
+    const roundedMoyenneRuntime = parseFloat(moyenneRuntime.toFixed(1));
+    const roundedMoyenneVoteAverage = parseFloat(moyenneVoteAverage.toFixed(1));
+   
+  
+    return {
+      roundedMoyennePopularity,
+      roundedMoyenneRuntime,
+      roundedMoyenneVoteAverage
+    };
+  }
+  function calculerMoyennesParGenreSerie(nomGenre, listeFilms) {
+    // Filtrer les films par le nom de genre
+    const filmsFiltres = listeFilms.filter(serie =>
+      serie.genre === nomGenre // Comparaison directe du nom du genre
+    );
+  
+    // Calculer les moyennes
+    const totalFilms = filmsFiltres.length;
+    const sommePopularity = filmsFiltres.reduce((acc, serie) => acc + serie.popularity, 0);
+    const sommeRuntime = filmsFiltres.reduce((acc, serie) => acc + serie.number_of_episodes, 0);
+    const sommeVoteAverage = filmsFiltres.reduce((acc, serie) => acc + serie.vote_average, 0);
+  
+    const moyennePopularity = totalFilms > 0 ? sommePopularity / totalFilms : 0;
+    const moyenneEpisode = totalFilms > 0 ? sommeRuntime / totalFilms : 0;
+    const moyenneVoteAverage = totalFilms > 0 ? sommeVoteAverage / totalFilms : 0;
+
+    // Arrondir les moyennes à un chiffre après la virgule
+    const roundedMoyennePopularity = moyennePopularity.toFixed(1);
+    const roundedMoyenneEpisode = parseFloat(moyenneEpisode.toFixed(1));
+    const roundedMoyenneVoteAverage = parseFloat(moyenneVoteAverage.toFixed(1));
+    
+  
+    return {
+      roundedMoyennePopularity,
+      roundedMoyenneEpisode,
+      roundedMoyenneVoteAverage
+    };
+  }
+  
+  
+  
+
+ 
+  
+
   
   
   
