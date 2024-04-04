@@ -10,7 +10,7 @@
 <body>
 
 <select id="variableSelect1">
-    <option value="budget">Budget</option>
+    <option value="budget" selected>Budget</option>
     <option value="revenue">Revenue</option>
     <option value="runtime">Duree</option>
     <option value="popularity">Popularite</option>
@@ -19,7 +19,7 @@
 
 <select id="variableSelect2">
     <option value="budget">Budget</option>
-    <option value="revenue">Revenue</option>
+    <option value="revenue" selected>Revenue</option>
     <option value="runtime">Duree</option>
     <option value="popularity">Popularite</option>
     <option value="vote_count">Nombre de Votes</option>
@@ -30,7 +30,6 @@
     <option value="3">3</option>
     <option value="4">4</option>
     <option value="5">5</option>
-    <!-- Ajoutez autant d'options que vous jugez nécessaires -->
 </select>
 
 <select id="testSelect">
@@ -41,9 +40,9 @@
 
 <button id="executeTestButton">Exécuter le test</button>
 
-<div id="myDiv"></div>
+<div id="myDiv">
 <canvas id="correlationChart" width="400" height="400"></canvas>
-
+</div>
 <h2>Données récupérées</h2>
 <table id="dataTable">
     <thead>
@@ -63,12 +62,14 @@ $(document).ready(function() {
 
     const idTmdbList = [1011985, 359410, 823464, 634492, 601796, 763215, 856289, 1096197, 624091, 940551, 1006540, 1013240, 693134, 969492, 1124127, 932420, 1239251, 1046090, 1049948, 848538, 848538, 1081620, 787699, 940721, 872585, 792307, 870404, 1072790, 399566, 967847, 1211483, 1216512, 1022796, 984249, 438631, 572802, 609681, 1217409, 802219, 851925, 572802, 1125311, 866398, 1227816, 840889, 1094556, 682075, 1028703, 897087, 124905, 983526, 949429, 695721, 1248795, 502356, 370464, 885303, 1022789, 508883, 59300, 9502, 838240, 753342, 799155, 933131, 1010581, 1146148, 373571, 76600, 634649, 1079394, 976573, 1212073, 1029575, 346698, 1019420, 931642, 714567, 1079485, 569094, 981347, 838240, 982940, 634649, 603692, 1161663, 955916, 6844, 976573, 503417, 528656, 425909, 977331, 872542, 838209, 315162, 1079485, 299536, 848326, 1183905, 299054, 1170657, 49444, 963591, 157336, 918692, 853812, 615656, 977331, 414906, 298618, 1205781, 926393, 901362, 1139566, 140300, 254, 671, 150540, 893723,949567, 854188, 1058078, 671, 853812, 299054, 1139566, 505642, 293660, 965571, 1205781, 653346, 918692, 4011, 1078012, 293167, 891699, 672, 116776, 475557];
     let data = [];
-    let data2 = [];
+    
     function getSelectedClusterCount() {
         return parseInt($('#clusterCount').val());
     }
+
+
 //--------------------------------Recupération des données-----------------------------
-    async function getMovieInfo(movieId) {
+async function getMovieInfo(movieId) {
         const options = {
             method: 'GET',
             headers: {
@@ -83,7 +84,6 @@ $(document).ready(function() {
                 throw new Error('Erreur lors de la récupération des données du film');
             }
             const movieData = await response.json();
-            console.log(movieData);
             return movieData;
         
         } catch (error) {
@@ -93,48 +93,33 @@ $(document).ready(function() {
     }
 
     async function fillData(var1, var2) {
-    $('#dataBody').empty(); // Vide le contenu actuel du tableau
-    data = []; // Réinitialiser le tableau de données
-    for (const movieId of idTmdbList) {
-        try {
-            const movieData = await getMovieInfo(movieId);
-            const var1Value = movieData[var1];
-            const var2Value = movieData[var2];
-
-            // Vérifier si les valeurs des variables sont non nulles
-            if (var1Value !== 0 && var2Value !== 0) {
-                const movieTitle = movieData['title'] || 'Unknown';
-                data.push({ movieId, [var1]: var1Value, [var2]: var2Value, movieTitle });
-                // Ajoute une ligne au tableau pour chaque film récupéré
-                $('#dataBody').append(`<tr><td>${movieTitle}</td><td>${var1Value}</td><td>${var2Value}</td></tr>`);
+        $('#dataBody').empty(); // Clear the current table content
+        data = []; // Reset the data array
+        for (const movieId of idTmdbList) {
+            try {
+                const movieData = await getMovieInfo(movieId);
+                const movieVariables = {
+                    title: movieData.original_title,
+                    budget: movieData.budget,
+                    revenue: movieData.revenue,
+                    popularity: movieData.popularity,
+                    runtime: movieData.runtime,
+                    vote_count: movieData.vote_count
+                };
+                if (Object.values(movieVariables).some(value => value === 0)) {
+                    continue;
+                }
+                data.push(movieVariables);
+                $('#dataBody').append(`<tr><td>${movieVariables.title}</td><td>${movieVariables[var1]}</td><td>${movieVariables[var2]}</td></tr>`);
+            } catch (error) {
+                console.error('Error fetching movie data:', error);
             }
-        } catch (error) {
-            console.error('Error fetching movie data:', error);
         }
     }
-}
 
-    async function fillData2() {
-    $('#dataBody').empty(); // Vide le contenu actuel du tableau
-    data2 = []; // Réinitialiser le tableau de données
-    for (const movieId of idTmdbList) {
-        try {
-            const movieData = await getMovieInfo(movieId);
-            const movieVariables = {
-                title: movieData.original_title,
-                budget: movieData.budget,
-                revenue: movieData.revenue,
-                popularity: movieData.popularity,
-                runtime: movieData.runtime,
-                vote_count: movieData.vote_count
-            };
-            data2.push(movieVariables); // Ajouter les données du film à la liste des données
-        } catch (error) {
-            console.error('Error fetching movie data:', error);
-        }
-    }
-}
-
+    const variable1 = $('#variableSelect1').val();
+    const variable2 = $('#variableSelect2').val();
+    fillData(variable1, variable2);
 
 //----------------------------------------------------------------------------------
 
@@ -162,56 +147,69 @@ function calculatePearsonCorrelation(x, y) {
         return numerator / denominator;
     }
 
-function displayScatterPlot(x, y) {
-        var ctx = document.getElementById('correlationChart').getContext('2d');
-        var scatterChart = new Chart(ctx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    label: 'Corrélation entre Budget et Revenue',
-                    data: data.map(row => ({x: row.budget, y: row.revenue, title: row.movieTitle})),
-                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                        title: {
-                            display: true,
-                            text: 'Budget'
-                        }
-                    },
-                    y: {
-                        type: 'linear',
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Revenue'
-                        }
+function displayScatterPlot(x, y, titles) {
+    // Préparer les données pour le graphique
+    var scatterData = x.map((value, index) => {
+        return { x: value, y: y[index], title: titles[index] }; // Inclure le titre du film
+    });
+
+    var ctx = document.getElementById('correlationChart').getContext('2d');
+    if(window.scatterChart != undefined) {
+        window.scatterChart.destroy();
+    }
+    window.scatterChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: `Corrélation entre ${$('#variableSelect1 option:selected').text()} et ${$('#variableSelect2 option:selected').text()}`,
+                data: scatterData,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: $('#variableSelect1 option:selected').text()
                     }
                 },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.data[context.dataIndex].title;
-                            }
+                y: {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: $('#variableSelect2 option:selected').text()
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const dataPoint = context.raw;
+                            // Afficher le titre, la valeur de x et la valeur de y
+                            return `${dataPoint.title}: ${$('#variableSelect1 option:selected').text()} = ${dataPoint.x}, ${$('#variableSelect2 option:selected').text()} = ${dataPoint.y}`;
                         }
                     }
                 }
             }
-        });
+        }
+    });
 }
+
+
+
 
 //--------------------------------------------------------------------------------
 
 
 //--------------------------------------Regression Linéaire------------------------
-function performLinearRegression(x, y) {
+function performLinearRegression(x, y, titles, variable1, variable2) {
     // Calculer les moyennes
     const n = x.length;
     const meanX = x.reduce((acc, val) => acc + val, 0) / n;
@@ -228,27 +226,41 @@ function performLinearRegression(x, y) {
     const intercept = meanY - slope * meanX;
 
     // Afficher le graphique de régression linéaire
-    displayLinearRegressionPlot(meanX, meanY, slope, intercept);
+    displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2);
 }
 
-function displayLinearRegressionPlot(meanX, meanY, slope, intercept) {
-    var ctx = document.getElementById('correlationChart').getContext('2d');
-    var scatterChart = new Chart(ctx, {
+function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2) {    // Assurez-vous que 'variable1' et 'variable2' sont correctement définis dans la portée supérieure
+    var scatterData = data.map((row, index) => ({
+        x: row[variable1],
+        y: row[variable2],
+        title: titles[index] // Assurez-vous que 'titles' est le tableau des titres de films
+    }));
+
+    var ctx = document.getElementById('correlationChart').getContext('2d');    if (window.scatterChart !== undefined) {
+        window.scatterChart.destroy();
+    }
+    window.scatterChart = new Chart(ctx, {
         type: 'scatter',
         data: {
             datasets: [{
                 label: 'Données',
-                data: data.map(row => ({x: row[variable1], y: row[variable2], title: row.movieTitle})),
+                data: scatterData,
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
             }, {
                 label: 'Régression linéaire',
-                type: 'line',
-                data: [{x: Math.min(...data.map(row => row[variable1])), y: slope * Math.min(...data.map(row => row[variable1])) + intercept},
-                       {x: Math.max(...data.map(row => row[variable1])), y: slope * Math.max(...data.map(row => row[variable1])) + intercept}],
+                // La ligne de régression n'a pas besoin de titres, mais vous pouvez l'ajuster si nécessaire
+                data: [{
+                    x: Math.min(...data.map(row => row[variable1])), 
+                    y: slope * Math.min(...data.map(row => row[variable1])) + intercept
+                }, {
+                    x: Math.max(...data.map(row => row[variable1])), 
+                    y: slope * Math.max(...data.map(row => row[variable1])) + intercept
+                }],
                 borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2
+                borderWidth: 2,
+                fill: false
             }]
         },
         options: {
@@ -258,7 +270,7 @@ function displayLinearRegressionPlot(meanX, meanY, slope, intercept) {
                     position: 'bottom',
                     title: {
                         display: true,
-                        text: 'Budget'
+                        text: $('#variableSelect1 option:selected').text()
                     }
                 },
                 y: {
@@ -266,7 +278,7 @@ function displayLinearRegressionPlot(meanX, meanY, slope, intercept) {
                     position: 'left',
                     title: {
                         display: true,
-                        text: 'Revenue'
+                        text: $('#variableSelect2 option:selected').text()
                     }
                 }
             },
@@ -275,9 +287,12 @@ function displayLinearRegressionPlot(meanX, meanY, slope, intercept) {
                     callbacks: {
                         label: function(context) {
                             if (context.dataset.label === 'Données') {
-                                return context.dataset.data[context.dataIndex].title;
+                                // Ici, vous pouvez formater le message du tooltip pour inclure les informations que vous voulez
+                                const dataPoint = context.raw;
+                                return `${dataPoint.title}: ${$('#variableSelect1 option:selected').text()} = ${dataPoint.x}, ${$('#variableSelect2 option:selected').text()} = ${dataPoint.y}`;
                             } else {
-                                return 'Régression: y = ' + slope.toFixed(2) + 'x + ' + intercept.toFixed(2);
+                                // Pour la ligne de régression, on peut conserver l'affichage par défaut ou personnaliser
+                                return `Régression: y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`;
                             }
                         }
                     }
@@ -286,6 +301,7 @@ function displayLinearRegressionPlot(meanX, meanY, slope, intercept) {
         }
     });
 }
+
 //-------------------------------------------------------------------------------
 
 //-------------------------------------Clustering-------------------------------
@@ -370,7 +386,7 @@ function arraysEqual(a, b) {
     return a.length === b.length && a.every((val, index) => val === b[index]);
 }
 
-function displayClusters(data, assignments) {
+function displayClusters(data, assignments, xAxisLabel, yAxisLabel) {
     // Utilisez Plotly ou une autre bibliothèque de graphiques pour afficher les clusters
     var trace = {
         x: data.map(d => d.x), // Remplacez 'x' par la variable sélectionnée pour l'axe des X
@@ -383,64 +399,52 @@ function displayClusters(data, assignments) {
     
     var layout = {
         title: 'Visualisation des Clusters',
-        xaxis: {title: 'Variable X'}, // Mettez à jour selon la variable sélectionnée
-        yaxis: {title: 'Variable Y'} // Mettez à jour selon la variable sélectionnée
+        xaxis: {title: xAxisLabel}, // Mettez à jour selon la variable sélectionnée
+        yaxis: {title: yAxisLabel} // Mettez à jour selon la variable sélectionnée
     };
     
     Plotly.newPlot('myDiv', [trace], layout);
 }
+
 //---------------------------------------------------------------------------------
 
 
 //-----------------------------GERER LES DONNES VIA LES DROPDOWNS----------------------
+$('#executeTestButton').click(async function() {
+        const selectedTest = $('#testSelect').val();
+        const variable1 = $('#variableSelect1').val();
+        const variable2 = $('#variableSelect2').val();
+        console.log('Test statistique sélectionné:', selectedTest);
+        console.log('Variable 1 sélectionnée:', variable1);
+        console.log('Variable 2 sélectionnée:', variable2);
+        const numClusters = getSelectedClusterCount(); // Obtenez le nombre de clusters sélectionné
+        await performSelectedTest(selectedTest, variable1, variable2, numClusters); // Ajoutez await ici
+    });
 
-async function performSelectedTest(selectedTest, var1, var2, numClusters) {
-    if (selectedTest === 'pearson') {
-        // Calculer la corrélation de Pearson
+    async function performSelectedTest(selectedTest, var1, var2, numClusters) {
+        if (selectedTest === 'pearson') {
         const columnVar1 = data.map(row => row[var1]);
         const columnVar2 = data.map(row => row[var2]);
+        const titles = data.map(row => row.title); // Récupérer les titres des films
         const correlation = calculatePearsonCorrelation(columnVar1, columnVar2);
         console.log('Corrélation de Pearson:', correlation);
-        displayScatterPlot(columnVar1, columnVar2);
-    } else if (selectedTest === 'regression') {
-        // Extraire les données pour la régression linéaire
+        displayScatterPlot(columnVar1, columnVar2, titles); // Passer les titres ici
+    }  else if (selectedTest === 'regression') {
+        const titles = data.map(row => row.title); // Récupérer les titres des films ici
         const x = data.map(row => row[var1]);
         const y = data.map(row => row[var2]);
-        // Exécuter la régression linéaire avec les données correctes
-        performLinearRegression(x, y);
-    } else if (selectedTest === 'cluestering') {
-        // Assurez-vous que la fonction fillData a été appelée pour remplir 'data' avec les données correctes
-        const variableData = data.map(d => ({x: d[var1], y: d[var2], movieTitle: d.movieTitle}));
-        const clusteringResults = await performClustering(variableData, numClusters); // Utilisez 'variableData' ici
-        displayClusters(variableData, clusteringResults.assignments); // Passez les données correctes et les assignments ici
+        performLinearRegression(x, y, titles, var1, var2); // Inclure var1 et var2 comme arguments
     }
-}
+    else if (selectedTest === 'cluestering') {
+            // Assurez-vous que la fonction fillData a été appelée pour remplir 'data' avec les données correctes
+            const variableData = data.map(d => ({x: d[var1], y: d[var2], movieTitle: d.title})); // Utilisez 'title' comme titre de film
+            const clusteringResult = await performClustering(variableData, numClusters); // Attendre le résultat du clustering
+            displayClusters(variableData, clusteringResult.assignments, $('#variableSelect1 option:selected').text(), $('#variableSelect2 option:selected').text()); // Utilisez les libellés des variables sélectionnées
+        }
+    }
 
-$('#executeTestButton').click(async function() { // Assurez-vous que cette fonction est async pour attendre performSelectedTest
-    const selectedTest = $('#testSelect').val();
-    const variable1 = $('#variableSelect1').val();
-    const variable2 = $('#variableSelect2').val();
-    console.log('Test statistique sélectionné:', selectedTest);
-    console.log('Variable 1 sélectionnée:', variable1);
-    console.log('Variable 2 sélectionnée:', variable2);
-    const numClusters = getSelectedClusterCount(); // Obtenez le nombre de clusters sélectionné
-    await performSelectedTest(selectedTest, variable1, variable2, numClusters); // Ajoutez await ici
-});
-
-$('#variableSelect1, #variableSelect2').change(function() {
-    const variable1 = $('#variableSelect1').val();
-    const variable2 = $('#variableSelect2').val();
-    fillData(variable1, variable2); // Remplir le tableau avec les nouvelles variables
-    // Notez que fillData doit être adapté pour manipuler et stocker les données de manière à ce que performSelectedTest puisse les utiliser correctement
-});
-
-    const variable1 = $('#variableSelect1').val();
-    const variable2 = $('#variableSelect2').val();
-    fillData(variable1, variable2); // Assurez-vous que cette initialisation appelle fillData correctement
-
-});
-//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+    });
 </script>
-
 </body>
 </html>
