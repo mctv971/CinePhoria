@@ -19,7 +19,6 @@ a {
   height: 100vh;
 }
 .Presentation {
- 
   background-color: rgb(20, 20, 54);
 
 }
@@ -238,6 +237,7 @@ button {
   margin-top: 20px;
 }
 
+
 #usernamePrompt {
   display: none;
   margin-top: 20px;
@@ -248,4 +248,121 @@ button {
   right: 20px;
   display: none;
   cursor: pointer;
+}
+/* Presentation */ 
+.Presentation{ }
+
+/*.ButtonDroite {
+  position: absolute;
+  left: 20em;
+  top: 20rem;
+  z-index: 1;
+  border: none;
+  background: none;
+  padding: 0; 
+  cursor: pointer; 
+}
+.ButtonDroite:hover {
+  opacity: 0.7; 
+}
+.ButtonHaut {
+  position: absolute;
+  left: 90%;
+  bottom: 10%;
+  background: none;
+  border: none;
+}
+#bienvenue {
+  font-size: 48px;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ButtonHaut {
+  position: fixed;
+  right: 20px; 
+  bottom: 20px; 
+  background: none;
+  background-color: none;
+  border: none;
+}
+.ButtonHaut:hover {
+  opacity: 0.7;
+}
+.TextP{
+  font-family: "Outfit", sans-serif;
+  font-size: 70px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  text-align: center;
+} */
+.monprofil {
+  background-image: url("../images/bgprofil.png");
+  font-family: "Outfit", sans-serif;
+  color: white;
+}
+.logomp {
+  position: absolute;
+  top: 0; /* Place le logo en haut de la page */
+  left: 50%; /* Place le logo au milieu horizontalement */
+  transform: translateX(-50%); /* Centre le logo horizontalement */
+}
+.containerflex {
+  display: flex;
+  align-items: flex-start; /* Alignement au début pour aligner la photo avec l'input du nom */
+
+  margin-bottom: 10rem;
+}
+
+.photo-input {
+  margin-right: 1rem; /* Espacement à droite de la photo */
+}
+
+.photo-preview {
+  width: 150px; /* Largeur de l'image */
+  height: 150px; /* Hauteur de l'image */
+  border-radius: 50%; /* Pour rendre l'image ronde */
+  cursor: pointer; /* Curseur pointer */
+  transition: box-shadow 0.3s; /* Transition pour l'ombre */
+  margin-bottom: 5rem;
+}
+
+.photo-preview:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Ombre au survol */
+}
+
+.containerformulaire2 {
+  color: white;
+  font-family: "Outfit", sans-serif;
+  max-width: 400px; /* Largeur maximale du formulaire */
+  display: flex;
+  flex-direction: column; /* Alignement vertical des éléments du formulaire */
+}
+.containerformulaire2 .input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alignement au début pour les étiquettes et les champs de saisie */
+  margin-top: 3rem; /* Espacement réduit entre la photo et le début du formulaire */
+}
+
+.containerformulaire2 input {
+  text-align: left;
+  margin-bottom: 10px; /* Espacement entre les champs de saisie */
+}
+/* Styles pour le thème sombre */
+.dark-theme {
+  background-color: #333; /* Couleur de fond sombre */
+  color: #fff; /* Couleur de texte claire */
+  /* Ajoutez d'autres styles pour le thème sombre ici */
+}
+
+/* Styles pour le thème clair */
+.light-theme {
+  background-color: #fff; /* Couleur de fond claire */
+  color: #333; /* Couleur de texte sombre */
+  /* Ajoutez d'autres styles pour le thème clair ici */
 }

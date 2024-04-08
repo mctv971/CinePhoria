@@ -3,9 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="Accueil.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap" rel="stylesheet">
     <title>Filmaxium</title>
 </head>
-<body>
+<body class="monprofil">
     
+    <!-- Conteneur flex pour la photo et le formulaire -->
+    <div class="containerflex">
+        <div class="logomp">
+            <a href="inscription.html"><img src="../images/logo.png" alt="Logo"></a>
+        </div>
+        <!-- Photo de profil -->
+        <div class="photo-input">
+            <label for="photoInput">
+                <img src="placeholder.jpg" id="photoPreview" class="photo-preview">
+            </label>
+            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+        </div>
+        <!-- Formulaire -->
+        <form class="containerformulaire2">
+            <div class="input-group">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" required>
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" required>
+                <label for="pseudo">Pseudonyme :</label>
+                <input type="text" id="pseudo" name="pseudo" required>
+                <label for="mail">Adresse mail :</label>
+                <input type="email" id="mail" name="mail" required>
+            </div>
+            <div class="button-container">
+                <a href="modifmdp.html"><button>Modifier mon mot de passe</button></a> 
+            </div>
+        </form>
+        <div class="perso">
+            <p>Choisissez le thème de votre session :</p>
+            <select id="themeSelect" onchange="changeTheme()">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>
+            <p>Programmes préférés :</p>
+        </div>
+
+        <script>
+            function changeTheme() {
+                const themeSelect = document.getElementById('themeSelect');
+                const body = document.body;
+        
+                if (themeSelect.value === 'dark') {
+                    body.classList.remove('light-theme');
+                    body.classList.add('dark-theme');
+                } else if (themeSelect.value === 'light') {
+                    body.classList.remove('dark-theme');
+                    body.classList.add('light-theme');
+                }
+            }
+        
+            // Ajoutez ces lignes pour ajouter un écouteur d'événements à l'élément de sélection du thème
+            const themeSelect = document.getElementById('themeSelect');
+            themeSelect.addEventListener('change', changeTheme);
+        </script>
+    </div>
+        <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                const photoInput = document.getElementById('photoInput');
+                const photoPreview = document.getElementById('photoPreview');
+
+                photoInput.addEventListener('change', function (event) {
+                    previewPhoto(event);
+                });
+
+                function previewPhoto(event) {
+                    const input = event.target;
+
+                    if (input.files && input.files[0]) {
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            photoPreview.src = e.target.result;
+                        };
+
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+            });
+
+
+        </script>
 </body>
 </html>
