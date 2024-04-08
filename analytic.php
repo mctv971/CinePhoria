@@ -24,6 +24,7 @@
 
 
   <div class="content-analytic">
+  <img src="assets/images/menu.png" alt="" class="BtnMenuOverlay" onclick="openMenuSection(this)">
 
 
 
@@ -38,6 +39,19 @@
       <button class="sectionBtn"id="section3Btn"></button>
       <button class="sectionBtn"id="section4Btn"></button>
     </nav>
+    
+    <div class="navBtnMenuOverlay">
+      <nav class ="navBtnMenu">
+        <button class="sectionBtnMenu" id="section1Btn"><h1 class="btnMenu">Home</h1></button>
+        <button class="sectionBtnMenu" id="section2Btn"><h1 class="btnMenu">Analyse</h1></button>
+        <button class="sectionBtnMenu"id="section3Btn"><h1 class="btnMenu">Statistics Tests</h1></button>
+        <button class="sectionBtnMenu"id="section4Btn"><h1 class="btnMenu">Prediction</h1></button>
+      </nav>
+
+    </div>
+
+
+    
   </div>
 
 </body>
