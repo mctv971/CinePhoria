@@ -2067,6 +2067,52 @@ body {
   height: 20%;
 }
 
+.navBtnMenuOverlay{
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  height: 100vh;
+  width: 100vw;
+  background-image:url("../images/bg_analytic_menu.jpg");
+  background-repeat:none ;
+  background-size: cover;
+  z-index: 1000000000;
+}
+.navBtnMenuOverlay.active{
+  display: block;
+}
+.navBtnMenu{
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.sectionBtnMenu{
+  text-align: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.5;
+  transition: 1s;
+  font-size: 2em;
+  
+}
+.sectionBtnMenu:hover{
+  opacity: 1;
+  font-size: 2.5em;
+
+}
+.BtnMenuOverlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  z-index: 10000000000;
+}
+
 .choixFilmGenre{
   width: 100%;
   height: 100%;

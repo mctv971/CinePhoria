@@ -267,16 +267,38 @@ document.addEventListener("DOMContentLoaded", function() {
     section = document.querySelector('.content-analytic');
     initializeScene(1);
     gsap.registerPlugin(ScrollToPlugin);
-    document.querySelectorAll("nav button").forEach((btn, index) => {
+    document.querySelectorAll(".navBtn button").forEach((btn, index) => {
         btn.addEventListener("click", () => {
-            const activeButton = document.querySelector("button.sectionBtn.active");
+            const activeButton = document.querySelector(".navBtn button.active");
             activeButton.classList.remove("active");
             btn.classList.add("active");
-            
+    
             // Appel de changeScene pour changer de scène
             changeScene(index + 1);
         });
     });
+    
+    document.querySelectorAll(".navBtnMenu button").forEach((btn, index) => {
+        btn.addEventListener("click", () => {
+            const btnId = btn.id;
+
+            // Recherche du bouton correspondant dans navBtn
+            const correspondingBtn = document.getElementById(btnId);
+    
+            // Recherche du bouton actif dans navBtn et désactivation
+            const activeButton = document.querySelector(".sectionBtn.active");
+            activeButton.classList.remove("active");
+    
+            // Activation du bouton correspondant dans navBtn
+            correspondingBtn.classList.add("active");
+
+            // Appel de changeScene pour changer de scène
+            changeScene(index + 1);
+            openMenuSection();
+        });
+    });
+    
+
     let isScrolling = false;
 
     document.addEventListener("wheel", (event) => {
@@ -311,6 +333,20 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+
+
+
+window.openMenuSection = function (){
+    const btn = document.querySelector('.BtnMenuOverlay');
+    document.querySelector('.navBtnMenuOverlay').classList.toggle('active');
+    if(document.querySelector('.navBtnMenuOverlay').classList.contains('active')){
+        btn.src = "assets/images/menu-close.png";
+    }
+    else{
+        btn.src = "assets/images/menu.png";
+    }
+
+}
 
 
 
@@ -1408,7 +1444,6 @@ function initializeScene2(scene, renderer, camera) {
 }
 
 function initializeScene3(scene,renderer,camera){
-// Element de la scène 
 
 }
 
