@@ -5,13 +5,16 @@
  */
 
 import { sidebar } from "./sidebar.js";
-import { api_key, imageBaseURL, fetchDataFromServer } from "./api.js";
+import { imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard, createAnimCard, createPeopleCard, createTvCard } from "./movie-card.js";
 import { search } from "./search.js";
+
+const api_key = "4bff542b068c0fff85589d72c363051d";
 
 
 const pageContent = document.querySelector("[page-content]");
 sidebar();
+
 
 const favoritePageSections = [
 

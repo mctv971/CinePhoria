@@ -26,9 +26,8 @@ let changeGraphActive =1;
 
 
 
-
-
 document.addEventListener("DOMContentLoaded", function() {
+
 
 
 
@@ -64,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         }
+
 
         const filmSelections = document.querySelectorAll('.analyse-film-selection');
         const formSelections = document.querySelectorAll(".selection-form");
@@ -474,7 +474,8 @@ function stopScene2(){
     // Vérification si l'élément div avec la classe "analyse" existe
     if (divAnalyse) {
         // Suppression de l'élément div avec la classe "analyse"
-        divAnalyse.remove();
+        gsap.to('.analyse', { opacity: 0, duration: 1, ease: 'power2.out', onComplete: function() {
+        divAnalyse.remove();}  });
     }
 
     // Sélection de l'élément div avec la classe "analyseResult"
@@ -483,7 +484,8 @@ function stopScene2(){
     // Vérification si l'élément div avec la classe "analyseResult" existe
     if (divAnalyseResult) {
         // Suppression de l'élément div avec la classe "analyseResult"
-        divAnalyseResult.remove();
+        gsap.to('.analyseResult', { opacity: 0, duration: 1, ease: 'power2.out', onComplete: function() {
+        divAnalyseResult.remove(); }  });
     }
     
 
@@ -493,6 +495,15 @@ function stopScene21(){
 }    
 
 function stopScene3(){
+    gsap.to('.analyse', { opacity: 0, duration: 1, ease: 'power2.out', onComplete: function() {
+        // Supprime l'élément .analyse une fois que l'animation est terminée
+        document.querySelector('.analyse').remove();
+    } });
+    gsap.to('.from', { opacity: 0, duration: 1, ease: 'power2.out',    onComplete: function() {
+        // Supprime l'élément .testResult une fois que l'animation est terminée
+        document.querySelector('.testResult').remove();
+    } });
+
 
     // Sortis des élements de la scène 
    
@@ -1415,6 +1426,7 @@ function initializeScene2(scene, renderer, camera) {
     // Ajout de l'élément à la page
     section.appendChild(divAnalyseActive);
     section.appendChild(divAnalyseResult);
+    gsap.from('.analyse', { opacity: 0, duration: 1, ease: 'power2.out' });
 
     localStorage.clear();
 
@@ -1444,8 +1456,305 @@ function initializeScene2(scene, renderer, camera) {
 }
 
 function initializeScene3(scene,renderer,camera){
+    const analyseHTML = `
+    <div class="analyse active">
+      <div class="analyse-resum">
+        <div class="analyse-explain">
+          <h1 class="analyse-title" style="">Test Statistic</h1>
+          <p class="analyse-text">Facilitez vos choix cinématographiques avec notre outil de test statistics .</p>
+        </div>
+
+        <div class="prediction-btn">
+          <div class="bouton-ovale-prediction" >
+            <div class="option-prediction stape1 active" onclick="changeState(this)">
+              <div class="divImgStape">
+                <img src="assets/images/stape1.png" alt="" class="imgStape">
+                <img src="assets/images/barreStape.png" alt="" class="barreStape active" >
+              </div>
+
+              <img src="assets/images/textStape1.png" alt="" class="textStape">
+
+            </div>
+            <div class="option-prediction stape2" onclick="changeState(this)">
+             <div class="divImgStape">
+                <img src="assets/images/stape2.png" alt="" class="imgStape">
+                <img src="assets/images/barreStape.png" alt="" class="barreStape" >
+              </div>
+
+              <img src="assets/images/textStape2.png" alt="" class="textStape">
+             </div>
+            <div class="option-prediction stape3" onclick="changeState(this)">
+                <div class="divImgStape">
+                  <img src="assets/images/stape3.png" alt="" class="imgStape">
+                  <img src="assets/images/barreStape.png" alt="" class="barreStape">
+                </div>
+
+                <img src="assets/images/textStape3.png" alt="" class="textStape">
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="analyse-film active">
+        <div class="divStape active" stape="1">
+          <h1 class="divStapeTitle">Etape 1 : Choisis ta plage de données</h1>
+          <div class="selection-label-form">
+
+            <div class="dropdown">
+              <div class="select">
+                <span class="selected" data-type="type">Type * :</span>
+                <div class="caret"></div>
+              </div>
+              <ul class="menu">
+                <li data-value="movie">Film</li>
+                <li data-value="tv">Série</li>
+              </ul>
+            </div>
+
+            <div class="dropdown">
+              <div class="select">
+                <span class="selected" data-type="genre">Genre :</span>
+                <div class="caret"></div>
+              </div>
+              <ul class="menu" id="genre-menu">
+                <!-- Les options seront ajoutées dynamiquement ici -->
+              </ul>
+            </div>
+
+            <div class="dropdown">
+              <div class="select">
+                <span class="selected" data-type="pays">Pays d'origine :</span>
+                <div class="caret"></div>
+              </div>
+              <ul class="menu" id="country-menu">
+                <!-- Les options seront ajoutées dynamiquement ici -->
+              </ul>
+            </div>
+
+            <div class="dropdown">
+              <div class="select dated" >
+                <span class="selected">Date de départ :</span>
+                <input type="date" id="date_depart" name="date_depart" class="form-input">
+              </div>
+
+            </div>
+
+            <div class="dropdown">
+              <div class="select dated">
+                <span class="selected">Date de fin :</span>
+                <input type="date" id="date_fin" name="date_fin" class="form-input">
+              </div>
+              
+            </div>
+
+
+          </div>
+          <button class="btnNextStape" onclick="verifyStape()">Etape Suivante</button>
+          
+        </div>
+        <div class="divStape" stape="2">
+          <h1 class="divStapeTitle">Etape 2 : Choisis ton test</h1>
+          <div class="navTestStape">
+            <div class="testStape" test="pearson">
+              <h1 class="textTestStape">Correlation de Pearson</h1>
+            </div>
+            <div class="testStape" test="regression">
+              <h1 class="textTestStape">Régression Linéaire
+            </h1>
+            </div>
+
+            <div class="testStape" test="cluestering">
+              <h1 class="textTestStape">Clustering</h1>
+            </div>
+          </div>
+          <button class="btnNextStape" onclick="verifyStape()">Etape Suivante</button>
+        </div>
+        <div class="divStape" stape="3">
+          <h1 class="divStapeTitle">Etape 3 : Choisis tes variables</h1>
+          <div class="variableStape" test="1">
+            <div class="navVariableStape" variable = "1">
+              <h2 class="textVar">Variable 1 :</h2>
+              <div class="varStape" var="budget">
+                  <h1 class="textVarStape">Budget</h1>
+              </div>
+              <div class="varStape" var="revenue">
+                <h1 class="textVarStape">Revenue</h1>
+              </div>
+
+              <div class="varStape" var="runtime">
+                <h1 class="textVarStape">Duree</h1>
+              </div>
+              <div class="varStape" var="popularity">
+                <h1 class="textVarStape">Popularité
+                </h1>
+              </div>
+
+              <div class="varStape" var="vote_count">
+                <h1 class="textVarStape">Nombre de vote</h1>
+              </div>
+            </div>
+            <div class="navVariableStape" variable = "2">
+              <h2 class="textVar">Variable 2 :</h2>
+              <div class="varStape" var="budget">
+                <h1 class="textVarStape">Budget</h1>
+              </div>
+              <div class="varStape" var="revenue">
+                <h1 class="textVarStape">Revenue</h1>
+              </div>
+
+              <div class="varStape" var="runtime">
+                <h1 class="textVarStape">Duree</h1>
+              </div>
+              <div class="varStape" var="popularity">
+                <h1 class="textVarStape">Popularité
+              </h1>
+              </div>
+
+              <div class="varStape" var="vote_count">
+                <h1 class="textVarStape">Nombre de vote</h1>
+              </div>
+            </div>
+
+          </div>
+          <div class="variableStape" test="3" >
+            <div class="navVariableStape" variable = "1">
+                <h2 class="textVar">K  :</h2>
+                <div class="varStape" var="1">
+                    <h1 class="textVarStape">1</h1>
+                </div>
+                <div class="varStape" var="2">
+                  <h1 class="textVarStape">2</h1>
+                </div>
+
+                <div class="varStape" var="3">
+                  <h1 class="textVarStape">3</h1>
+                </div>
+                <div class="varStape" var="4">
+                  <h1 class="textVarStape">4
+                  </h1>
+                </div>
+
+                <div class="varStape" var="5">
+                  <h1 class="textVarStape">5</h1>
+                </div>
+            </div>
+           
+
+          </div>
+          <button class="btnNextStape" onclick="verifyStape()">Lancer le Test</button>
+        </div>
+
+        
+
+      </div>
+
+    </div>
+    `;
+    section.insertAdjacentHTML('beforeend', analyseHTML);
+
+    const testResultHTML = `
+    <div class="testResult">
+      <div class="loadingDiv">
+        <div class="divImgStapeLoad">
+          <img src="assets/images/loadingImg.png" alt="" class="imgStape">
+          <img src="assets/images/barreStape.png" alt="" class="barreStape" >
+        </div>
+
+        <img src="assets/images/loadingTxt.png" alt="" class="textStapeLoad">
+
+
+      </div>
+      <div class="testResum">
+        <h1 style="text-align:center">Recherche effectuée :</h1>
+        <div class="divTestVar">
+          <p class="testVar" type="test"></p>
+          <p class="testVar" type="var1"></p>
+          <p class="testVar" type="var2"></p>
+        </div>
+        <button class="backTest" onclick="backTest()">Nouvelle Recherche</button>
+
+      </div>
+
+      <div class="testExplain"></div>
+
+
+      <div class="testData">
+        <h2 class="dataText">Données récupérées</h2>
+          <table id="dataTable">
+              <thead>
+                  <tr>
+                      <th>Titre du film</th>
+                      <th>Variable 1</th>
+                      <th>Variable 2</th>
+                  </tr>
+              </thead>
+              <tbody id="dataBody">
+              </tbody>
+          </table>
+      </div>
+
+
+      <div class="testGraph">
+        <div id="myDiv">
+          <canvas id="correlationChart" width="400" height="400"></canvas>
+        </div>
+      </div>
+        
+
+
+
+   
+      
+
+    </div>
+    `;
+    section.insertAdjacentHTML('beforeend', testResultHTML);
+    gsap.from('.analyse', { opacity: 0, duration: 1, ease: 'power2.out' });
+
+    // Sélection de tous les éléments avec la classe "testStape"
+    const testStapes = document.querySelectorAll('.testStape');
+
+    // Parcourir chaque élément et ajouter un écouteur d'événements
+    testStapes.forEach(testStape => {
+        testStape.addEventListener('click', () => {
+            // Supprimer la classe "active" de tous les éléments
+            testStapes.forEach(element => {
+                element.classList.remove('active');
+            });
+            // Ajouter la classe "active" à l'élément cliqué
+            testStape.classList.add('active');
+        });
+    });
+
+    const navVariable3 = document.querySelector('.divStape[stape="3"]');
+
+    navVariable3.querySelectorAll('.navVariableStape').forEach(nav => {
+        nav.addEventListener('click', () => {
+            // Remove 'active' class from all varStape elements within the same navVariableStape
+            nav.querySelectorAll('.varStape').forEach(varStape => {
+                varStape.classList.remove('active');
+            });
+            // Add 'active' class to the clicked varStape element
+            event.target.closest('.varStape').classList.add('active');
+        });
+    });
+
+
+    loadCountries();
+
+
+    dropdown();
+
+    
+    
+    
+    document.querySelector('.dropdown:nth-child(1) .menu').addEventListener('click', loadGenres);
+
+
 
 }
+
 
 function initializeScene4(scene,renderer,camera){
 // Element de la scène 
@@ -3792,9 +4101,695 @@ function prepareDataForChart(seriesData) {
   
 
  
-  
+
 
   
+//--------------------------------Recupération des données-----------------------------
+async function getMovieInfo(movieId) {
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+        }
+    };
+    const url = `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`;
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des données du film');
+        }
+        const movieData = await response.json();
+        return movieData;
+    
+    } catch (error) {
+        console.error('Error fetching movie data:', error);
+        throw error; // Propager l'erreur pour qu'elle soit capturée par l'appelant
+    }
+}
+
+async function fillData(var1, var2) {
+    $('#dataBody').empty(); // Clear the current table content
+    data = []; // Reset the data array
+    console.log(idTmdbList)
+    for (const movieId of idTmdbList) {
+        try {
+            const movieData = await getMovieInfo(movieId);
+            const movieVariables = {
+                title: movieData.original_title,
+                budget: movieData.budget,
+                revenue: movieData.revenue,
+                popularity: movieData.popularity,
+                runtime: movieData.runtime,
+                vote_count: movieData.vote_count
+            };
+            if (Object.values(movieVariables).some(value => value === 0)) {
+                continue;
+            }
+            data.push(movieVariables);
+            $('#dataBody').append(`<tr><td>${movieVariables.title}</td><td>${movieVariables[var1]}</td><td>${movieVariables[var2]}</td></tr>`);
+        } catch (error) {
+            console.error('Error fetching movie data:', error);
+        }
+    }
+}
+
+
+
+//----------------------------------------------------------------------------------
+
+
+//--------------------------------Calcul de Pearson---------------------------------
+function calculatePearsonCorrelation(x, y) {
+    const n = x.length;
+    let sumX = 0;
+    let sumY = 0;
+    let sumXY = 0;
+    let sumX2 = 0;
+    let sumY2 = 0;
+
+    for (let i = 0; i < n; i++) {
+        sumX += x[i];
+        sumY += y[i];
+        sumXY += x[i] * y[i];
+        sumX2 += x[i] ** 2;
+        sumY2 += y[i] ** 2;
+    }
+
+    const numerator = n * sumXY - sumX * sumY;
+    const denominator = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
+
+    return numerator / denominator;
+}
+
+function displayScatterPlot(x, y, titles) {
+// Préparer les données pour le graphique
+var scatterData = x.map((value, index) => {
+    return { x: value, y: y[index], title: titles[index] }; // Inclure le titre du film
+});
+
+var ctx = document.getElementById('correlationChart').getContext('2d');
+if(window.scatterChart != undefined) {
+    window.scatterChart.destroy();
+}
+window.scatterChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+        datasets: [{
+            label: `Corrélation entre ${$('#variableSelect1 option:selected').text()} et ${$('#variableSelect2 option:selected').text()}`,
+            data: scatterData,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                type: 'linear',
+                position: 'bottom',
+                title: {
+                    display: true,
+                    text: $('#variableSelect1 option:selected').text()
+                }
+            },
+            y: {
+                type: 'linear',
+                position: 'left',
+                title: {
+                    display: true,
+                    text: $('#variableSelect2 option:selected').text()
+                }
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const dataPoint = context.raw;
+                        // Afficher le titre, la valeur de x et la valeur de y
+                        return `${dataPoint.title}: ${$('#variableSelect1 option:selected').text()} = ${dataPoint.x}, ${$('#variableSelect2 option:selected').text()} = ${dataPoint.y}`;
+                    }
+                }
+            }
+        }
+    }
+});
+}
+
+
+
+
+//--------------------------------------------------------------------------------
+
+
+//--------------------------------------Regression Linéaire------------------------
+function performLinearRegression(x, y, titles, variable1, variable2) {
+// Calculer les moyennes
+const n = x.length;
+const meanX = x.reduce((acc, val) => acc + val, 0) / n;
+const meanY = y.reduce((acc, val) => acc + val, 0) / n;
+
+// Calculer les coefficients de régression
+let numerator = 0;
+let denominator = 0;
+for (let i = 0; i < n; i++) {
+    numerator += (x[i] - meanX) * (y[i] - meanY);
+    denominator += (x[i] - meanX) ** 2;
+}
+const slope = numerator / denominator;
+const intercept = meanY - slope * meanX;
+
+// Afficher le graphique de régression linéaire
+displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2);
+}
+
+function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2) {    // Assurez-vous que 'variable1' et 'variable2' sont correctement définis dans la portée supérieure
+var scatterData = data.map((row, index) => ({
+    x: row[variable1],
+    y: row[variable2],
+    title: titles[index] // Assurez-vous que 'titles' est le tableau des titres de films
+}));
+
+var ctx = document.getElementById('correlationChart').getContext('2d');    if (window.scatterChart !== undefined) {
+    window.scatterChart.destroy();
+}
+window.scatterChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+        datasets: [{
+            label: 'Données',
+            data: scatterData,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }, {
+            label: 'Régression linéaire',
+            // La ligne de régression n'a pas besoin de titres, mais vous pouvez l'ajuster si nécessaire
+            data: [{
+                x: Math.min(...data.map(row => row[variable1])), 
+                y: slope * Math.min(...data.map(row => row[variable1])) + intercept
+            }, {
+                x: Math.max(...data.map(row => row[variable1])), 
+                y: slope * Math.max(...data.map(row => row[variable1])) + intercept
+            }],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: false
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                type: 'linear',
+                position: 'bottom',
+                title: {
+                    display: true,
+                    text: $('#variableSelect1 option:selected').text()
+                }
+            },
+            y: {
+                type: 'linear',
+                position: 'left',
+                title: {
+                    display: true,
+                    text: $('#variableSelect2 option:selected').text()
+                }
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        if (context.dataset.label === 'Données') {
+                            // Ici, vous pouvez formater le message du tooltip pour inclure les informations que vous voulez
+                            const dataPoint = context.raw;
+                            return `${dataPoint.title}: ${$('#variableSelect1 option:selected').text()} = ${dataPoint.x}, ${$('#variableSelect2 option:selected').text()} = ${dataPoint.y}`;
+                        } else {
+                            // Pour la ligne de régression, on peut conserver l'affichage par défaut ou personnaliser
+                            return `Régression: y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`;
+                        }
+                    }
+                }
+            }
+        }
+    }
+});
+}
+
+//-------------------------------------------------------------------------------
+
+//-------------------------------------Clustering-------------------------------
+
+/**
+* Effectue le clustering K-Means sur un ensemble de données.
+* 
+* @param {Array} data Un tableau d'objets, chaque objet représentant un point de données avec x et y comme variables à clusteriser.
+* @param {number} numClusters Le nombre de clusters à former.
+* @returns {Object} Un objet contenant deux propriétés: assignments (l'affectation de chaque point à un cluster) et centers (les centres des clusters).
+*/
+async function performClustering(data, numClusters) {
+let centers = initializeCenters(data, numClusters);
+let assignments = [];
+let previousAssignments = [];
+let maxIterations = 100;
+let iteration = 0;
+
+do {
+    // Assignation des points aux clusters
+    assignments = data.map(d => assignToClosestCenter(d, centers));
+
+    // Vérification de la convergence
+    if (arraysEqual(assignments, previousAssignments) || iteration >= maxIterations) {
+        break;
+    }
+
+    // Mise à jour des centres
+    centers = updateCenters(data, assignments, numClusters);
+
+    previousAssignments = assignments.slice();
+    iteration++;
+} while (true);
+
+return { assignments, centers };
+}
+
+function initializeCenters(data, numClusters) {
+// Sélection aléatoire de points comme centres initiaux
+let shuffled = data.sort(() => 0.5 - Math.random());
+return shuffled.slice(0, numClusters);
+}
+
+function assignToClosestCenter(point, centers) {
+let minDistance = Infinity;
+let closestCenterIndex = -1;
+
+centers.forEach((center, index) => {
+    let distance = Math.sqrt((point.x - center.x) ** 2 + (point.y - center.y) ** 2);
+    if (distance < minDistance) {
+        minDistance = distance;
+        closestCenterIndex = index;
+    }
+});
+
+return closestCenterIndex;
+}
+
+function updateCenters(data, assignments, numClusters) {
+let centers = Array(numClusters).fill(null).map(() => ({ x: 0, y: 0, count: 0 }));
+
+// Accumuler les valeurs pour le calcul de la moyenne
+data.forEach((point, index) => {
+    let clusterIndex = assignments[index];
+    if (centers[clusterIndex]) { // Vérification de l'existence du centre
+        centers[clusterIndex].x += point.x;
+        centers[clusterIndex].y += point.y;
+        centers[clusterIndex].count += 1;
+    }
+});
+
+// Calculer la nouvelle position des centres
+return centers.map(center => center.count > 0 ? {
+    x: center.x / center.count,
+    y: center.y / center.count
+} : center); // Retourne le centre inchangé si aucun point ne lui est assigné
+}
+
+
+
+function arraysEqual(a, b) {
+return a.length === b.length && a.every((val, index) => val === b[index]);
+}
+
+function displayClusters(data, assignments, xAxisLabel, yAxisLabel) {
+// Utilisez Plotly ou une autre bibliothèque de graphiques pour afficher les clusters
+var trace = {
+    x: data.map(d => d.x), // Remplacez 'x' par la variable sélectionnée pour l'axe des X
+    y: data.map(d => d.y), // Remplacez 'y' par la variable sélectionnée pour l'axe des Y
+    mode: 'markers',
+    type: 'scatter',
+    marker: {color: assignments}, // Utilisez les affectations de cluster pour la couleur
+    text: data.map(d => d.movieTitle) // Titres des films pour les tooltips
+};
+
+var layout = {
+    title: 'Visualisation des Clusters',
+    xaxis: {title: xAxisLabel}, // Mettez à jour selon la variable sélectionnée
+    yaxis: {title: yAxisLabel}, // Mettez à jour selon la variable sélectionnée
+    plot_bgcolor: 'rgba(0,0,0,0)', // Fond du plot transparent
+    paper_bgcolor: 'rgba(0,0,0,0)', // Fond du papier transparent
+};
+
+Plotly.newPlot('myDiv', [trace], layout);
+}
+
+//---------------------------------------------------------------------------------
+
+  
+async function performSelectedTest(selectedTest, var1, var2, numClusters) {
+    // Récupérez l'élément .barreStape
+    const barreStape = document.querySelector(".loadingDiv").querySelector(".barreStape");
+
+    // Créez une animation GSAP pour effectuer une rotation continue
+    const rotationTween = gsap.to(barreStape, { rotation: 360, duration: 2, repeat: -1, ease: "none" });
+    await fillData(variable1, variable2);
+    rotationTween.pause();
+    document.querySelector(".loadingDiv").style.display = "none";
+    document.querySelector(".testData").classList.add("active");
+    document.querySelector(".testResum").classList.add("active");
+    document.querySelector(".testExplain").classList.add("active")
+
+
+
+
+
+
+    if (selectedTest === 'pearson') {
+    const columnVar1 = data.map(row => row[var1]);
+    const columnVar2 = data.map(row => row[var2]);
+    const titles = data.map(row => row.title); // Récupérer les titres des films
+    const correlation = calculatePearsonCorrelation(columnVar1, columnVar2);
+    console.log('Corrélation de Pearson:', correlation);
+    displayScatterPlot(columnVar1, columnVar2, titles); // Passer les titres ici
+}  else if (selectedTest === 'regression') {
+    const titles = data.map(row => row.title); // Récupérer les titres des films ici
+    const x = data.map(row => row[var1]);
+    const y = data.map(row => row[var2]);
+    performLinearRegression(x, y, titles, var1, var2); // Inclure var1 et var2 comme arguments
+}
+else if (selectedTest === 'cluestering') {
+        // Assurez-vous que la fonction fillData a été appelée pour remplir 'data' avec les données correctes
+        const variableData = data.map(d => ({x: d[var1], y: d[var2], movieTitle: d.title})); // Utilisez 'title' comme titre de film
+        const clusteringResult = await performClustering(variableData, numClusters); // Attendre le résultat du clustering
+        displayClusters(variableData, clusteringResult.assignments, $('#variableSelect1 option:selected').text(), $('#variableSelect2 option:selected').text()); // Utilisez les libellés des variables sélectionnées
+    }
+}
+
+//--------------------------------------Partie Test----------------------------
+
+window.verifyStape = async function(){
+    // Récupérer la divStape active
+    if (document.querySelector(".barreStape.active")) {
+        document.querySelector(".barreStape.active").classList.remove("active");
+    }
+    var activeDivStape = document.querySelector('.divStape.active');
+    var selection = document.querySelector('.option-prediction.active');
+
+
+    // Si la divStape 1 est active
+    if (activeDivStape.getAttribute('stape') === '1') {
+        // Vérifier si une option est sélectionnée dans le premier dropdown
+        var typeSelected = activeDivStape.querySelector('.selected[data-type="type"][data-value]');
+        if (!typeSelected) {
+            alert("Veuillez sélectionner un type de contenu.");
+            return; // Arrêter la fonction si l'option n'est pas sélectionnée
+        }
+
+
+        // Activer la divStape 2
+        document.querySelector('.divStape[stape="1"]').classList.remove('active');
+        var divStape2 = document.querySelector('.divStape[stape="2"]');
+        divStape2.classList.add('active');
+
+        var btn = document.querySelector('.stape2');
+        gsap.to(selection.querySelector(".barreStape"), { rotation: 360 });
+        gsap.to(btn.querySelector(".barreStape"), { rotation: 180 });
+        // Ajoutez la classe active au bouton
+        selection.querySelector(".imgStape").src = "assets/images/stape1V.png";
+        btn.classList.add('active');
+        // Retirez la classe active de l'ancienne sélection
+        selection.classList.remove('active');
+
+
+        gsap.from(divStape2, { duration: 1, opacity: 0, ease: "power2.inOut" });
+        
+    }
+
+    // Si la divStape 2 est active
+    else if (activeDivStape.getAttribute('stape') === '2') {
+        // Vérifier si un testStape est activé dans la deuxième divStape
+        var testStapes = activeDivStape.querySelectorAll('.testStape.active');
+        if (testStapes.length === 0) {
+            alert("Veuillez choisir un test.");
+            return; // Arrêter la fonction si aucun test n'est sélectionné
+        }
+
+        // Activer la divStape 3
+        document.querySelector('.divStape[stape="2"]').classList.remove('active');
+        var divStape3 = document.querySelector('.divStape[stape="3"]');
+        divStape3.classList.add('active');
+
+        var btn = document.querySelector('.stape3');
+        gsap.to(selection.querySelector(".barreStape"), { rotation: 360 });
+        gsap.to(btn.querySelector(".barreStape"), { rotation: 180 });
+        // Ajoutez la classe active au bouton
+        selection.querySelector(".imgStape").src = "assets/images/stape2V.png";
+        btn.classList.add('active');
+        // Retirez la classe active de l'ancienne sélection
+        selection.classList.remove('active');
+
+
+
+        gsap.from(divStape3, { duration: 1, opacity: 0, ease: "power2.inOut" });
+        var activeTestStape = document.querySelector('.testStape.active');
+        var testNumber = activeTestStape.getAttribute('test');
+        
+        if (testNumber == "cluestering"){
+            if(document.querySelector(".variableStape[test='1']").classList.contains('active')){
+                document.querySelector(".variableStape[test='1']").classList.remove('active');
+            }
+            document.querySelector(".variableStape[test='3']").classList.add('active');
+        }
+        else{
+            if(document.querySelector(".variableStape[test='3']").classList.contains('active')){
+                document.querySelector(".variableStape[test='3']").classList.remove('active');
+            }
+            document.querySelector(".variableStape[test='1']").classList.add('active');
+        }
+
+    }
+    else if (activeDivStape.getAttribute('stape') === '3') {
+        var activeTestStape = document.querySelector('.testStape.active');
+        var testNumber = activeTestStape.getAttribute('test');
+        if (testNumber == "cluestering"){
+            var navVariableStapes = document.querySelectorAll('.variableStape[test="3"].navVariableStape');
+                // Parcourir chaque navVariableStape
+                var allNavVariableStapesHaveActiveVarStapes = true;
+                navVariableStapes.forEach(function(navVariableStape) {
+                    // Vérifier si au moins un varStape est actif dans chaque navVariableStape
+                    var activeVarStape = navVariableStape.querySelector('.varStape.active');
+                    if (!activeVarStape) {
+                        alert("Veuillez choisir au moins une variable pour chaque groupe de variables.");
+                        allNavVariableStapesHaveActiveVarStapes = false;
+                        return; // Arrêter la boucle forEach si aucune variable n'est sélectionnée
+                    }
+                });
+    
+                // Si toutes les navVariableStapes contiennent au moins un varStape actif, alors continuer
+                if (allNavVariableStapesHaveActiveVarStapes) {
+                    await startTest();
+
+                    // Activer la divStape suivante ou effectuer d'autres actions
+                } else {
+                    alert("Veuillez choisir au moins une variable pour chaque groupe de variables.");
+                    // Arrêter la fonction si une ou plusieurs conditions ne sont pas remplies
+                }
+
+
+            
+
+        }
+        else{
+            var navVariableStapes = document.querySelectorAll('.variableStape[test="1"].navVariableStape');
+
+            // Parcourir chaque navVariableStape
+            var allNavVariableStapesHaveActiveVarStapes = true;
+            navVariableStapes.forEach(function(navVariableStape) {
+                // Vérifier si au moins un varStape est actif dans chaque navVariableStape
+                var activeVarStape = navVariableStape.querySelector('.varStape.active');
+                if (!activeVarStape) {
+                    alert("Veuillez choisir au moins une variable pour chaque groupe de variables.");
+                    allNavVariableStapesHaveActiveVarStapes = false;
+                    return; // Arrêter la boucle forEach si aucune variable n'est sélectionnée
+                }
+            });
+
+            // Si toutes les navVariableStapes contiennent au moins un varStape actif, alors continuer
+            if (allNavVariableStapesHaveActiveVarStapes) {
+                await startTest();
+                // Activer la divStape suivante ou effectuer d'autres actions
+            } else {
+                alert("Veuillez choisir au moins une variable pour chaque groupe de variables.");
+                // Arrêter la fonction si une ou plusieurs conditions ne sont pas remplies
+            }
+
+        }
+
+
+    }
+
+    // Ajoutez des vérifications supplémentaires et activez les divStapes suivantes si nécessaire
+}
+
+
+window.changeState = function(btn) {
+    var selection = document.querySelector('.option-prediction.active');
+    
+    // Retirez la classe active de l'élément ayant la classe "barreStape"
+    if (document.querySelector(".barreStape.active")) {
+        document.querySelector(".barreStape.active").classList.remove("active");
+    }
+
+    // Retirez la classe active de toutes les divStape
+    document.querySelectorAll('.divStape').forEach(function(divStape) {
+        divStape.classList.remove('active');
+    });
+
+    // Ajoutez la classe active à la divStape correspondante
+    var stapeNumber = btn.classList[1].replace('stape', ''); // Obtenez le numéro de stape de la classe de bouton
+    var correspondingDivStape = document.querySelector('.divStape[stape="' + stapeNumber + '"]');
+    correspondingDivStape.classList.add('active');
+
+    if (!(btn.classList.contains("active"))) {
+        gsap.to(selection.querySelector(".barreStape"), { rotation: 360 });
+        gsap.to(btn.querySelector(".barreStape"), { rotation: 180 });
+
+        // Ajoutez la classe active au bouton
+        btn.classList.add('active');
+
+        // Retirez la classe active de l'ancienne sélection
+        selection.classList.remove('active');
+    }
+
+    gsap.from(correspondingDivStape, { duration: 1, opacity: 0, ease: "power2.inOut" });
+}
+let numClusters;
+let variable1;
+let variable2;
+let data = [];
+let idTmdbListData;
+let idTmdbList;
+async function startTest(){
+    const verif1 = document.querySelector(".stape1").querySelector(".imgStape").src.endsWith("stape1V.png");
+    const verif2 = document.querySelector(".stape2").querySelector(".imgStape").src.endsWith("stape2V.png");
+    if(!verif1){
+        alert("Veuillez choisir la plage de donnée ou passez par Etape Suivante pour continuer")
+        return;
+    }
+    if(!verif2){
+        alert("Veuillez choisir le test ou passez par Etape Suivante pour continuer")
+        return;
+    }
+    document.querySelector(".analyse").classList.remove('active');
+    document.querySelector(".testResult").classList.add('active');
+    idTmdbListData = await fetchData();
+    idTmdbList = Object.values(idTmdbListData);
+    const testStapeActive = document.querySelector(".testStape.active");
+    const selectedTest = testStapeActive.getAttribute("test");
+    console.log(selectedTest)
+    if(selectedTest == "cluestering"){
+        const navVariableStape = document.querySelector(".divStape[stape='3']").querySelector('.variableStape[test="3"]');
+        const activeVarStape = navVariableStape.querySelector('.varStape.active');
+        numClusters = parseInt(activeVarStape.getAttribute('var'));
+        fillTestVariables(selectedTest, numClusters, null);
+    
+    }
+    else{
+        const navVariableStape = document.querySelector('.variableStape[test="1"]').querySelectorAll('.navVariableStape');
+        const activeVarStape = navVariableStape[0].querySelector('.varStape.active');
+
+        variable1 = activeVarStape.getAttribute('var');
+        const activeVarStape2 = navVariableStape[1].querySelector('.varStape.active');
+        variable2 = activeVarStape2.getAttribute('var');
+        fillTestVariables(selectedTest, variable1, variable2);
+    }
+    console.log(variable1)
+    console.log(variable2)
+    console.log(numClusters)
+    console.log(idTmdbList)
+
+
+    await performSelectedTest(selectedTest, variable1, variable2, numClusters); // Ajoutez await ici
+
+}
+function fillTestVariables(test, var1, var2) {
+    // Récupère tous les éléments avec la classe "testVar"
+    const testVarElements = document.querySelectorAll('.testVar');
+
+    // Vérifie si le nombre d'éléments trouvés correspond au nombre de variables à remplir
+    if (testVarElements.length !== 3) {
+        console.error('Le nombre d\'éléments avec la classe "testVar" doit être égal à 3.');
+        return; // Arrête l'exécution de la fonction si le nombre d'éléments est incorrect
+    }
+
+    // Remplit chaque élément avec les valeurs fournies
+    testVarElements[0].innerHTML = "<strong>Test:</strong> " + test;
+
+    if (var2){
+        testVarElements[1].innerHTML = "<strong>Variable 1:</strong> " + var1;
+        testVarElements[2].innerHTML = "<strong>Variable 2:</strong> " + var2;
+    }
+    else{
+        testVarElements[1].innerHTML = "<strong>Nombre de clusters:</strong> " + var1;
+    }
+}
+
+
+window.backTest= function(){
+    document.querySelector(".analyse").classList.add('active');
+    document.querySelector(".testResult").classList.remove('active');
+    clearTestResults();
+}
+
+function clearTestResults() {
+    // Sélectionne la div testResult
+    const testResultDiv = document.querySelector('.testResult');
+
+    // Supprime tous les éléments enfants de la div testResult
+    testResultDiv.innerHTML = '';
+
+    // Recrée la structure de base
+    testResultDiv.innerHTML = `
+        <div class="loadingDiv">
+            <div class="divImgStapeLoad">
+                <img src="assets/images/loadingImg.png" alt="" class="imgStape">
+                <img src="assets/images/barreStape.png" alt="" class="barreStape" >
+            </div>
+            <img src="assets/images/loadingTxt.png" alt="" class="textStapeLoad">
+        </div>
+        <div class="testResum">
+            <h1 style="text-align:center">Recherche effectuée :</h1>
+            <div class="divTestVar">
+                <p class="testVar" type="test"></p>
+                <p class="testVar" type="var1"></p>
+                <p class="testVar" type="var2"></p>
+            </div>
+            <button class="backTest" onclick="backTest()">Nouvelle Recherche</button>
+        </div>
+        <div class="testExplain"></div>
+        <div class="testData">
+            <h2 class="dataText">Données récupérées</h2>
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Titre du film</th>
+                        <th>Variable 1</th>
+                        <th>Variable 2</th>
+                    </tr>
+                </thead>
+                <tbody id="dataBody"></tbody>
+            </table>
+        </div>
+        <div class="testGraph">
+            <div id="myDiv">
+                <canvas id="correlationChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    `;
+}
+
   
   
   

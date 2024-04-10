@@ -11,6 +11,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;700&display=swap">
@@ -24,7 +25,13 @@
 
 
   <div class="content-analytic">
-  <img src="assets/images/menu.png" alt="" class="BtnMenuOverlay" onclick="openMenuSection(this)">
+    <div  class="BtnMenuOverlay">
+    <a href="index.php"><img src="assets/images/play_circle.png" alt="Bouton Filmaxium" ></a>
+    <img src="assets/images/menu.png" alt="" onclick="openMenuSection(this)">
+    
+
+    </div>
+
 
 
 
@@ -38,6 +45,7 @@
       <button class="sectionBtn" id="section2Btn"></button>
       <button class="sectionBtn"id="section3Btn"></button>
       <button class="sectionBtn"id="section4Btn"></button>
+      
     </nav>
     
     <div class="navBtnMenuOverlay">
@@ -50,7 +58,8 @@
 
     </div>
 
-
+    
+    
     
   </div>
 

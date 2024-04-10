@@ -80,7 +80,7 @@
       <a href="./index.php">
         <img src="./assets/images/logo-film.png" width="60" height="60" alt="Find Film">
       </a>
-      <a href="./index.php">
+      <a href="analyse.php">
         <img src="./assets/images/logo-stats.png" width="60" height="60" alt="Analytics home">
       </a>
       <a href="./index.php">

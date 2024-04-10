@@ -84,3 +84,120 @@
     </script>
 </body>
 </html>
+
+
+
+<div class="analyse-genre">
+    <p class="contenu-text2" style ="height: auto; margin-left:10vw">* : Filtre obligatoire</p>
+    <div class="selection-form" data-selection="1">
+      <h1 class="title-test">Test 1</h1>
+      
+      <div class="selection-label-form">
+
+        <div class="dropdown">
+          <div class="select">
+            <span class="selected">Type :</span>
+            <div class="caret"></div>
+          </div>
+          <ul class="menu">
+            <li data-value="movie">Film</li>
+            <li data-value="tv">Série</li>
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <div class="select">
+            <span class="selected">Genre * :</span>
+            <div class="caret"></div>
+          </div>
+          <ul class="menu" id="genre-menu">
+            <!-- Les options seront ajoutées dynamiquement ici -->
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <div class="select">
+            <span class="selected">Pays d'origine :</span>
+            <div class="caret"></div>
+          </div>
+          <ul class="menu" id="country-menu">
+            <!-- Les options seront ajoutées dynamiquement ici -->
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <div class="select dated">
+            <span class="selected">Date de départ :</span>
+            <input type="date" id="date_depart" name="date_depart" class="form-input">
+          </div>
+
+        </div>
+
+        <div class="dropdown">
+          <div class="select dated">
+            <span class="selected">Date de fin :</span>
+            <input type="date" id="date_fin" name="date_fin" class="form-input">
+          </div>
+          
+        </div>
+
+
+      </div>
+    </div>
+    <div class="selection-form" data-selection="2" style="display: none;">
+      <h1 class="title-test">Test 2</h1>
+      
+      <div class="selection-label-form">
+
+        <div class="dropdown">
+          <div class="select">
+            <span class="selected">Type :</span>
+            <div class="caret"></div>
+          </div>
+          <ul class="menu">
+            <li data-value="movie">Film</li>
+            <li data-value="tv">Série</li>
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <div class="select">
+            <span class="selected">Genre :</span>
+            <div class="caret"></div>
+          </div>
+          <ul class="menu" id="genre-menu">
+            <!-- Les options seront ajoutées dynamiquement ici -->
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <div class="select">
+            <span class="selected">Pays d'origine :</span>
+            <div class="caret"></div>
+          </div>
+          <ul class="menu" id="country-menu">
+            <!-- Les options seront ajoutées dynamiquement ici -->
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <div class="select dated">
+            <span class="selected">Date de départ :</span>
+            <input type="date" id="date_depart" name="date_depart" class="form-input">
+          </div>
+
+        </div>
+
+        <div class="dropdown">
+          <div class="select dated">
+            <span class="selected">Date de fin :</span>
+            <input type="date" id="date_fin" name="date_fin" class="form-input">
+          </div>
+          
+        </div>
+
+
+      </div>
+    </div>   
+    <button class="rounded-square-btn" onclick="activeSearch()">Lance la visualisation <img src="assets/images/flame.png" style="width:24px; height:24px" alt="flame" ></button>   
+  </div>

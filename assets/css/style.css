@@ -1450,6 +1450,15 @@ body {
   background-color: none; /* couleur de fond par défaut */
 }
 
+.bouton-ovale-prediction{
+  height: 60%;
+  display: flex;
+  overflow: hidden;
+  width: 90%;
+  background-color: none; /* couleur de fond par défaut */
+  gap:2vw;
+}
+
 .choix-ovale {
   margin-top: 5%;
   display: flex;
@@ -1538,8 +1547,21 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
+
 }
 
+
+.option-prediction {
+
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  gap:1vh;
+
+  flex-direction: column;
+}
 
 
 .contain{
@@ -1583,6 +1605,12 @@ body {
   font-size: 0.8em;
 
 }
+.contenu-text3{
+  height: 25%;
+  color: rgb(114, 110, 110);
+  font-size: 0.8em;
+  text-align: center;
+}
 
 .contain.active {
   background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
@@ -1619,6 +1647,7 @@ body {
   display: flex;
   flex-direction: row;
   height: 50%; /* 50% de la hauteur de l'écran */
+  width: 100vw;
 }
 
 .analyse-film {
@@ -1706,6 +1735,14 @@ body {
 }
 
 .analyse-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centre l'élément horizontalement */
+  align-items: center;
+  width: 50%; /* 50% de la largeur de la div */
+}
+
+.prediction-btn {
   display: flex;
   flex-direction: column;
   justify-content: center; /* Centre l'élément horizontalement */
@@ -2197,4 +2234,238 @@ body {
   top: 0;
   right: 0;
   cursor: pointer;
+}
+.imgStape{
+  position: absolute;
+  width: 100%;
+}
+.barreStape{
+  position: absolute;
+  width: 100%;
+}
+.textStape{
+  position: relative;
+  width: 10vw;
+}
+
+.textStapeLoad{
+  position: relative;
+  width: 20vw;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -45%);
+}
+.divImgStape{
+  position: relative;
+  width: 10vw;
+  height: 10vw;
+}
+.divImgStapeLoad{
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20vw;
+  height: 20vw;
+}
+.barreStape.active{
+  rotate: 180deg;
+}
+
+.divStape{
+  padding-left: 5%;
+  padding-right: 5%;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+.divStape.active{
+  display: block;
+}
+.divStapeTitle{
+  margin-bottom: 2%;
+}
+.btnNextStape{
+  padding: 1em;
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  cursor: pointer;
+  border: 1px solid white;
+  border-radius: var(--radius-24);
+  transition: 2s;
+}
+.btnNextStape:hover{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+.navTestStape{
+  position: relative;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  gap: 10vw;
+}
+.navVariableStape{
+  position: relative;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  gap: 5vw;
+}
+
+.testStape{
+  width: 20vw;
+  height: 15vh;
+  border-radius: var(--radius-24);
+  background: linear-gradient(to right, rgba(216, 44, 76, 0.318), #4053ff72);
+  text-align: center;
+  transition: background 2s linear;
+
+}
+.textTestStape{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 1.3em;
+}
+.testStape:hover{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}
+.testStape.active{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+  border: 1px solid white;
+}
+
+.varStape{
+  width: 10vw;
+  height: 10vh;
+  border-radius: var(--radius-24);
+  background: linear-gradient(to right, rgba(216, 44, 76, 0.318), #4053ff72);
+  text-align: center;
+  transition: background 2s linear;
+
+}
+.textVarStape{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 1em;
+}
+.varStape:hover{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+
+}
+.varStape.active{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+  border: 1px solid white;
+
+}
+
+.variableStape{
+  display: none;
+  flex-direction: column;
+  gap: 3vh;
+}
+.variableStape.active{
+  display: flex;
+}
+
+.textVar{
+  margin: auto;
+  height: 5vh;
+}
+
+.loadingDiv{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000000000;
+}
+
+
+#dataTable th,
+#dataTable td {
+  border-right: 1px solid white; /* Ajoute une bordure droite à chaque cellule */
+}
+
+#dataTable th:last-child,
+#dataTable td:last-child {
+  border-right: none; /* Supprime la bordure de la dernière colonne */
+}
+
+
+.testExplain{
+  display: none;
+  position: relative;
+  width: 50vw;
+  height: 50vh;
+  padding: 1em;
+
+}
+.testExplain.active{
+  display: block;
+}
+.testResum{
+  display: none;
+  position: relative;
+  width: 50vw;
+  height: 50vh;
+  padding: 1em;
+  
+}
+.testResum.active{
+  display: block;
+}
+.testData{
+  display: none;
+  overflow: scroll;
+  position: relative;
+  width: 50vw;
+  height: 50vh;
+  padding: 1em;
+  
+}
+.testData.active{
+  display: block;
+}
+.testGraph{
+  position: relative;
+  width: 50vw;
+  height: 50vh;
+  padding: 1em;
+}
+
+.testResult{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));
+}
+.testResult.active{
+  display: grid;
+}
+.dataText{
+  text-align: center;
+}
+.testVar{
+  text-align: center;
+  margin: 1em;
+}
+.backTest{
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+  border: 1px solid white;
+  border-radius: var(--radius-24);
+  padding: 1em;
 }
