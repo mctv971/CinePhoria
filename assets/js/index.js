@@ -7,7 +7,7 @@
 import { sidebar } from "./sidebar.js";
 import { fetchAPIKeys, imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard, createAnimCard, createPeopleCard, createTvCard } from "./movie-card.js";
-import { search } from "./search.js";
+import { search, searchDictaciel } from "./search.js";
 import { popcorn } from "./popcorn.js";
 
 
@@ -19,11 +19,12 @@ sidebar();
 fetchAPIKeys().then(keys => {
   api_key = keys;
   initializePage(); // Initialise la page une fois que les clés sont disponibles
+  initializePageDictaciel();
 });
+
 
 const initializePage = () => {
 
-  console.log(api_key); // Vous pouvez maintenant utiliser les clés API ici en toute sécurité
 
   const homePageSections = [
 
@@ -72,7 +73,7 @@ const initializePage = () => {
  * fetch all genres eg: [ { "id": "123", "name": "Action" } ]
  * then change genre formate eg: { 123: "Action" }
  */
-const genreList = {
+  const genreList = {
 
   // create genre string from genre_id eg: [23, 43] -> "Action, Romance".
   asString(genreIdList) {
@@ -85,12 +86,12 @@ const genreList = {
     return newGenreList.join(", ");
   }
 
-};
+  };
 
 
 
 
-const heroBanner = function ({ results: movieList }) {
+  const heroBanner = function ({ results: movieList }) {
 
 
   const banner = document.createElement("section");
@@ -182,6 +183,86 @@ const heroBanner = function ({ results: movieList }) {
 
 }
 
+const initializePage = () => {
+
+
+  const homePageSections = [
+
+    {
+      title: "Movies",
+      path: "/movie/popular",
+      createCardFunction: createMovieCard
+    },
+    {
+      title: "TV Shows",
+      path: "/tv/popular",
+      createCardFunction: createTvCard
+    },
+  
+    {
+      title: "Anime",
+      path: "/discover/tv",
+      queryParams: "with_genres=16",
+      createCardFunction: createAnimCard
+    },
+    {
+      title: "People",
+      path: "/person/popular",
+      createCardFunction: createPeopleCard
+    }
+    
+  
+  ];
+  fetchDataFromServer(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`, function ({ genres }) {
+  for (const { id, name } of genres) {
+    genreList[id] = name;
+  }
+
+  });
+
+  /**
+ * Home page sections (Top rated, Upcoming, Trending movies)
+ */
+
+
+
+
+
+/**
+ * fetch all genres eg: [ { "id": "123", "name": "Action" } ]
+ * then change genre formate eg: { 123: "Action" }
+ */
+  const genreList = {
+
+  // create genre string from genre_id eg: [23, 43] -> "Action, Romance".
+  asString(genreIdList) {
+    let newGenreList = [];
+
+    for (const genreId of genreIdList) {
+      this[genreId] && newGenreList.push(this[genreId]); // this == genreList;
+    }
+
+    return newGenreList.join(", ");
+  }
+
+  };
+
+
+
+
+
+
+  /**
+   * fetch data for home page sections (top rated, upcoming, trending)
+   */
+  for (const { title, path, createCardFunction, queryParams } of homePageSections) {
+    fetchDataFromServer(`https://api.themoviedb.org/3${path}?api_key=${api_key}&page=1&${queryParams}`, function (data) {
+      createContentSectionDicta(data, title, createCardFunction);
+    });
+  }
+
+}
+
 
 
 /**
@@ -239,13 +320,21 @@ const createContentSection = function ({ results: itemList }, title, createCardF
     sliderInner.appendChild(card);
   }
 
-  pageContent.appendChild(section);
-}
+    pageContent.appendChild(section);
+  }
 
 
 
 
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -264,5 +353,5 @@ window.onload = clearLocalStorageIfIframeNotActive;
 
 
 closeIframe();
-search();
+searchDictaciel();
 popcorn();

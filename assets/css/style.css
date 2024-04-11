@@ -2469,3 +2469,14 @@ body {
   border-radius: var(--radius-24);
   padding: 1em;
 }
+
+.dictaciel{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000000000;
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+}

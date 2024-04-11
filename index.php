@@ -97,7 +97,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <a href="./index.php">
         <img src="./assets/images/logo-film.png" width="60" height="60" alt="Find Film">
       </a>
-      <a href="analyse.php">
+      <a href="analytic.php">
         <img src="./assets/images/logo-stats.png" width="60" height="60" alt="Analytics home">
       </a>
       <a href="./favorite.php">
@@ -134,6 +134,27 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       </div>
       <div class="popcorn-container">
       <img src="assets/images/popcorn-vierge.png" alt="Mr Popcorn" class="popcorn">
+      </div>
+
+      <div class="dictaciel">
+        <div class="search-box" style="margin:auto; padding-top:2vh;" search-box>
+        <div class="search-wrapper" search-wrapper>
+          <input type="text" name="search" aria-label="search movies" placeholder="Search any contents..."
+            class="search-field" autocomplete="off" search-field>
+
+          <img src="./assets/images/search.png" width="24" height="24" alt="search" class="leading-icon">
+        </div>
+
+        <button class="search-btn" search-toggler>
+          <img src="./assets/images/close.png" width="24" height="24" alt="close search box">
+        </button>
+      </div>
+
+      <button class="search-btn" search-toggler menu-close>
+        <img src="./assets/images/search.png" width="24" height="24" alt="open search box">
+      </button>
+        
+
       </div>
 
       <!-- 

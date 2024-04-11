@@ -76,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 img.src="assets/images/switch2.png"
                 img.alt="switch2"
                 filmSelections[1].style.display = 'block';
-                formSelections[1].style.display = 'flex';
             }
             else{
                 img.src="assets/images/switch.png"
@@ -302,6 +301,11 @@ document.addEventListener("DOMContentLoaded", function() {
     let isScrolling = false;
 
     document.addEventListener("wheel", (event) => {
+        if(document.querySelector(".testResult")){
+            if(document.querySelector(".testResult").classList.contains("active")){
+                return;
+            }
+        }
         if (!isScrolling) { // Vérifie si un défilement est en cours de traitement
             isScrolling = true; // Active le défilement
             let delta = Math.sign(event.deltaY); // Obtient la direction du défilement (1 pour vers le bas, -1 pour vers le haut)

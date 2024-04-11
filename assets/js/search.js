@@ -98,3 +98,61 @@ export function search() {
   });
 }
 
+export function searchDictaciel() {
+  const searchWrapper = document.querySelector(".dictaciel [search-wrapper]");
+  const searchField = document.querySelector(".dictaciel [search-field]");
+
+  let mode = 'movie'; // Par défaut, le mode de recherche est pour les films
+
+  const searchResultModal = document.createElement("div");
+  searchResultModal.classList.add("search-modal");
+  searchResultModal.style.background = "none";
+  document.querySelector(".dictaciel").appendChild(searchResultModal);
+
+  let searchTimeout;
+
+  searchField.addEventListener("input", function () {
+    if (!searchField.value.trim()) {
+      searchResultModal.classList.remove("active");
+      searchWrapper.classList.remove("searching");
+      clearTimeout(searchTimeout);
+      return;
+    }
+
+    searchWrapper.classList.add("searching");
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(function () {
+      const apiUrl = `https://api.themoviedb.org/3/search/multi?api_key=${api_key}&query=${searchField.value}&page=1&include_adult=false`;
+
+      fetchDataFromServer(apiUrl, function ({ results: searchResults }) {
+        searchWrapper.classList.remove("searching");
+        searchResultModal.classList.add("active");
+        searchResultModal.innerHTML = ""; // remove old results
+
+        searchResultModal.innerHTML = `
+          <p class="label">Results for</p>
+          <h1 class="heading">${searchField.value}</h1>
+          <div class="result-list">
+            <div class="grid-list"></div>
+          </div>
+        `;
+
+        for (const item of searchResults) {
+          let card;
+          if (item.media_type === 'movie') {
+            card = createMovieCard(item);
+          } else if (item.media_type === 'person') {
+            card = createPeopleCard(item);
+          } else if (item.media_type === 'tv') {
+            card = createTvCard(item);
+          }
+
+          searchResultModal.querySelector(".grid-list").appendChild(card);
+        }
+      });
+    }, 500);
+  });
+}
+
+
