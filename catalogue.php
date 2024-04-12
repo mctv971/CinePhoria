@@ -96,6 +96,15 @@
 
 
   <main class="catalogue-main">
+
+  <div class="backgroundOverlay"></div>
+    <!-- 
+      - #SIDEBAR
+    -->
+    <div class="iframeContainer">
+      <iframe id="iframe"></iframe>
+      <img src="./assets/images/close.png" alt="Iframe Close" class="closeIcon" id="closeIconGen">
+    </div>
     <!-- 
       - #SIDEBAR
     -->
@@ -112,6 +121,14 @@
 
 
     <article class="container" page-content>
+    <div class="chatbot">
+        <img src="assets/images/close.png"  class="close-chat">
+        <iframe src="chat/chat4.php"  class="chat"></iframe>
+      </div>
+      <div class="popcorn-container">
+      <img src="assets/images/popcorn-vierge.png" alt="Mr Popcorn" class="popcorn">
+      </div>
+
       <!-- 
       - #SIDEBAR
     -->

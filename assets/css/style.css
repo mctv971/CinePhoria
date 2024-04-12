@@ -1838,7 +1838,7 @@ body {
 }
 
 .popcorn-container{
-  bottom: 20vh;
+  bottom: 40vh;
   right: 0px;
   position: fixed;
   z-index: 1000000;

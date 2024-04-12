@@ -53,6 +53,8 @@ export function sidebar() {
     
       <a href="./movie-list.php" menu-close class="sidebar-link"
         onclick='getMovieList("with_original_language=bn", "Bengali")'>Bengali</a>
+      <a href="./movie-list.php" menu-close class="sidebar-link"
+      onclick='getMovieList("with_original_language=fr", "French")'>Français</a>  
     
     </div>
     

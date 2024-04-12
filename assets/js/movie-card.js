@@ -38,14 +38,14 @@ export function createMovieCard(movie) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" >
     </figure>
     
     <h4 class="title">${title}</h4>
     
     <div class="meta-list">
       <div class="meta-item">
-        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" alt="rating">
     
         <span class="span">${vote_average.toFixed(1)}</span>
       </div>
@@ -131,14 +131,14 @@ export function createTvCard(tvShow) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
     </figure>
     
     <h4 class="title">${name}</h4>
     
     <div class="meta-list">
       <div class="meta-item">
-        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" alt="rating">
     
         <span class="span">${vote_average.toFixed(1)}</span>
       </div>
@@ -223,7 +223,7 @@ export function createAnimCard(anime) {
   });
   card.innerHTML = `
     <figure class="poster-box card-banner" >
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     
@@ -231,7 +231,7 @@ export function createAnimCard(anime) {
     
     <div class="meta-list">
       <div class="meta-item">
-        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" alt="rating">
     
         <span class="span">${vote_average.toFixed(1)}</span>
       </div>
@@ -314,7 +314,7 @@ export function createPeopleCard(person) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner">
-      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     
@@ -500,7 +500,7 @@ export function createMovieCardAna(movie) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" onerror="this.src='assets/images/nofound.jpeg'">
     </figure>
     
     <h4 class="title">${title}</h4>
@@ -581,7 +581,7 @@ export function createTvCardAna(tvShow) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
     </figure>
     
     <h4 class="title">${name}</h4>
@@ -626,7 +626,7 @@ export function createAnimCardAna(anime) {
   });
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic" >
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     
@@ -671,7 +671,7 @@ export function createPeopleCardAna(person) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic">
-      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     

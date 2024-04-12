@@ -97,7 +97,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <a href="./index.php">
         <img src="./assets/images/logo-film.png" width="60" height="60" alt="Find Film">
       </a>
-      <a href="analyse.php">
+      <a href="analytic.php">
         <img src="./assets/images/logo-stats.png" width="60" height="60" alt="Analytics home">
       </a>
       <a href="./favorite.php">
