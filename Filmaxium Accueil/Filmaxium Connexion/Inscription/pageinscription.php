@@ -13,18 +13,39 @@
     <a href="inscription.html">  
         <img src="../images/logo.png" alt="Logo">
     </a>
+
     <div class="inscription-container">
         <p id="inscriptionText" style="display:none;">Bienvenue sur la page d'inscription de la Plateforme Filmaxium.</p>
         <p id="assistantText" style="display:none;">Je vais être ton assistant tout au long de ton aventure !</p>
         <p id="guideText" style="display:none;">Pour avancer ton inscription, lorsque cela sera possible, appuie sur la flèche !</p>
         <input type="text" id="usernameInput" style="display:none;" placeholder="Entrez votre username">  <br /> 
-        <p id="usernamePrompt" style="display:none;">Oups! J'ai totalement oublié de me présenter, je suis Mr Popcorn et toi ?<br />(Entres ton username)</p>
+        <p id="usernamePrompt" style="display:none;">Oups! J'ai totalement oublié de me présenter, je suis ton assistant et toi ?<br />(Entres ton username)</p>
     </div>
-    <a href="formulaire.html">
-        <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button" style="display:none;">
+
+    <a href="formulaire.php?username=">
+    <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button" style="display:none;">
     </a>
+
     
     <script>
+        document.getElementById('arrowButton').addEventListener('click', function() {
+        var usernameInput = document.getElementById('usernameInput').value; // Obtenir la valeur de l'entrée de texte
+        var usernameLink = document.querySelector('a[href="formulaire.php?username="]'); // Sélectionner le lien
+
+        // Mettre à jour l'URL avec la valeur du username
+        usernameLink.href = "formulaire.php?username=" + encodeURIComponent(usernameInput);
+
+        var usernamePrompt = document.getElementById('usernamePrompt');
+        var arrowButton = document.getElementById('arrowButton');
+
+        // Faire apparaître les éléments après un clic sur le bouton
+        usernameInput.style.display = 'block';
+        usernamePrompt.style.display = 'block';
+        // Vous pouvez ajouter d'autres inputs ici
+
+        // Masquer le bouton après qu'il ait été cliqué
+        arrowButton.style.display = 'none';
+    });
         document.getElementById('arrowButton').addEventListener('click', function() {
             var usernameInput = document.getElementById('usernameInput');
             var usernamePrompt = document.getElementById('usernamePrompt');

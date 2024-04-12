@@ -8,7 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap" rel="stylesheet">
     <title>Filmaxium </title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/formulaire.js"></script>
 </head>
+<?php
+$username = $_GET['username'];
+?>
 <body class="pageformulaire">
     <div class="logo">
         <a href="inscription.html">  <img src="../images/logo.png" alt="Logo"></a>
@@ -18,23 +23,43 @@
     </div>
     <div class="photo-input2">
         <label for="photoInput">
-            <img src="placeholder.jpg" id="photoPreview" class="photo-preview">
+            <img src="../images/place.jpg" id="photoPreview" class="photo-preview">
         </label>
         <input type="file" id="photoInput" accept="image/*" style="display: none;">
     </div>
-        <div class="containerformulaire">
-            <form>
+    <div class="containerformulaire">
+    <form method="post" id="inscriptionForm">
                 <div class="input-group">
+
+                    <input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
+
                     <label for="nom">Nom :</label>
-                    <input type="text" id="nom" name="nom" required>
+                    <input type="text" id="nom" name="nom" placeholder="Entre ton nom"required>
+
                     <label for="prenom">Prenom :</label>
-                    <input type="text" id="prenom" name="prenom" required>
+                    <input type="text" id="prenom" name="prenom"placeholder="Entre ton prenom" required>
+
                     <label for="mail">Adresse mail :</label>
-                    <input type="email" id="mail" name="mail" required>
+                    <input type="email" id="mail" name="mail" placeholder="Entre ton mail"required>
+
+                    <label for="naissance">Date de naissance :</label>
+                    <input type="date" id="naissance" name="naissance" placeholder="Entre ta date de naissance"required>
+
+                    <label for="pays">Pays :</label>
+                        <select id="pays" name="pays" required>
+                            <option value="fr">Français</option>
+                            <option value="en">Anglais</option>
+                            <option value="de">Allemand</option>
+                            <option value="es">Espagnol</option>
+                            <option value="ar">Arabe</option>
+                        </select><br>
+
+
                     <label for="password">Mot de passe :</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" placeholder="Entre ton mot de passe"required>
+
                     <label for="confirmPassword">Confirme ton mot de passe :</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme ton mot de passe" required>
                 </div>
                 <p>Plateformes possédées :</p>
                 <div class="icones">
@@ -44,41 +69,12 @@
                     <img src="../images/image 4.png" alt="Logo AppleTV">
                     <img src="../images/image 5.png" alt="Logo PrimeVideo">
                 </div>
-            </form>
         </div>
-        <a href="connexion.php">
+        <button  type="submit" id="submitButton" class="arrow-button">
             <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button" >
-        </a>
-        <script>
-            const icons = document.querySelectorAll('.icones img');
-            icons.forEach(icon => {
-                icon.addEventListener('click', () => {
-                    icon.classList.toggle('selected');
-                });
-            });
-            document.addEventListener('DOMContentLoaded', function () {
-                const photoInput = document.getElementById('photoInput');
-                const photoPreview = document.getElementById('photoPreview');
-
-                photoInput.addEventListener('change', function (event) {
-                    previewPhoto(event);
-                });
-
-                function previewPhoto(event) {
-                    const input = event.target;
-
-                    if (input.files && input.files[0]) {
-                        const reader = new FileReader();
-
-                        reader.onload = function (e) {
-                            photoPreview.src = e.target.result;
-                        };
-
-                        reader.readAsDataURL(input.files[0]);
-                    }
-                }
-            });
-
-        </script>
-    </body>
+        </button>
+        </form>
+    </div>
+</body>
 </html>
+
