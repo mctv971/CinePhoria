@@ -7,6 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.93/build/spline-viewer.js" onload="initPage()"></script>
+    <script src="assets/js/animation.js"></script>
+
     <title>Filmaxium </title>
 </head>
 <body class="pageinscription">
@@ -15,78 +18,22 @@
     </a>
 
     <div class="inscription-container">
-        <p id="inscriptionText" style="display:none;">Bienvenue sur la page d'inscription de la Plateforme Filmaxium.</p>
-        <p id="assistantText" style="display:none;">Je vais être ton assistant tout au long de ton aventure !</p>
-        <p id="guideText" style="display:none;">Pour avancer ton inscription, lorsque cela sera possible, appuie sur la flèche !</p>
+        <div id="inscriptionTextContainer" style="display:none;">
+            <spline-viewer style="height:300px; width:800px" id="inscriptionAnimation" url="https://prod.spline.design/ToB0Hxw30gFwEscB/scene.splinecode"></spline-viewer>
+            <p id="assistantText">Bienvenue sur la page d'inscription de la Plateforme Filmaxium.</p>
+        </div>
+        <spline-viewer id="secondAnimation" style="height:300px; width:800px; display:none;" url="https://prod.spline.design/pPpssgoN0Mt1Fyqq/scene.splinecode"></spline-viewer>
+        <spline-viewer id="thirdAnimation" style="height:300px; width:800px; display:none;" url="https://prod.spline.design/RGqwOwhHTuxYGirX/scene.splinecode"></spline-viewer>
+        <spline-viewer id="finalAnimation" style="height:300px; width:800px; display:none;" url="https://prod.spline.design/gvdauOZcgno9n0sh/scene.splinecode"></spline-viewer>
+        
+        <p id="assistantText" style="display:none;">Bienvenue sur la page d'inscription de la Plateforme Filmaxium.</p>
+        <p id="guideText" style="display:none;">Je vais être ton assistant tout au long de ton aventure !</p>
+        <p id="Oups" style="display:none;">Oups! Ici on m'appel Bugs, et toi c'est quoi ton pseudonyme ?</p>
         <input type="text" id="usernameInput" style="display:none;" placeholder="Entrez votre username">  <br /> 
-        <p id="usernamePrompt" style="display:none;">Oups! J'ai totalement oublié de me présenter, je suis ton assistant et toi ?<br />(Entres ton username)</p>
     </div>
 
     <a href="formulaire.php?username=">
-    <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button" style="display:none;">
+        <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button" style="display:none;">
     </a>
-
-    
-    <script>
-        document.getElementById('arrowButton').addEventListener('click', function() {
-        var usernameInput = document.getElementById('usernameInput').value; // Obtenir la valeur de l'entrée de texte
-        var usernameLink = document.querySelector('a[href="formulaire.php?username="]'); // Sélectionner le lien
-
-        // Mettre à jour l'URL avec la valeur du username
-        usernameLink.href = "formulaire.php?username=" + encodeURIComponent(usernameInput);
-
-        var usernamePrompt = document.getElementById('usernamePrompt');
-        var arrowButton = document.getElementById('arrowButton');
-
-        // Faire apparaître les éléments après un clic sur le bouton
-        usernameInput.style.display = 'block';
-        usernamePrompt.style.display = 'block';
-        // Vous pouvez ajouter d'autres inputs ici
-
-        // Masquer le bouton après qu'il ait été cliqué
-        arrowButton.style.display = 'none';
-    });
-        document.getElementById('arrowButton').addEventListener('click', function() {
-            var usernameInput = document.getElementById('usernameInput');
-            var usernamePrompt = document.getElementById('usernamePrompt');
-            var arrowButton = document.getElementById('arrowButton');
-
-            // Faire apparaître les éléments après un clic sur le bouton
-            usernameInput.style.display = 'block';
-            usernamePrompt.style.display = 'block';
-            // Vous pouvez ajouter d'autres inputs ici
-
-            // Masquer le bouton après qu'il ait été cliqué
-            arrowButton.style.display = 'none';
-        });
-        
-        // Faire apparaître la première phrase après un délai initial
-        setTimeout(function() {
-            document.getElementById('inscriptionText').style.display = 'block';
-        }, 0);
-
-        // Faire disparaître la première phrase après un délai
-        setTimeout(function() {
-            document.getElementById('inscriptionText').style.display = 'none';
-            // Faire apparaître la deuxième phrase après que la première phrase ait disparu
-            document.getElementById('assistantText').style.display = 'block';
-        }, 2000);
-
-        // Faire disparaître la deuxième phrase après un délai
-        setTimeout(function() {
-            document.getElementById('assistantText').style.display = 'none';
-            // Faire apparaître la troisième phrase après que la deuxième phrase ait disparu
-            document.getElementById('guideText').style.display = 'block';
-            // Faire disparaître la troisième phrase après un délai
-            setTimeout(function() {
-                document.getElementById('guideText').style.display = 'none';
-                // Faire apparaître l'input et le bouton après que la troisième phrase ait disparu
-                document.getElementById('usernameInput').style.display = 'block';
-                document.getElementById('usernamePrompt').style.display = 'block';
-                document.getElementById('arrowButton').style.display = 'block';
-            }, 2000);
-        }, 4000);
-        
-    </script>
 </body>
 </html>
