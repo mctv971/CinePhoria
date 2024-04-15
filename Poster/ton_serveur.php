@@ -1,25 +1,31 @@
 <?php
 
+// Démarre une nouvelle session ou reprend une session existante.
 session_start();
+
+// Inclut le fichier de configuration de la base de données.
 require("assets/bd.php");
 
+// Récupère l'ID utilisateur à partir de la session.
 $userId = $_SESSION['client']['id_user'];
-$bdd = getBD();
+$bdd = getBD(); // Obtient une instance de connexion à la base de données.
 
-// Récupération des favoris de type "movie"
+// Prépare une requête SQL pour récupérer le premier favori de type "movie" pour l'utilisateur.
 $queryFavorisMovie = "SELECT imdb_id FROM Favoris WHERE id_user = :id_user AND id_type = 'movie' LIMIT 1";
 $stmtFavorisMovie = $bdd->prepare($queryFavorisMovie);
 $stmtFavorisMovie->bindParam(':id_user', $userId);
 
+// Exécute la requête et gère les erreurs potentielles.
 if (!$stmtFavorisMovie->execute()) {
     echo json_encode(array('error' => 'Erreur lors de l\'exécution de la requête SQL pour les films'));
     exit();
 }
 
+// Récupère les résultats sous forme de tableau associatif.
 $favorismovie = $stmtFavorisMovie->fetchAll(PDO::FETCH_ASSOC);
 $listeImdbMovie = array_column($favorismovie, 'imdb_id');
 
-// Récupération des favoris de type "tv"
+// Répète le processus pour les favoris de type "tv".
 $queryFavorisTV = "SELECT imdb_id FROM Favoris WHERE id_user = :id_user AND id_type = 'tv' LIMIT 1";
 $stmtFavorisTV = $bdd->prepare($queryFavorisTV);
 $stmtFavorisTV->bindParam(':id_user', $userId);
@@ -32,7 +38,7 @@ if (!$stmtFavorisTV->execute()) {
 $favoristv = $stmtFavorisTV->fetchAll(PDO::FETCH_ASSOC);
 $listeImdbTV = array_column($favoristv, 'imdb_id');
 
-// Fonction pour récupérer le titre d'un média (film ou série TV) en utilisant l'API
+// Fonction pour interroger une API externe afin de récupérer le titre d'un média basé sur son ID IMDb.
 function fetchMediaTitle($imdb_id, $mediaType) {
     $curl = curl_init();
 
@@ -52,7 +58,6 @@ function fetchMediaTitle($imdb_id, $mediaType) {
 
     $response = curl_exec($curl);
     $err = curl_error($curl);
-
     curl_close($curl);
 
     if ($err) {
@@ -64,28 +69,28 @@ function fetchMediaTitle($imdb_id, $mediaType) {
     }
 }
 
-// Récupération des titres des films
+// Collecte les titres des films favoris.
 $movieTitles = [];
 foreach ($listeImdbMovie as $imdb_id) {
     $movieTitles[] = fetchMediaTitle($imdb_id, 'movie');
 }
 
-// Récupération des titres des séries TV
+// Collecte les titres des séries TV favoris.
 $tvShowTitles = [];
 foreach ($listeImdbTV as $imdb_id) {
     $tvShowTitles[] = fetchMediaTitle($imdb_id, 'tv');
 }
 
-// Fusionner les deux listes de titres
+// Fusionne et filtre les titres récupérés.
 $allTitles = array_merge($movieTitles, $tvShowTitles);
-
-// Création d'une seule chaîne de caractères contenant tous les titres
 $allTitlesString = implode(',', array_filter($allTitles));
 $randomKey = array_rand($allTitlesString);
 $randomTitle = $allTitles[$randomKey];
+
+// Fonction pour appeler l'API d'OpenAI pour générer une image basée sur des titres de films.
 function callOpenAIForImage($titles) {
     $openai_endpoint = "https://api.openai.com/v1/images/generations";
-    $openai_token = "";
+    $openai_token = "Mettre la logique du tokken";
     $prompt = "Create a visually appealing and realistic movie poster based on the following titles: " . $titles;
 
     $data = array(
@@ -119,6 +124,7 @@ function callOpenAIForImage($titles) {
     }
 }
 
+// Si demandé, génère un poster et retourne son URL.
 if ($_POST['generatePoster']) {
     $url = callOpenAIForImage($randomTitle);
     echo json_encode(['url' => $url]);

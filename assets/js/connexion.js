@@ -1,3 +1,5 @@
+
+// Requête AJAX JQUERY permettant la connexion de l'utilisateur avec le pseudonyme et le mot de passe.
 $(document).ready(function() {
     $('#loginForm').submit(function(event) {
         event.preventDefault();
