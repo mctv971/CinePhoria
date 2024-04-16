@@ -41,7 +41,11 @@
 <button id="executeTestButton">Exécuter le test</button>
 
 <div id="myDiv">
+<button id="downloadButton">Télécharger le Graphique</button>
+<button id="analyzeImageButton">Analyser l'Image</button>
 <canvas id="correlationChart" width="400" height="400"></canvas>
+<div id="outputDiv">La réponse apparaîtra ici.</div>
+
 </div>
 <h2>Données récupérées</h2>
 <table id="dataTable">
@@ -229,14 +233,20 @@ function performLinearRegression(x, y, titles, variable1, variable2) {
     displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2);
 }
 
-function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2) {    // Assurez-vous que 'variable1' et 'variable2' sont correctement définis dans la portée supérieure
+function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2) {
     var scatterData = data.map((row, index) => ({
         x: row[variable1],
         y: row[variable2],
-        title: titles[index] // Assurez-vous que 'titles' est le tableau des titres de films
+        title: titles[index]
     }));
 
-    var ctx = document.getElementById('correlationChart').getContext('2d');    if (window.scatterChart !== undefined) {
+    var regressionLine = [
+        { x: Math.min(...x), y: slope * Math.min(...x) + intercept },
+        { x: Math.max(...x), y: slope * Math.max(...x) + intercept }
+    ];
+
+    var ctx = document.getElementById('correlationChart').getContext('2d');
+    if (window.scatterChart !== undefined) {
         window.scatterChart.destroy();
     }
     window.scatterChart = new Chart(ctx, {
@@ -250,27 +260,22 @@ function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, 
                 borderWidth: 1
             }, {
                 label: 'Régression linéaire',
-                // La ligne de régression n'a pas besoin de titres, mais vous pouvez l'ajuster si nécessaire
-                data: [{
-                    x: Math.min(...data.map(row => row[variable1])), 
-                    y: slope * Math.min(...data.map(row => row[variable1])) + intercept
-                }, {
-                    x: Math.max(...data.map(row => row[variable1])), 
-                    y: slope * Math.max(...data.map(row => row[variable1])) + intercept
-                }],
+                data: regressionLine,
+                type: 'line',
+                fill: false,
                 borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2,
-                fill: false
+                borderWidth: 2
             }]
         },
         options: {
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     type: 'linear',
                     position: 'bottom',
                     title: {
                         display: true,
-                        text: $('#variableSelect1 option:selected').text()
+                        text: variable1
                     }
                 },
                 y: {
@@ -278,7 +283,7 @@ function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, 
                     position: 'left',
                     title: {
                         display: true,
-                        text: $('#variableSelect2 option:selected').text()
+                        text: variable2
                     }
                 }
             },
@@ -286,14 +291,8 @@ function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, 
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            if (context.dataset.label === 'Données') {
-                                // Ici, vous pouvez formater le message du tooltip pour inclure les informations que vous voulez
-                                const dataPoint = context.raw;
-                                return `${dataPoint.title}: ${$('#variableSelect1 option:selected').text()} = ${dataPoint.x}, ${$('#variableSelect2 option:selected').text()} = ${dataPoint.y}`;
-                            } else {
-                                // Pour la ligne de régression, on peut conserver l'affichage par défaut ou personnaliser
-                                return `Régression: y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`;
-                            }
+                            const dataPoint = context.raw;
+                            return `${dataPoint.title}: ${variable1} = ${dataPoint.x}, ${variable2} = ${dataPoint.y}`;
                         }
                     }
                 }
@@ -411,15 +410,22 @@ function displayClusters(data, assignments, xAxisLabel, yAxisLabel) {
 
 //-----------------------------GERER LES DONNES VIA LES DROPDOWNS----------------------
 $('#executeTestButton').click(async function() {
-        const selectedTest = $('#testSelect').val();
-        const variable1 = $('#variableSelect1').val();
-        const variable2 = $('#variableSelect2').val();
-        console.log('Test statistique sélectionné:', selectedTest);
-        console.log('Variable 1 sélectionnée:', variable1);
-        console.log('Variable 2 sélectionnée:', variable2);
-        const numClusters = getSelectedClusterCount(); // Obtenez le nombre de clusters sélectionné
-        await performSelectedTest(selectedTest, variable1, variable2, numClusters); // Ajoutez await ici
-    });
+    const selectedTest = $('#testSelect').val();
+    const variable1 = $('#variableSelect1').val();
+    const variable2 = $('#variableSelect2').val();
+    const numClusters = getSelectedClusterCount();
+    await performSelectedTest(selectedTest, variable1, variable2, numClusters);
+
+    // Attendez que le graphique soit dessiné puis capturez l'image
+    setTimeout(() => {
+        const canvas = document.getElementById('correlationChart');
+        if (canvas) {
+            const image = canvas.toDataURL('image/png'); // Capture l'image en format PNG
+            sendImageToAPI(image); // Envoyer l'image vers ChatGPT ou un autre service
+        }
+    }, 1000); // Attendez 1000 ms pour s'assurer que le graphique est bien chargé
+});
+
 
     async function performSelectedTest(selectedTest, var1, var2, numClusters) {
         if (selectedTest === 'pearson') {
@@ -444,7 +450,66 @@ $('#executeTestButton').click(async function() {
     }
 
 //----------------------------------------------------------------------------------
+$('#downloadButton').click(function() {
+        const canvas = document.getElementById('correlationChart');
+        if (canvas) {
+            const imageUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'graphique.png';
+            link.href = imageUrl;
+            link.click();
+        }
+    });    
+
+
+});
+async function sendImageToAPI(imageBase64) {
+    const openaiApiKey = '';  // Remplacez ceci par votre clé d'API
+
+    const requestData = {
+        model: "gpt-4-turbo",
+        messages: [
+            {
+                role: "user",
+                content: [
+                    { type: "text", text: "Interprete le graphique en expliquant de manière claire le résultat obtenue sachant que l'on parle d'une analyse de correlation entre deux films selon deux variables ou bien d'un clustering selon l'image que tu reçois" },
+                    { type: "image_url", image_url: { url: imageBase64 } }
+                ]
+            }
+        ],
+        max_tokens: 300
+    };
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openaiApiKey}`
+        },
+        body: JSON.stringify(requestData)
     });
+
+    if (response.ok) {
+        const responseData = await response.json();
+        console.log('Response from OpenAI:', responseData);
+        // Mettre à jour le contenu de la div avec la réponse
+        const outputDiv = document.getElementById('outputDiv');
+        if (responseData.choices && responseData.choices.length > 0 && responseData.choices[0].message) {
+            outputDiv.innerHTML = responseData.choices[0].message.content;
+        } else {
+            outputDiv.innerHTML = 'Aucune réponse significative reçue.';
+        }
+    } else {
+        console.error('Failed to send image:', response.statusText);
+        const outputDiv = document.getElementById('outputDiv');
+        outputDiv.innerHTML = 'Erreur lors de l\'envoi de l\'image: ' + response.statusText;
+    }
+}
+
+
+
 </script>
+<div id="responseDiv">Réponse de l'API apparaîtra ici</div>
+
 </body>
 </html>
