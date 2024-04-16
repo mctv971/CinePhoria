@@ -416,14 +416,20 @@ $('#executeTestButton').click(async function() {
     const numClusters = getSelectedClusterCount();
     await performSelectedTest(selectedTest, variable1, variable2, numClusters);
 
-    // Attendez que le graphique soit dessiné puis capturez l'image
-    setTimeout(() => {
-        const canvas = document.getElementById('correlationChart');
-        if (canvas) {
-            const image = canvas.toDataURL('image/png'); // Capture l'image en format PNG
-            sendImageToAPI(image); // Envoyer l'image vers ChatGPT ou un autre service
+    setTimeout(async () => {
+        let imageBase64;
+        // Vérifier si c'est un graphique Plotly
+        if (document.querySelector('.plot-container')) {
+            imageBase64 = await Plotly.toImage(document.querySelector('.plot-container'), {format: 'png'});
+        } else {
+            // Sinon, traiter comme un graphique Chart.js
+            const canvas = document.getElementById('correlationChart');
+            if (canvas) {
+                imageBase64 = canvas.toDataURL('image/png');
+            }
         }
-    }, 1000); // Attendez 1000 ms pour s'assurer que le graphique est bien chargé
+        sendImageToAPI(imageBase64); // Envoyer l'image à l'API
+    }, 1000);
 });
 
 
@@ -464,32 +470,35 @@ $('#downloadButton').click(function() {
 
 });
 async function sendImageToAPI(imageBase64) {
-    const openaiApiKey = '';  // Remplacez ceci par votre clé d'API
-
-    const requestData = {
-        model: "gpt-4-turbo",
-        messages: [
-            {
+        const requestData = {
+            model: "gpt-4-turbo",
+            messages: [{
                 role: "user",
-                content: [
-                    { type: "text", text: "Interprete le graphique en expliquant de manière claire le résultat obtenue sachant que l'on parle d'une analyse de correlation entre deux films selon deux variables ou bien d'un clustering selon l'image que tu reçois" },
-                    { type: "image_url", image_url: { url: imageBase64 } }
+                content: [{
+                        type: "text",
+                        text: "Interprete le graphique en expliquant de manière claire le résultat obtenue sachant que l'on parle d'une analyse de correlation entre deux films selon deux variables ou bien d'un clustering selon l'image que tu reçois"
+                    },
+                    {
+                        type: "image_url",
+                        image_url: {
+                            url: imageBase64
+                        }
+                    }
                 ]
-            }
-        ],
-        max_tokens: 300
-    };
+            }],
+            max_tokens: 300
+        };
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openaiApiKey}`
-        },
-        body: JSON.stringify(requestData)
-    });
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer`
+            },
+            body: JSON.stringify(requestData)
+        });
 
-    if (response.ok) {
+        if (response.ok) {
         const responseData = await response.json();
         console.log('Response from OpenAI:', responseData);
         // Mettre à jour le contenu de la div avec la réponse
@@ -506,6 +515,11 @@ async function sendImageToAPI(imageBase64) {
     }
 }
 
+async function convertPlotlyToImage(plotlyCanvas) {
+    // Cette fonction devrait implémenter la conversion d'un élément Plotly en image
+    // Utiliser html2canvas ou une méthode similaire
+    return plotlyCanvas.toDataURL('image/png');
+}
 
 
 </script>
