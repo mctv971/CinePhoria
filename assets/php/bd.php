@@ -9,8 +9,8 @@
  * @return PDO L'objet PDO représentant la connexion à la base de données.
  */
 function getBD(){
-$bdd = new PDO('mysql:host=localhost;dbname=Filmaxium2;charset=utf8',
-'root', 'root');
+$bdd = new PDO('mysql:host=localhost;dbname=Filmaxium;charset=utf8',
+'root', '');
 return $bdd;
 }
 ?>

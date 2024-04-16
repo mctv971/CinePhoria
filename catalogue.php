@@ -70,7 +70,7 @@
     </button>
 
     <button class="menu-btn" menu-btn menu-toggler>
-      <img src="./assets/images/menu.png" width="24" height="24" alt="open menu" class="menu">
+      <img src="./assets/images/menu.png" width="24" height="24" alt="open menu" class="menu2">
       <img src="./assets/images/menu-close.png" width="24" height="24" alt="close menu" class="close">
     </button>
     <div class="logo-right">

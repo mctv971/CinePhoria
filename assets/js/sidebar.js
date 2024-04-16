@@ -65,6 +65,7 @@ export function sidebar() {
   `;
 
 
+
   const genreLink = function () {
 
 
@@ -83,9 +84,77 @@ export function sidebar() {
 
     const sidebar = document.querySelector("[sidebar]");
     sidebar.appendChild(sidebarInner);
+    addFilterForm(sidebarInner);
     toggleSidebar(sidebar);
 
   }
+  function addFilterForm(parentElement) {
+    const form = document.createElement("form");
+    form.id = "filter-form";
+    form.innerHTML = `
+      <div class="form-group">
+        <label for="genre-select">Genre:</label>
+        <select id="genre-select" name="genre">
+          <option value="">Any</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="country-select">Pays:</label>
+        <select id="country-select" name="country">
+          <option value="">Any</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date-from">De:</label>
+        <input type="date" id="date-from" name="dateFrom">
+        <label for="date-to">À:</label>
+        <input type="date" id="date-to" name="dateTo">
+      </div>
+      <button id="filterbtn" type="submit">Appliquer les filtres</button>
+    `;
+    parentElement.appendChild(form);
+  
+    fetchDataFromServer('https://api.themoviedb.org/3/genre/movie/list?api_key=' + api_key, function({ genres }) {
+      const genreSelect = document.getElementById('genre-select');
+      genres.forEach(genre => {
+        const option = document.createElement('option');
+        option.value = genre.id;
+        option.textContent = genre.name;
+        genreSelect.appendChild(option);
+      });
+    });
+  
+    fetchDataFromServer('https://api.themoviedb.org/3/configuration/countries?api_key=' + api_key, function(countries) {
+      const countrySelect = document.getElementById('country-select');
+      countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.iso_3166_1;
+        option.textContent = country.english_name;
+        countrySelect.appendChild(option);
+      });
+    });
+  
+    form.addEventListener('submit', handleFilterSubmit);
+  }
+  
+  function handleFilterSubmit(e) {
+    e.preventDefault();
+    const genre = document.getElementById('genre-select').value;
+    const country = document.getElementById('country-select').value;
+    const dateFrom = document.getElementById('date-from').value;
+    const dateTo = document.getElementById('date-to').value;
+  
+    let urlParams = `sort_by=popularity.desc&include_adult=false`;
+    if (genre) urlParams += `&with_genres=${genre}`;
+    if (country) urlParams += `&region=${country}`;
+    if (dateFrom) urlParams += `&release_date.gte=${dateFrom}`;
+    if (dateTo) urlParams += `&release_date.lte=${dateTo}`;
+
+    getMovieList(urlParams, 'Filtered Movies');
+  
+    window.location.href = `./movie-list.php`;
+  }
+  
 
 
   const toggleSidebar = function (sidebar) {
