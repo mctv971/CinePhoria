@@ -1,0 +1,83 @@
+/* Style général pour le corps de la page */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    margin: 0;
+    background: rgb(16, 23, 40,1); /* Couleur de fond légère */
+    font-family: DM Sans ,Arial, sans-serif; /* Police de caractère */
+}
+
+/* Style pour le conteneur des cartes de films */
+#cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espace entre les cartes */
+}
+
+/* Style pour chaque carte de film */
+.movie-card {
+    width: 250px; /* Largeur fixe pour chaque carte */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Ombre subtile pour la carte */
+    background: #ffffff; /* Fond blanc pour la carte */
+    border-radius: 10px; /* Bordures arrondies */
+    overflow: hidden; /* Assure que tout à l'intérieur de la carte reste dans les limites */
+    transition: transform 0.2s; /* Animation pour effet de survol */
+}
+
+
+.movie-card:hover {
+    transform: translateY(-5px); /* Effet de soulèvement lorsque la carte est survolée */
+}
+
+/* Style pour les questions */
+/* Style pour le conteneur principal */
+.container {
+    margin:25%;
+    display: flex;
+    flex-direction: column; /* Organise les éléments verticalement */
+    align-items: center;
+}
+
+/* Style pour la question */
+.question {
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px; /* Ajoute un espacement en dessous de la question */
+    text-align: center;
+    font-size: 25px;
+}
+
+/* Style pour le conteneur du formulaire */
+.form-container {
+    display: flex;
+    flex-direction: column; /* Organise les éléments verticalement */
+    align-items: center;
+}
+input{
+    width: 50px; 
+    height: 50px;
+    margin-top: 8px;
+    margin-left: 45%;
+}
+
+.styled-select {
+    width: 300px; /* Augmenter la largeur */
+    height: 50px; /* Augmenter la hauteur */
+    border-radius: 20px; /* Bords arrondis */
+    background-image: linear-gradient(to right, #ff7e5f, #feb47b); /* Dégradé de couleurs de gauche à droite */
+    padding: 5px 10px; /* Ajout de padding pour mieux aligner le texte à l'intérieur */
+    font-size: 16px; /* Taille de police plus grande pour une meilleure lisibilité */
+    color: white; /* Couleur du texte blanc */
+    border: none; /* Retirer la bordure par défaut */
+    -webkit-appearance: none; /* Enlever l'aspect par défaut pour WebKit/Blink */
+    -moz-appearance: none; /* Enlever l'aspect par défaut pour Firefox */
+    appearance: none; /* Enlever l'aspect par défaut standard */
+}
+.logo-container {
+    position: absolute; /* Positionnement absolu par rapport à la page */
+    top: 10px; /* 10 pixels du haut de la page */
+    left: 10px;
+    right:25%
+}

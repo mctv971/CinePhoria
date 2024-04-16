@@ -686,4 +686,36 @@ export function createPeopleCardAna(person) {
 }
 
 
+// AJOUT DE CODE POUR LA PARTIE QUIZZGPT
 
+
+const apiKey = '4bff542b068c0fff85589d72c363051d'; // Assurez-vous que cette clé est gérée de manière sécurisée
+const baseUrl = 'https://api.themoviedb.org/3';
+
+
+export async function displayMovieCards(imdbIds) {
+  const cardsContainer = document.querySelector('#cards-container');
+  cardsContainer.innerHTML = ''; // Clear previous cards
+
+  for (const imdbId of imdbIds) {
+      const movie = await getMovieDetailsFromIMDbId(imdbId);
+      if (movie) {  // Assurez-vous que l'objet movie n'est pas undefined
+          const card = createMovieCard(movie);
+          cardsContainer.appendChild(card);
+      } else {
+          console.error("Movie data not found for IMDb ID:", imdbId);
+      }
+  }
+}
+
+async function getMovieDetailsFromIMDbId(imdbId) {
+  const url = `https://api.themoviedb.org/3/find/${imdbId}?api_key=4bff542b068c0fff85589d72c363051d&external_source=imdb_id`;
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.movie_results && data.movie_results[0]; // Assurez-vous de retourner le premier résultat de film, ou undefined si aucun n'est trouvé
+  } catch (error) {
+      console.error("Error fetching movie details:", error);
+      return undefined;
+  }
+}
