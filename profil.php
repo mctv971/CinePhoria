@@ -20,7 +20,33 @@ if (!isset($_SESSION['client'])){
     exit();
 }
 
-$client=$_SESSION['client'];
+
+$client = $_SESSION['client'];
+require("assets/php/bd.php");
+
+// Récupère l'ID utilisateur à partir de la session.
+$userId = $_SESSION['client']['id_user'];
+$bdd = getBD(); // Obtient une instance de connexion à la base de données.
+
+// Prépare une requête SQL pour récupérer les favoris avec leur type pour l'utilisateur.
+$queryFavoris = "SELECT imdb_id, id_type FROM Favoris WHERE id_user = :id_user";
+$stmtFavoris = $bdd->prepare($queryFavoris);
+$stmtFavoris->bindParam(':id_user', $userId);
+
+// Exécute la requête et gère les erreurs potentielles.
+if (!$stmtFavoris->execute()) {
+    echo json_encode(array('error' => 'Erreur lors de l\'exécution de la requête SQL pour les favoris'));
+    exit();
+}
+
+// Récupère les résultats sous forme de tableau associatif.
+$favoris = $stmtFavoris->fetchAll(PDO::FETCH_ASSOC);
+
+// Prépare les données pour JavaScript
+$items = array_map(function ($item) {
+    return ['id' => $item['imdb_id'], 'type' => $item['id_type']];
+}, $favoris);
+
 ?>
     
     <!-- Conteneur flex pour la photo et le formulaire -->
@@ -39,49 +65,27 @@ $client=$_SESSION['client'];
         <form class="containerformulaire2">
             <div class="input-group">
                 <label for="nom">Nom :</label>
-                <input type="text" id="nom" name="nom" value="<?php echo $client['nom']; ?>">
+                <input type="text" id="nom" name="nom" value="<?php echo $client['nom']; ?>" readOnly="readOnly">
                 <label for="prenom">Prénom :</label>
-                <input type="text" id="prenom" name="prenom" value="<?php echo $client['prenom']; ?>">
+                <input type="text" id="prenom" name="prenom" value="<?php echo $client['prenom']; ?>" readOnly="readOnly">
                 <label for="pseudo">Pseudonyme :</label>
-                <input type="text" id="pseudo" name="pseudo" value="<?php echo $client['username']; ?>">
+                <input type="text" id="pseudo" name="pseudo" value="<?php echo $client['username']; ?>" readOnly="readOnly" >
                 <label for="mail">Adresse mail :</label>
-                <input type="email" id="mail" name="mail" value="<?php echo $client['mail']; ?>">
+                <input type="email" id="mail" name="mail" value="<?php echo $client['mail']; ?>" readOnly="readOnly" >
                 <label for="naissance">Date de naissance :</label>
-                <input type="naissance" id="naissance" name="naissance" value="<?php echo $client['naissance']; ?>">
-            </div>
-            <div class="button-container">
-                <a href="modifmdp.html"><button>Modifier mon mot de passe</button></a> 
+                <input type="naissance" id="naissance" name="naissance" value="<?php echo $client['naissance']; ?>"readOnly="readOnly" >
             </div>
         </form>
-        <div class="perso">
-            <p>Choisissez le thème de votre session :</p>
-            <select id="themeSelect" onchange="changeTheme()">
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-            </select>
-            <p>Programmes préférés :</p>
-        </div>
 
-        <script>
-            function changeTheme() {
-                const themeSelect = document.getElementById('themeSelect');
-                const body = document.body;
+        <div class="slider-inner">
+    <div id="cards-container"  style="margin: 20px 0;">
+    <div>
+</div>
+
+</div>
         
-                if (themeSelect.value === 'dark') {
-                    body.classList.remove('light-theme');
-                    body.classList.add('dark-theme');
-                } else if (themeSelect.value === 'light') {
-                    body.classList.remove('dark-theme');
-                    body.classList.add('light-theme');
-                }
-            }
-        
-            // Ajoutez ces lignes pour ajouter un écouteur d'événements à l'élément de sélection du thème
-            const themeSelect = document.getElementById('themeSelect');
-            themeSelect.addEventListener('change', changeTheme);
-        </script>
-    </div>
         <script>
+            
                 document.addEventListener('DOMContentLoaded', function () {
                 const photoInput = document.getElementById('photoInput');
                 const photoPreview = document.getElementById('photoPreview');
@@ -104,8 +108,15 @@ $client=$_SESSION['client'];
                     }
                 }
             });
-
-
         </script>
+        <script type="module">
+    import { displayItems } from './assets/js/movie-card.js';
+    document.addEventListener('DOMContentLoaded', () => {
+        const items = <?php echo json_encode($items); ?>;
+        console.log(items);
+        displayItems(items);
+    });
+</script>
+
 </body>
 </html>
