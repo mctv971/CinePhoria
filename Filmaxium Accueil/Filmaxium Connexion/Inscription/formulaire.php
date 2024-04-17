@@ -16,7 +16,7 @@ $username = $_GET['username'];
 ?>
 <body class="pageformulaire">
     <div class="logo">
-        <a href="inscription.html">  <img src="../images/logo.png" alt="Logo"></a>
+        <a href="inscription.html"><img src="../images/logo.png" alt="Logo"></a>
     </div>
     <div class="info-text">
         <p>Entres tes informations ! Les plateformes vont nous permettre d'afficher le contenu dont tu as accès</p>
@@ -28,53 +28,43 @@ $username = $_GET['username'];
         <input type="file" id="photoInput" accept="image/*" style="display: none;">
     </div>
     <div class="containerformulaire">
-    <form method="post" id="inscriptionForm">
-                <div class="input-group">
+        <form method="post" id="inscriptionForm">
+            <div class="input-group">
+                <input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" placeholder="Entre ton nom" required>
+                <label for="prenom">Prenom :</label>
+                <input type="text" id="prenom" name="prenom" placeholder="Entre ton prenom" required>
+                <label for="mail">Adresse mail :</label>
+                <input type="email" id="mail" name="mail" placeholder="Entre ton mail" required>
+                <label for="naissance">Date de naissance :</label>
+                <input type="date" id="naissance" name="naissance" placeholder="Entre ta date de naissance" required>
+                <label for="pays">Pays :</label>
+                <select id="pays" name="pays" required>
+                    <option value="fr">Français</option>
+                    <option value="en">Anglais</option>
+                    <option value="de">Allemand</option>
+                    <option value="es">Espagnol</option>
+                    <option value="ar">Arabe</option>
+                </select><br>
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" placeholder="Entre ton mot de passe" required>
+                <label for="confirmPassword">Confirme ton mot de passe :</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme ton mot de passe" required>
+            </div>
+            <p>Plateformes possédées :</p>
+            <div class="icones">
+            <img src="../images/image 1.png" alt="Logo Netflix" class="icon" data-platform-id="8">
+            <img src="../images/image 2.png" alt="Logo Disney+" class="icon" data-platform-id="337">
+            <img src="../images/image 3.png" alt="Logo CrunchyRoll" class="icon" data-platform-id="283">
+            <img src="../images/image 4.png" alt="Logo AppleTV" class="icon" data-platform-id="2">
+            <img src="../images/image 5.png" alt="Logo PrimeVideo" class="icon" data-platform-id="9">
 
-                    <input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
-
-                    <label for="nom">Nom :</label>
-                    <input type="text" id="nom" name="nom" placeholder="Entre ton nom"required>
-
-                    <label for="prenom">Prenom :</label>
-                    <input type="text" id="prenom" name="prenom"placeholder="Entre ton prenom" required>
-
-                    <label for="mail">Adresse mail :</label>
-                    <input type="email" id="mail" name="mail" placeholder="Entre ton mail"required>
-
-                    <label for="naissance">Date de naissance :</label>
-                    <input type="date" id="naissance" name="naissance" placeholder="Entre ta date de naissance"required>
-
-                    <label for="pays">Pays :</label>
-                        <select id="pays" name="pays" required>
-                            <option value="fr">Français</option>
-                            <option value="en">Anglais</option>
-                            <option value="de">Allemand</option>
-                            <option value="es">Espagnol</option>
-                            <option value="ar">Arabe</option>
-                        </select><br>
-
-
-                    <label for="password">Mot de passe :</label>
-                    <input type="password" id="password" name="password" placeholder="Entre ton mot de passe"required>
-
-                    <label for="confirmPassword">Confirme ton mot de passe :</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme ton mot de passe" required>
-                </div>
-                <p>Plateformes possédées :</p>
-                <div class="icones">
-                    <img src="../images/image 1.png" alt="Logo Netflix">
-                    <img src="../images/image 2.png" alt="Logo Disney+">
-                    <img src="../images/image 3.png" alt="Logo CrunchyRoll">
-                    <img src="../images/image 4.png" alt="Logo AppleTV">
-                    <img src="../images/image 5.png" alt="Logo PrimeVideo">
-                </div>
-        </div>
-        <button  type="submit" id="submitButton" class="arrow-button">
-            <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button" >
-        </button>
+            </div>
+            <button type="submit" id="submitButton" class="arrow-button">
+                <img src="../images/Bouton.png" alt="Flèche" id="arrowButton" class="arrow-button">
+            </button>
         </form>
     </div>
 </body>
 </html>
-

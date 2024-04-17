@@ -1,60 +1,41 @@
-const icons = document.querySelectorAll('.icones img');
-            icons.forEach(icon => {
-                icon.addEventListener('click', () => {
-                    icon.classList.toggle('selected');
-                });
-            });
-            document.addEventListener('DOMContentLoaded', function () {
-                const photoInput = document.getElementById('photoInput');
-                const photoPreview = document.getElementById('photoPreview');
+document.addEventListener('DOMContentLoaded', function () {
+    const icons = document.querySelectorAll('.icones img');
+    console.log(icons.length + " icons found");  // This should match the number of your images
 
-                photoInput.addEventListener('change', function (event) {
-                    previewPhoto(event);
-                });
+    icons.forEach(icon => {
+        icon.addEventListener('click', () => {
+            icon.classList.toggle('selected');
+            console.log(icon.id + " toggled. Selected: " + icon.classList.contains('selected')); // This logs every click
+        });
+    });
 
-                function previewPhoto(event) {
-                    const input = event.target;
+    // Handle platform selection
 
-                    if (input.files && input.files[0]) {
-                        const reader = new FileReader();
-
-                        reader.onload = function (e) {
-                            photoPreview.src = e.target.result;
-                        };
-
-                        reader.readAsDataURL(input.files[0]);
-                    }
-                }
-            });
-            $(document).ready(function () {
+    // Form submission handling
     $('#inscriptionForm').submit(function (event) {
-        event.preventDefault(); 
-        var formData = $(this).serialize(); 
+        event.preventDefault();
+        var formData = $(this).serialize();
+        var platforms = [];
+
+        $('.icones img.selected').each(function() {
+            platforms.push($(this).data('platform-id'));
+            console.log("Selected platform ID: ", $(this).data('platform-id')); // Confirming selection
+        });
+
+        formData += '&platforms=' + platforms.join(',');
+
+        console.log("Final formData: ", formData); // Debug output to check formData content
 
         $.ajax({
             type: 'POST',
             url: 'assets/php/enregistrement.php',
             data: formData,
             success: function (response) {
-                $.ajax({
-                    type: 'POST',
-                    url: 'assets/php/login.php', // Chemin vers votre script de connexion
-                    data: formData,
-                    dataType: 'json', // S'attend à recevoir une réponse en JSON
-                    success: function(response) {
-                        if(response.connected) {
-                            window.location.href = '../../../index.php';
-                        } else {
-                            alert(response.message); // Affiche le message d'erreur de connexion
-                        }
-                    },
-                    error: function() {
-                        alert('Erreur lors de la tentative de connexion.');
-                    }
-                });
+                console.log("Server response: ", response);
+                alert('Registration successful!');
             },
             error: function () {
-                alert('Erreur lors de l\'inscription. Veuillez réessayer.');
+                alert('Registration failed. Please try again.');
             }
         });
     });
