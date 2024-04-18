@@ -719,3 +719,40 @@ async function getMovieDetailsFromIMDbId(imdbId) {
       return undefined;
   }
 }
+export async function displayItems(items) {
+  const cardsContainer = document.querySelector('#cards-container');
+  if (!cardsContainer) {
+    console.error('No container found for displaying items.');
+    return;
+  }
+
+  cardsContainer.innerHTML = ''; // Clear previous cards
+
+  for (const item of items) {
+      let details;
+      if (item.type === 'movie') {
+        details = await getDetailsFromTMDB(item.id, 'movie');
+      } else if (item.type === 'tv') {
+        details = await getDetailsFromTMDB(item.id, 'tv');
+      }
+
+      if (details) {
+        const card = item.type === 'movie' ? createMovieCard(details) : createTvCard(details);
+        cardsContainer.appendChild(card);
+      } else {
+        console.error("Details not found for item with ID:", item.id);
+      }
+  }
+}
+
+async function getDetailsFromTMDB(tmdbId, type) {
+  const url = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${apiKey}&language=en-US`;
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+  } catch (error) {
+      console.error(`Error fetching ${type} details:`, error);
+      return undefined;
+  }
+}
