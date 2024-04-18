@@ -686,4 +686,342 @@ export function createPeopleCardAna(person) {
 }
 
 
+export function createMovieCardFavorite(movie) {
+  const {
+    poster_path,
+    title,
+    vote_average,
+    release_date,
+    id
+  } = movie;
 
+  const cardFavoDiv = document.createElement("div");
+  cardFavoDiv.classList.add("cardFavoDiv");
+  cardFavoDiv.setAttribute("data-id", id);
+  cardFavoDiv.setAttribute("data-type", "movie");
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${title}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+    
+        <span class="span">${vote_average.toFixed(1)}</span>
+      </div>
+    
+      <div class="card-badge">${release_date.split("-")[0]}</div>
+    </div>
+    
+    <a class="card-btn" title="${title}" onclick="addFavoriteDicta(${id},'movie' )"></a>
+  `;
+
+  cardFavoDiv.appendChild(card);
+
+  const deleteCardFav = document.createElement("div");
+  deleteCardFav.classList.add("deleteCardFav");
+  deleteCardFav.setAttribute("onclick", `deleteFavoriteDicta(${id}, 'movie')`);
+  deleteCardFav.textContent = "Delete";
+  cardFavoDiv.appendChild(deleteCardFav);
+
+  return cardFavoDiv;
+}
+
+
+
+
+// Fonction pour créer les cartes de séries TV
+export function createTvCardFavorite(tvShow) {
+  const {
+    poster_path,
+    name,
+    vote_average,
+    first_air_date,
+    id
+  } = tvShow;
+
+  const cardFavoDiv = document.createElement("div");
+  cardFavoDiv.classList.add("cardFavoDiv");
+  cardFavoDiv.setAttribute("data-id", id);
+  cardFavoDiv.setAttribute("data-type", "tv");
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <span class="span">${vote_average.toFixed(1)}</span>
+      </div>
+      <div class="card-badge">${first_air_date.split("-")[0]}</div>
+    </div>
+    
+    <a class="card-btn" title="${name}" onclick="addFavoriteDicta(${id},'tv' )"></a>
+  `;
+
+  cardFavoDiv.appendChild(card);
+
+  const deleteCardFav = document.createElement("div");
+  deleteCardFav.classList.add("deleteCardFav");
+  deleteCardFav.setAttribute("onclick", `deleteFavoriteDicta(${id}, 'tv')`);
+  deleteCardFav.textContent = "Delete";
+  cardFavoDiv.appendChild(deleteCardFav);
+
+  return cardFavoDiv;
+}
+
+// Fonction pour créer les cartes d'animés
+export function createAnimCardFavorite(anime) {
+  const {
+    poster_path,
+    name,
+    vote_average,
+    first_air_date,
+    id
+  } = anime;
+
+  const cardFavoDiv = document.createElement("div");
+  cardFavoDiv.classList.add("cardFavoDiv");
+  cardFavoDiv.setAttribute("data-id", id);
+  cardFavoDiv.setAttribute("data-type", "tv");
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <span class="span">${vote_average.toFixed(1)}</span>
+      </div>
+      <div class="card-badge">${first_air_date.split("-")[0]}</div>
+    </div>
+    
+    <a class="card-btn" title="${name}" onclick="addFavoriteDicta(${id},'tv' )"></a>
+  `;
+
+  cardFavoDiv.appendChild(card);
+
+  const deleteCardFav = document.createElement("div");
+  deleteCardFav.classList.add("deleteCardFav");
+  deleteCardFav.setAttribute("onclick", `deleteFavoriteDicta(${id}, 'tv')`);
+  deleteCardFav.textContent = "Delete";
+  cardFavoDiv.appendChild(deleteCardFav);
+
+  return cardFavoDiv;
+}
+
+// Fonction pour créer les cartes de réalisateurs et d'acteurs
+export function createPeopleCardFavorite(person) {
+  const {
+    profile_path,
+    name,
+    known_for_department,
+    id
+  } = person;
+
+  const cardFavoDiv = document.createElement("div");
+  cardFavoDiv.classList.add("cardFavoDiv");
+  cardFavoDiv.setAttribute("data-id", id);
+  cardFavoDiv.setAttribute("data-type", "people");
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner">
+      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">${known_for_department}</div>
+    </div>
+    
+    <a class="card-btn" title="${name}" onclick="addFavoriteDicta(${id},'people' )"></a>
+  `;
+
+  cardFavoDiv.appendChild(card);
+
+  const deleteCardFav = document.createElement("div");
+  deleteCardFav.classList.add("deleteCardFav");
+  deleteCardFav.setAttribute("onclick", `deleteFavoriteDicta(${id}, 'people')`);
+  deleteCardFav.textContent = "Delete";
+  cardFavoDiv.appendChild(deleteCardFav);
+
+  return cardFavoDiv;
+}
+
+export function createMovieCardDicta(movie) {
+  const {
+    poster_path,
+    title,
+    vote_average,
+    release_date,
+    id
+  } = movie;
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${title}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+    
+        <span class="span">${vote_average.toFixed(1)}</span>
+      </div>
+    
+      <div class="card-badge">${release_date.split("-")[0]}</div>
+    </div>
+    
+    <a class="card-btn" title="${title}" onclick="addFavoriteDicta(${id},'movie' )"></a>
+    
+
+  `;
+  
+
+  return card;
+}
+
+
+
+// Fonction pour créer les cartes de séries TV
+export function createTvCardDicta(tvShow) {
+  const {
+    poster_path,
+    name,
+    vote_average,
+    first_air_date,
+    id
+  } = tvShow;
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+    
+        <span class="span">${vote_average.toFixed(1)}</span>
+      </div>
+    
+      <div class="card-badge">${first_air_date.split("-")[0]}</div>
+    </div>
+    
+    <a class="card-btn" title="${name}" onclick="addFavoriteDicta(${id},'tv' )"></a>
+
+  `;
+
+  const iconFavorite = card.querySelector(".iconFavorite");
+
+
+
+  return card;
+}
+
+// Fonction pour créer les cartes d'animés
+export function createAnimCardDicta(anime) {
+  const {
+    poster_path,
+    name,
+    vote_average,
+    first_air_date,
+    id
+  } = anime;
+
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner" >
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+    
+        <span class="span">${vote_average.toFixed(1)}</span>
+      </div>
+    
+      <div class="card-badge">${first_air_date.split("-")[0]}</div>
+    </div>
+    
+    <a class="card-btn" title="${name}" onclick="addFavoriteDicta(${id},'tv' )"></a>
+
+
+  `;
+
+
+  return card;
+}
+
+// Fonction pour créer les cartes de réalisateurs et d'acteurs
+export function createPeopleCardDicta(person) {
+  const {
+    profile_path,
+    name,
+    known_for_department,
+    id
+  } = person;
+
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  card.innerHTML = `
+    <figure class="poster-box card-banner">
+      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy">
+
+    </figure>
+    
+    <h4 class="title">${name}</h4>
+    
+    <div class="meta-list">
+      <div class="meta-item">${known_for_department}</div>
+    </div>
+    
+    <a class="card-btn" title="${name}" onclick="addFavoriteDicta(${id},'people' )"></a>
+  `;
+
+  return card;
+}

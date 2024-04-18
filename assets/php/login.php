@@ -5,11 +5,11 @@ require("bd.php");
 $username = isset($_POST['username']) ? $_POST['username'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-file_put_contents('log.txt', "Nom d'utilisateur : " . $username . ", Mot de passe : " . $password . "\n", FILE_APPEND);
+
 
 $bdd = getBD();
 
-$query = "SELECT * FROM Users WHERE username = :username";
+$query = "SELECT * FROM users WHERE username = :username";
 $stmt = $bdd->prepare($query);
 $stmt->bindParam(':username', $username);
 $stmt->execute();

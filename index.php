@@ -1,4 +1,5 @@
 <?php
+require_once 'assets/php/bd.php';
 // Démarrage de la session
 session_start();
 
@@ -11,6 +12,21 @@ if (!isset($_SESSION['client'])) {
 
 // Récupération des informations de l'utilisateur depuis la session
 $user_info = $_SESSION['client'];
+$pdo = getBD();
+
+// Préparation de la requête pour vérifier la valeur de demo dans la table users
+$stmt = $pdo->prepare("SELECT demo FROM users WHERE id_user = :userId");
+$stmt->bindParam(':userId', $user_info['id_user']);
+$stmt->execute();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Si la valeur de demo est égale à 0, appeler la fonction addDictacielHTML()
+if ($user['demo'] == 0) {
+    echo '<script>window.addDictaciel = true;</script>';
+}
+
+
+
 
 // Affichage d'un message de bienvenue dans la console
 echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom']."');</script>";
@@ -136,26 +152,6 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <img src="assets/images/popcorn-vierge.png" alt="Mr Popcorn" class="popcorn">
       </div>
 
-      <div class="dictaciel">
-        <div class="search-box" style="margin:auto; padding-top:2vh;" search-box>
-        <div class="search-wrapper" search-wrapper>
-          <input type="text" name="search" aria-label="search movies" placeholder="Search any contents..."
-            class="search-field" autocomplete="off" search-field>
-
-          <img src="./assets/images/search.png" width="24" height="24" alt="search" class="leading-icon">
-        </div>
-
-        <button class="search-btn" search-toggler>
-          <img src="./assets/images/close.png" width="24" height="24" alt="close search box">
-        </button>
-      </div>
-
-      <button class="search-btn" search-toggler menu-close>
-        <img src="./assets/images/search.png" width="24" height="24" alt="open search box">
-      </button>
-        
-
-      </div>
 
       <!-- 
       - #SIDEBAR

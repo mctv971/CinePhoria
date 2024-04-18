@@ -2,7 +2,7 @@
 
 
 import { fetchAPIKeys, imageBaseURL, fetchDataFromServer } from "./api.js";
-import { createMovieCard, createPeopleCard, createTvCard } from "./movie-card.js";
+import { createMovieCard, createPeopleCard, createTvCard,  createMovieCardDicta, createPeopleCardDicta, createTvCardDicta} from "./movie-card.js";
 
 let api_key
 
@@ -106,8 +106,8 @@ export function searchDictaciel() {
 
   const searchResultModal = document.createElement("div");
   searchResultModal.classList.add("search-modal");
-  searchResultModal.style.background = "none";
-  document.querySelector(".dictaciel").appendChild(searchResultModal);
+  searchResultModal.style.background = "linear-gradient(to right, #ff0000 -111%, #0000ff 158%)";
+  document.querySelector(".dictaciel-main").appendChild(searchResultModal);
 
   let searchTimeout;
 
@@ -141,11 +141,11 @@ export function searchDictaciel() {
         for (const item of searchResults) {
           let card;
           if (item.media_type === 'movie') {
-            card = createMovieCard(item);
+            card = createMovieCardDicta(item);
           } else if (item.media_type === 'person') {
-            card = createPeopleCard(item);
+            card = createPeopleCardDicta(item);
           } else if (item.media_type === 'tv') {
-            card = createTvCard(item);
+            card = createTvCardDicta(item);
           }
 
           searchResultModal.querySelector(".grid-list").appendChild(card);
