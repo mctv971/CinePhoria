@@ -16,27 +16,45 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         var formData = $(this).serialize();
         var platforms = [];
-
+    
         $('.icones img.selected').each(function() {
             platforms.push($(this).data('platform-id'));
-            console.log("Selected platform ID: ", $(this).data('platform-id')); // Confirming selection
         });
-
+    
         formData += '&platforms=' + platforms.join(',');
-
-        console.log("Final formData: ", formData); // Debug output to check formData content
-
+    
+        // Première requête AJAX pour enregistrer l'utilisateur
         $.ajax({
             type: 'POST',
             url: 'assets/php/enregistrement.php',
             data: formData,
             success: function (response) {
-                console.log("Server response: ", response);
-                alert('Registration successful!');
+                // Deuxième requête AJAX pour se connecter automatiquement après l'enregistrement
+                loginUser();
             },
             error: function () {
-                alert('Registration failed. Please try again.');
+                console.error('Registration failed. Please try again.');
             }
         });
-    });
+    
+        function loginUser() {
+            $.ajax({
+                type: 'POST',
+                url: 'assets/php/login.php', // Assurez-vous que ce chemin est correct
+                data: {username: $('#username').val(), password: $('#password').val()},
+                success: function (response) {
+                    var loginResponse = JSON.parse(response);
+                    if (loginResponse.connected) {
+                        window.location.href = '../../../index.php';
+                    } else {
+                        console.error("Login failed: " + loginResponse.message);
+                    }
+                },
+                error: function () {
+                    console.error('Login request failed. Please try again.');
+                }
+            });
+        }
+    });    
+    
 });
