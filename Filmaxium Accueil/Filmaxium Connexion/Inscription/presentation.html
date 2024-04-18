@@ -5,19 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="Accueil.css">
+    <style>
+        /* Ajoutez une transition sur l'opacité et la hauteur */
+        #TitreP, .bouton-gauche {
+            transition: opacity 1.5s, height 1.5s;
+        }
+    </style>
     <title>Filmaxium</title>
 </head>
 
 <body class="Presentation">
+
+    <img src="../images/Ecran.png" alt="Ecran de télévision" class="ecran" />
     <p id="TitreP">Bonjour et bienvenue sur Filmaxium.</p>
-    <img src="../images/Ecran.png" alt="Ecran de télévision" class="ecran"/>
-    <div class="cercle-avec-fleche" id="arrowRight">
-        <div class="fleche"><img src="../images/Bouton.png"></div>
-      </div>
-    <div class="cercle-avec-fleche-haut" id="scrollToTop">
-        <div class="fleche-haut"></div>
-      </div>
-      
-     
+    <img src="../images/Bouton.png" alt="Bouton Droite" class="bouton-droite" onclick="maFonction()" />
+    <img src="../images/BoutonGauche.png" alt="Bouton Gauche" class="bouton-gauche" onclick="maFonctionGauche()" />
+
+    <script>
+        var etatInitial = true;
+        var titreInitial = document.getElementById("TitreP").innerHTML; // Sauvegarder le titre initial
+
+        function maFonction() {
+            var titre = document.getElementById("TitreP");
+            var boutonGauche = document.querySelector('.bouton-gauche');
+
+            if (etatInitial) {
+                titre.innerHTML = '<div style="display: flex; align-items: start;"><img src="../images/logo.png" alt="Logo" style="margin-right:10px; width:300px;"><p>Nous sommes une plateforme regroupant:<br/> -Films, séries, animés <br/> -Acteurs, réalisateurs <br/> -Bandes annonces, Cinémas</p></div>';
+                boutonGauche.style.display = 'block';
+                etatInitial = false;
+            } else {
+                titre.innerHTML = titreInitial; // Revenir au titre initial
+                boutonGauche.style.display = 'none';
+                etatInitial = true;
+            }
+        }
+
+        function maFonctionGauche() {
+            // Revenir à l'état initial lorsque le bouton gauche est cliqué
+            maFonction();
+        }
+    </script>
 </body>
 </html>
