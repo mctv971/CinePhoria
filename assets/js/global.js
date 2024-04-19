@@ -1,4 +1,5 @@
 'use strict';
+
 // Fonction pour ajouter un ID à l'historique avec son numéro d'ordre
 function addToHistory(itemId, itemType) {
   let history = localStorage.getItem('history');
@@ -177,7 +178,9 @@ const  closeIframe = function (){
   const elements = {
     iframeContainer: $('.iframeContainer'),
     backgroundOverlay: $('.backgroundOverlay'),
-    closeIcon: $('#closeIconGen')
+    closeIcon: $('#closeIconGen'),
+    closeIconFavorite: $('#closeIconFav'),
+    iframeFavorite: $('.dicta-list-favoris')
   };
 
   // Ajouter un gestionnaire d'événements au clic sur l'élément closeIcon
@@ -191,6 +194,12 @@ const  closeIframe = function (){
     
     // Cacher l'icône de fermeture en retirant la classe "active"
     elements.closeIcon.removeClass('active');
+  });
+  elements.closeIconFavorite.on('click', function() {
+    // Cacher l'iframeContainer en retirant la classe "active"
+    elements.iframeFavorite.removeClass('active');
+  
+    
   });
   
 }
@@ -210,6 +219,12 @@ function favorite(){
   var favorite = document.querySelector('.favorite');
   favorite.style.display = 'flex';
 }
+
+
+
+
+
+
 
 
 

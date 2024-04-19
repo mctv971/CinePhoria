@@ -1,4 +1,5 @@
 <?php
+require_once 'assets/php/bd.php';
 // Démarrage de la session
 session_start();
 
@@ -11,6 +12,21 @@ if (!isset($_SESSION['client'])) {
 
 // Récupération des informations de l'utilisateur depuis la session
 $user_info = $_SESSION['client'];
+$pdo = getBD();
+
+// Préparation de la requête pour vérifier la valeur de demo dans la table users
+$stmt = $pdo->prepare("SELECT demo FROM users WHERE id_user = :userId");
+$stmt->bindParam(':userId', $user_info['id_user']);
+$stmt->execute();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Si la valeur de demo est égale à 0, appeler la fonction addDictacielHTML()
+if ($user['demo'] == 0) {
+    echo '<script>window.addDictaciel = true;</script>';
+}
+
+
+
 
 // Affichage d'un message de bienvenue dans la console
 echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom']."');</script>";
@@ -135,6 +151,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <div class="popcorn-container">
       <img src="assets/images/popcorn-vierge.png" alt="Mr Popcorn" class="popcorn">
       </div>
+
 
       <!-- 
       - #SIDEBAR

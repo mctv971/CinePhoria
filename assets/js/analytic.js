@@ -76,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 img.src="assets/images/switch2.png"
                 img.alt="switch2"
                 filmSelections[1].style.display = 'block';
-                formSelections[1].style.display = 'flex';
             }
             else{
                 img.src="assets/images/switch.png"
