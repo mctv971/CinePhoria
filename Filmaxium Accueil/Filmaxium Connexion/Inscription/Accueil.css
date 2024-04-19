@@ -150,6 +150,16 @@ a {
   #TitreP, .bouton-gauche {
     transition: opacity 1.5s, height 1.5s;
 }
+.top-link {
+  position: absolute;
+  top: 50%; /* Centre verticalement */
+  right: 30px; /* Déplacer complètement à droite */
+  transform: translateY(-50%); /* Centrer l'élément par rapport à sa hauteur */
+  width: 100px; /* Largeur de l'image */
+  height: 100px; /* Hauteur de l'image */
+  cursor: pointer;
+  z-index: 1;
+}
 
   .bouton-droite {
     transition: opacity 1.5s, height 1.5s;
@@ -430,3 +440,4 @@ button {
 #cards-container::-webkit-scrollbar-track {
   background-color: #e0e0e0;
 }
+

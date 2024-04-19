@@ -16,7 +16,7 @@ $username = $_GET['username'];
 ?>
 <body class="pageformulaire">
     <div class="logo">
-        <a href="inscription.html"><img src="../images/logo.png" alt="Logo"></a>
+        <a href="inscription.php"><img src="../images/logo.png" alt="Logo"></a>
     </div>
     <div class="info-text">
         <p>Entres tes informations ! Les plateformes vont nous permettre d'afficher le contenu dont tu as accès</p>

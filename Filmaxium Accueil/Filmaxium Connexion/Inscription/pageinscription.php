@@ -13,7 +13,7 @@
     <title>Filmaxium </title>
 </head>
 <body class="pageinscription">
-    <a href="inscription.html">  
+    <a href="inscription.php">  
         <img src="../images/logo.png" alt="Logo">
     </a>
 

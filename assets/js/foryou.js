@@ -141,17 +141,17 @@ function inclureEpisodeSerie(serie) {
         }
     });
 }
-
-
-async function creerBouquetAutomatique(favoris, dureeSouhaitee) { // BOUQUET PAR CHATGPT
+async function creerBouquetAutomatique(favoris, dureeSouhaitee) {
     let bouquet = [];
     let dureeRestante = dureeSouhaitee * 60; // Convertir en minutes
 
     for (let favori of favoris) {
-        let similaires = await getSimilarTitles(favori.id, favori.type); // Fonction fictive pour récupérer des titres similaires
+        let similaires = await getSimilarTitles(favori.id, favori.type); // Récupérer des titres similaires
+        // Trier les titres similaires par durée, du plus court au plus long
+        similaires.sort((a, b) => a.duration - b.duration);
 
         for (let similaire of similaires) {
-            let duration = await getDuration(similaire.id, similaire.type); // Fonction fictive pour récupérer la durée
+            let duration = await getDuration(similaire.id, similaire.type); // Récupérer la durée du titre
             if (dureeRestante >= duration) {
                 bouquet.push(similaire);
                 dureeRestante -= duration;
@@ -164,10 +164,10 @@ async function creerBouquetAutomatique(favoris, dureeSouhaitee) { // BOUQUET PAR
     return bouquet;
 }
 
+
 function creerBouquetAleatoire(favoris, tempsDisponible) { // Bouquet de recommendation aléatoires
     let bouquet = [];
     let dureeRestante = tempsDisponible * 60; // Convertir en minutes
-
     let titresMelanges = shuffleArray(favoris); // Mélanger les favoris pour un choix aléatoire
 
     titresMelanges.some(favori => {
@@ -194,8 +194,6 @@ function creerBouquetPersonnalise(favoris, heuresChoisies) { // Bouquet créé p
     });
     return bouquet;
 }
-
-
 
 // Appeler la fonction pour récupérer les favoris au chargement de la page
 $(document).ready(function() {

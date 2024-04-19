@@ -25,7 +25,7 @@
             </div>
             <div class="signup-link">
                 <a>Mot de passe oublié ? </a> <br /> <br/>
-                Vous n'êtes toujours pas inscrit ? <a href="pageinscription.html">Cliquez ici !</a> 
+                Vous n'êtes toujours pas inscrit ? <a href="pageinscription.php">Cliquez ici !</a> 
                 
             </div>
             <button type="submit">Se connecter</button>
