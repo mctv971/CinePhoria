@@ -13,12 +13,7 @@ export function search() {
   let mode = 'movie'; // Par défaut, le mode de recherche est pour les films
 
   modeSwitchIcon.addEventListener('click', function() {
-    // Changer le mode de recherche et l'icône en conséquence
     if (mode === 'movie') {
-      mode = 'person';
-      modeSwitchIcon.src = './assets/images/logo-profil.png';
-      searchField.placeholder = 'Search any people...';
-    } else if (mode === 'person') {
       mode = 'tv';
       modeSwitchIcon.src = './assets/images/tv-show.png';
       searchField.placeholder = 'Search any Tv Shows...';

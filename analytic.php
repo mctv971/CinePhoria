@@ -1,3 +1,16 @@
+<?php
+// Démarrage de la session
+session_start();
+
+// Vérification si l'utilisateur est connecté
+if (!isset($_SESSION['client'])) {
+    // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
+    header("Location: connexion.php");
+    exit;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +35,14 @@
     <script src="assets/js/analytic.js" type="module"></script>
 </head>
 <body class="body-analytic">
+  <div class="backgroundOverlay"></div>
+    <!-- 
+      - #SIDEBAR
+    -->
+    <div class="iframeContainer">
+      <iframe id="iframe"></iframe>
+      <img src="./assets/images/close.png" alt="Iframe Close" class="closeIcon" id="closeIconGen">
+    </div>
 
 
   <div class="content-analytic">
