@@ -2,40 +2,31 @@
 session_start();
 require("bd.php");
 
-$csrf_token = isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '';
-
-if ($csrf_token !== $_SESSION['csrf_token'] ){
-    echo json_encode(['success' => false, 'message' => 'ATTAQUE CSRF']);
-    header('Location: erreur_csrf.php');
-        exit;
-}
-
-$mailc = isset($_POST['mailc']) ? $_POST['mailc'] : '';
-$mdp1c = isset($_POST['mdp1c']) ? $_POST['mdp1c'] : '';
+$username = isset($_POST['username']) ? $_POST['username'] : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
 
 $bdd = getBD();
 
-
-
-$query = "SELECT * FROM Users WHERE mail = :mail";
+$query = "SELECT * FROM Users WHERE username = :username";
 $stmt = $bdd->prepare($query);
-$stmt->bindParam(':mail', $mailc);
+$stmt->bindParam(':username', $username);
 $stmt->execute();
 $row = $stmt->fetch();
 
 if ($row) {
     $mdp_hache = $row['mdp'];
-    if (password_verify($mdp1c, $mdp_hache)) {
+    if (password_verify($password, $mdp_hache)) {
         $_SESSION['client'] = array(
-            'id_user' => $row['id_user'],
+            'id_users' => $row['id_users'],
+            'username' =>$row['username'],
             'nom' => $row['nom'],
             'prenom' => $row['prenom'],
             'naissance' => $row['naissance'],
-            'pays' => $row['pays'],
             'mail' => $row['mail'],
+            'pays' => $row['pays'],
         );
         echo json_encode(['connected' => true]);
-exit();
+        exit();
 
     } else {
         echo json_encode(array('connected' => false, 'message' => 'Mot de passe incorrect'));

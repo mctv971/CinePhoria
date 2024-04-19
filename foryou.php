@@ -5,7 +5,7 @@ session_start();
 // Vérification si l'utilisateur est connecté
 if (!isset($_SESSION['client'])) {
     // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
-    header("Location: connecter_test.php");
+    header("Location: connexion.php");
     exit;
 }
 
@@ -55,7 +55,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="./assets/js/global.js" defer></script>
-  <script src="./assets/js/index.js" type="module"></script>
+  <script src="./assets/js/foryou.js" type="module"></script>
 
 </head>
 
@@ -94,10 +94,10 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <a href="./catalogue.php">
         <img src="./assets/images/logo-catalogue.png" width="60" height="60" alt="Catalogue">
       </a>
-      <a href="./index.php">
+      <a href="./foryou.php">
         <img src="./assets/images/logo-film.png" width="60" height="60" alt="Find Film">
       </a>
-      <a href="./Filmaxium_Analytique/analytique_accueil.php">
+      <a href="analytic.php">
         <img src="./assets/images/logo-stats.png" width="60" height="60" alt="Analytics home">
       </a>
       <a href="./favorite.php">

@@ -38,14 +38,14 @@ export function createMovieCard(movie) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" >
     </figure>
     
     <h4 class="title">${title}</h4>
     
     <div class="meta-list">
       <div class="meta-item">
-        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" alt="rating">
     
         <span class="span">${vote_average.toFixed(1)}</span>
       </div>
@@ -131,14 +131,14 @@ export function createTvCard(tvShow) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
     </figure>
     
     <h4 class="title">${name}</h4>
     
     <div class="meta-list">
       <div class="meta-item">
-        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" alt="rating">
     
         <span class="span">${vote_average.toFixed(1)}</span>
       </div>
@@ -223,7 +223,7 @@ export function createAnimCard(anime) {
   });
   card.innerHTML = `
     <figure class="poster-box card-banner" >
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     
@@ -231,7 +231,7 @@ export function createAnimCard(anime) {
     
     <div class="meta-list">
       <div class="meta-item">
-        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+        <img src="./assets/images/star.png" width="20" height="20" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" alt="rating">
     
         <span class="span">${vote_average.toFixed(1)}</span>
       </div>
@@ -314,7 +314,7 @@ export function createPeopleCard(person) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner">
-      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     
@@ -500,7 +500,7 @@ export function createMovieCardAna(movie) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${title}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'" onerror="this.src='assets/images/nofound.jpeg'">
     </figure>
     
     <h4 class="title">${title}</h4>
@@ -581,7 +581,7 @@ export function createTvCardAna(tvShow) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic">
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
     </figure>
     
     <h4 class="title">${name}</h4>
@@ -626,7 +626,7 @@ export function createAnimCardAna(anime) {
   });
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic" >
-      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${poster_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     
@@ -671,7 +671,7 @@ export function createPeopleCardAna(person) {
 
   card.innerHTML = `
     <figure class="poster-box card-banner-analytic">
-      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy">
+      <img src="${imageBaseURL}w342${profile_path}" alt="${name}" class="img-cover" loading="lazy" onerror="this.src='assets/images/nofound.jpeg'">
 
     </figure>
     
@@ -1024,4 +1024,74 @@ export function createPeopleCardDicta(person) {
   `;
 
   return card;
+}  
+// AJOUT DE CODE POUR LA PARTIE QUIZZGPT
+
+
+const apiKey = '4bff542b068c0fff85589d72c363051d'; // Assurez-vous que cette clé est gérée de manière sécurisée
+const baseUrl = 'https://api.themoviedb.org/3';
+
+
+export async function displayMovieCards(imdbIds) {
+  const cardsContainer = document.querySelector('#cards-container');
+  cardsContainer.innerHTML = ''; // Clear previous cards
+
+  for (const imdbId of imdbIds) {
+      const movie = await getMovieDetailsFromIMDbId(imdbId);
+      if (movie) {  // Assurez-vous que l'objet movie n'est pas undefined
+          const card = createMovieCard(movie);
+          cardsContainer.appendChild(card);
+      } else {
+          console.error("Movie data not found for IMDb ID:", imdbId);
+      }
+  }
+}
+
+async function getMovieDetailsFromIMDbId(imdbId) {
+  const url = `https://api.themoviedb.org/3/find/${imdbId}?api_key=4bff542b068c0fff85589d72c363051d&external_source=imdb_id`;
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.movie_results && data.movie_results[0]; // Assurez-vous de retourner le premier résultat de film, ou undefined si aucun n'est trouvé
+  } catch (error) {
+      console.error("Error fetching movie details:", error);
+      return undefined;
+  }
+}
+export async function displayItems(items) {
+  const cardsContainer = document.querySelector('#cards-container');
+  if (!cardsContainer) {
+    console.error('No container found for displaying items.');
+    return;
+  }
+
+  cardsContainer.innerHTML = ''; // Clear previous cards
+
+  for (const item of items) {
+      let details;
+      if (item.type === 'movie') {
+        details = await getDetailsFromTMDB(item.id, 'movie');
+      } else if (item.type === 'tv') {
+        details = await getDetailsFromTMDB(item.id, 'tv');
+      }
+
+      if (details) {
+        const card = item.type === 'movie' ? createMovieCard(details) : createTvCard(details);
+        cardsContainer.appendChild(card);
+      } else {
+        console.error("Details not found for item with ID:", item.id);
+      }
+  }
+}
+
+async function getDetailsFromTMDB(tmdbId, type) {
+  const url = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${apiKey}&language=en-US`;
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+  } catch (error) {
+      console.error(`Error fetching ${type} details:`, error);
+      return undefined;
+  }
 }

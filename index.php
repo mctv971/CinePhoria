@@ -110,7 +110,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <a href="./catalogue.php">
         <img src="./assets/images/logo-catalogue.png" width="60" height="60" alt="Catalogue">
       </a>
-      <a href="./index.php">
+      <a href="./foryou.php">
         <img src="./assets/images/logo-film.png" width="60" height="60" alt="Find Film">
       </a>
       <a href="analytic.php">

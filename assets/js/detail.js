@@ -29,19 +29,19 @@ const getCasts = function (castList) {
 
   for (let i = 0, len = castList.length; i < len && i < 10; i++) {
     const { name, id } = castList[i];
-    newCastList.push(`<span class="person" onclick="getPersonDetail(${id})">${name}</span>`);
+    newCastList.push(`<span class="person" onclick="getPersonDetail(${id})">${name}, </span>`);
   }
 
-  return newCastList.join(", ");
+  return newCastList.join("");
 }
 
 const getDirectors = function (crewList) {
   const directors = crewList.filter(({ job }) => job === "Director");
 
   const directorList = [];
-  for (const { name, id } of directors) directorList.push(`<span class="person" onclick="getPersonDetail(${id})">${name}</span>`);
+  for (const { name, id } of directors) directorList.push(`<span class="person" onclick="getPersonDetail(${id})">${name},</span>`);
 
-  return directorList.join(", ");
+  return directorList.join("");
 }
 
 

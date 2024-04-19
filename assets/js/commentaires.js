@@ -163,7 +163,7 @@ function afficherCommentaires(commentaires, id_parent) {
     // Au chargement initial de la page, récupérer et afficher les commentaires
     var id_type_initial = localStorage.getItem('itemType');
     var imdb_id_initial = localStorage.getItem('itemId');
-    recupererCommentaires(id_type_initial, imdb_id_initial);
+    recupererCommentaires(id_type_initial, imdb_id_initial);     
     $(document).on('click', '.repondre', function() {
         if($(this).closest('.commentaire').find('.reponse-message')){
             $('.reponse-message').remove();
@@ -176,13 +176,21 @@ function afficherCommentaires(commentaires, id_parent) {
         var username_commentaire_parent = $(this).closest('.commentaire').find('.profil-container .username').text();
         var contenu_commentaire_parent = $(this).closest('.commentaire').find('.contenu .content').text();
         
-        var message_reponse = '<div class="affiche-repondre"><span class="reponse-intro">Vous répondez à </span><span class="username">' + username_commentaire_parent + ' :</span></div><br>' + contenu_commentaire_parent;
-
+        var message_reponse = '<div class="affiche-repondre">' +
+        '<span class="reponse-intro">Vous répondez à </span><span class="username">' + username_commentaire_parent + ' :</span>' +
+        '<div class="closeRep"><img src="assets/images/close.png" alt="Fermer" style="position: absolute;width: 48px;right: 0;" /></div>' +
+        '</div><br>' + contenu_commentaire_parent;
 
         var $reponseMessage = $('<div class="reponse-message">' + message_reponse + '</div>');
     
         $('#commentaire-formulaire').before($reponseMessage);
         $('#id_commentaire_parent').val(id_commentaire_parent);
+
+            // Gestion de l'événement clic sur le bouton de fermeture
+        $('.closeRep img').on('click', function() {
+            $('.reponse-message').remove();  // Supprime le message de réponse
+            $('#id_commentaire_parent').val("");  // Efface l'ID du commentaire parent
+        });
 
     });
     $(document).on('click', '.retour-fiche', function(){

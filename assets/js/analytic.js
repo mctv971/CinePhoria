@@ -2586,8 +2586,16 @@ function chartSingleStat(name, stats1, canva) {
 
     // RECHERCHE DONNEES NECESSAIRES
 
+/**
+ * Récupère l'ID IMDb pour un ID TMDb donné et un type de média spécifique.
+ * Cette fonction effectue une requête HTTP à l'API de TMDb pour obtenir les identifiants externes liés à un élément média spécifique.
+ *
+ * @param {string} type - Le type de média ('movie' ou 'tv') à interroger.
+ * @param {string} tmdbId - L'ID TMDb de l'élément média.
+ * @returns {Promise<string|null>} Une promesse qui se résout avec l'ID IMDb si trouvé, 'IMDb ID not found' si non présent, ou null en cas d'erreur.
+ */
+
 async function fetchIMDbId(type, tmdbId) {
-    // Remplacez '4bff542b068c0fff85589d72c363051d' par votre clé API TMDB
     const apiKey = api_key;
     const url = `https://api.themoviedb.org/3/${type}/${tmdbId}/external_ids?api_key=${apiKey}`;
     
@@ -2606,6 +2614,19 @@ async function fetchIMDbId(type, tmdbId) {
         return null;
     }
 }
+
+
+
+/**
+ * Récupère les détails des principaux membres de la distribution pour un film donné à partir de l'API IMDb.
+ * Cette fonction envoie une requête à l'API de IMDb pour obtenir les identifiants des cinq principaux acteurs d'un film.
+ * Ensuite, elle récupère la popularité de chaque acteur via une autre fonction `getActorPopularity`.
+ *
+ * @param {string} movieId - L'identifiant IMDb du film pour lequel récupérer les acteurs principaux.
+ * @returns {Promise<Object|null>} Une promesse qui renvoie un objet contenant les identifiants des acteurs et leurs données de popularité si la requête réussit, ou null en cas d'erreur ou de réponse invalide.
+ */
+
+
 
 async function getTopCastDetails(movieId) {
     const url = 'https://imdb8.p.rapidapi.com/title/get-top-cast?tconst=' + movieId;
@@ -2638,6 +2659,17 @@ async function getTopCastDetails(movieId) {
     }
 }
 
+
+
+/**
+ * Récupère les détails d'un acteur spécifique en utilisant son ID, en particulier le département pour lequel il est le plus connu.
+ * Cette fonction envoie une requête GET à l'API de TMDb pour obtenir des informations sur un acteur, en utilisant un token d'autorisation pour accéder à l'API.
+ *
+ * @param {string} actorId - L'identifiant de l'acteur sur TMDb.
+ * @returns {Promise<string|null>} Une promesse qui renvoie le département pour lequel l'acteur est le plus connu si la requête est réussie, ou null en cas d'erreur.
+ */
+
+
 async function getActorDetails(actorId) {
     const options = {
         method: 'GET',
@@ -2658,6 +2690,16 @@ async function getActorDetails(actorId) {
 }
 
 
+/**
+ * Récupère la popularité d'un acteur spécifié par son ID IMDb.
+ * Cette fonction effectue une requête GET vers l'API de TMDb pour obtenir des informations sur la popularité d'un acteur,
+ * en utilisant un token d'autorisation pour accéder à l'API. Elle exploite le résultat pour extraire la valeur de popularité.
+ *
+ * @param {string} actorId - L'identifiant IMDb de l'acteur.
+ * @returns {Promise<number|undefined>} Une promesse qui renvoie la popularité de l'acteur si la requête réussit, ou undefined en cas d'erreur.
+ */
+
+
 async function getActorPopularity(actorId) {
     const options = {
         method: 'GET',
@@ -2675,6 +2717,19 @@ async function getActorPopularity(actorId) {
         console.error(error);
     }
 }
+
+
+
+/**
+ * Récupère les données de revenus d'un film spécifique à partir de l'API IMDb.
+ * Cette fonction utilise une requête AJAX pour obtenir les informations commerciales d'un film, y compris ses recettes régionales.
+ * Si les données sont disponibles, elle appelle une fonction `createRevenuePieChart` pour afficher un graphique en camembert des revenus.
+ * En cas d'échec de la requête ou si les données sont incomplètes, des erreurs sont enregistrées dans la console.
+ *
+ * @param {string} movieId - L'identifiant IMDb du film pour lequel récupérer les données de revenus.
+ */
+
+
 function getRevenueData(movieId) {
     const settings = {
         async: true,
@@ -2708,6 +2763,20 @@ function getRevenueData(movieId) {
         console.error('Error:', errorThrown);
     });
 }
+
+
+
+/**
+ * Récupère et combine les détails des votes de deux films spécifiés à partir de l'API IMDb.
+ * Cette fonction envoie simultanément deux requêtes AJAX pour obtenir les histogrammes des notes des utilisateurs IMDb pour deux films.
+ * Les données obtenues sont ensuite utilisées pour créer un graphique combiné avec la fonction `createCombinedChart`.
+ * Le graphique affiche la comparaison des distributions des notes entre les deux films.
+ * En cas d'échec de l'une des requêtes, un message d'erreur est affiché dans la console.
+ *
+ * @param {string} selectedMovieId - L'identifiant IMDb du premier film.
+ * @param {string} selectedMovieId2 - L'identifiant IMDb du second film.
+ */
+
 
 function getCombinedVotesDetails(selectedMovieId, selectedMovieId2) {
     const settings = {
@@ -2783,6 +2852,16 @@ function getSingleMovieVotesDetails(selectedMovieId) {
 
 
     // CREATION DES CHARTS
+
+/**
+ * Crée un graphique comparatif de la popularité des membres de la distribution pour deux films sélectionnés.
+ * Ce processus implique la récupération des noms et des données de popularité pour les acteurs des deux films,
+ * suivi de l'organisation et de la création d'un graphique à barres qui montre visuellement ces données côte à côte.
+ *
+ * @param {Object} topCastDetailsMovie1 - Un objet contenant les identifiants des acteurs et les données de leur popularité pour le premier film.
+ * @param {Object} topCastDetailsMovie2 - Un objet similaire pour le second film.
+ */
+
 
 async function createCombinedCastChart(topCastDetailsMovie1, topCastDetailsMovie2) {
     const castIds1 = topCastDetailsMovie1.castIds;
@@ -2959,6 +3038,16 @@ async function createSingleCastChart(topCastDetailsMovie1) {
 
 
 
+/**
+ * Génère un tableau de couleurs aléatoires.
+ * Cette fonction crée un tableau de couleurs, où chaque couleur est générée par une fonction `getRandomColor`.
+ * La taille du tableau est déterminée par le paramètre `length`.
+ *
+ * @param {number} length - La taille du tableau à générer, correspondant au nombre de couleurs aléatoires souhaitées.
+ * @returns {Array} Un tableau contenant des chaînes de couleurs aléatoires.
+ */
+
+
 function getRandomColorArray(length) {
     const colorArray = [];
     for (let i = 0; i < length; i++) {
@@ -2968,6 +3057,16 @@ function getRandomColorArray(length) {
     return colorArray;
 }
 
+
+/**
+ * Génère une couleur aléatoire au format hexadécimal.
+ * Cette fonction construit une chaîne représentant une couleur en hexadécimal (par exemple, "#1A2B3C").
+ * Elle sélectionne aléatoirement six caractères parmi les chiffres de 0 à 9 et les lettres de A à F pour former la couleur.
+ *
+ * @returns {string} Une chaîne représentant une couleur hexadécimale aléatoire.
+ */
+
+
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';
@@ -2976,6 +3075,20 @@ function getRandomColor() {
     }
     return color;
 }
+
+
+/**
+ * Crée un graphique radar combiné pour deux ensembles de données correspondant à deux films différents.
+ * Ce graphique montre la comparaison visuelle des données (par exemple, votes ou popularité) sur des catégories spécifiques pour chaque film.
+ * Les deux jeux de données sont présentés sur un graphique radar avec des couleurs et des bordures distinctes pour chaque film.
+ *
+ * @param {Array} data1 - Les données pour le premier film. Doit être un tableau d'entiers ou de nombres flottants.
+ * @param {string} movieName1 - Le nom du premier film, utilisé comme étiquette dans le graphique.
+ * @param {Array} data2 - Les données pour le second film, format identique à data1.
+ * @param {string} movieName2 - Le nom du second film, utilisé comme étiquette dans le graphique.
+ * @param {Array} categories - Les catégories utilisées pour les axes du graphique radar, typiquement des string.
+ */
+
 
 function createCombinedChart(data1, movieName1, data2, movieName2, categories) {
     const ctx = document.querySelector('.chartGraph').getContext('2d');
@@ -3012,6 +3125,10 @@ function createCombinedChart(data1, movieName1, data2, movieName2, categories) {
     chartInstances.push(newChart);
 }
 
+
+
+
+
 function createSingleChart(data, movieName, categories) {
     const ctx = document.querySelector('.chartGraph').getContext('2d');
     const newChart = new Chart(ctx, {
@@ -3038,6 +3155,19 @@ function createSingleChart(data, movieName, categories) {
     });
     chartInstances.push(newChart);
 }
+
+
+
+/**
+ * Crée un graphique en camembert (pie chart) pour visualiser les revenus par région pour un film donné.
+ * Les données sont filtrées pour exclure les revenus domestiques, triées par montant total décroissant, 
+ * et limitées aux 20 premières régions. Les revenus des régions non incluses dans les 20 premières sont 
+ * regroupés sous une catégorie "Autre".
+ *
+ * @param {Array} data - Les données de revenus, où chaque élément est un objet avec une région et un montant total.
+ * @param {string} movieName - Le nom du film pour lequel les revenus sont présentés, utilisé comme étiquette dans le graphique.
+ */
+
 
 function createRevenuePieChart(data, movieName) {
     const filteredData = data.filter(region => region.regionName !== "Domestic");
@@ -4109,6 +4239,19 @@ function prepareDataForChart(seriesData) {
 
   
 //--------------------------------Recupération des données-----------------------------
+
+
+/**
+ * Récupère les informations détaillées d'un film spécifique à partir de l'API de TMDb.
+ * Cette fonction envoie une requête GET à l'API pour obtenir les détails d'un film, tels que le titre, 
+ * le résumé, la date de sortie, les genres, etc. Les informations sont demandées en anglais.
+ * En cas d'échec de la requête, une erreur est générée et propagée pour être traitée par la fonction appelante.
+ *
+ * @param {string} movieId - L'identifiant du film sur TMDb pour lequel les informations sont demandées.
+ * @returns {Promise<Object>} Une promesse qui renvoie les données du film si la requête est réussie.
+ */
+
+
 async function getMovieInfo(movieId) {
     const options = {
         method: 'GET',
@@ -4132,31 +4275,85 @@ async function getMovieInfo(movieId) {
     }
 }
 
-async function fillData(var1, var2) {
+/**
+ * Récupère les informations détaillées d'une série télévisée spécifique à partir de l'API de TMDb.
+ * Cette fonction envoie une requête GET à l'API pour obtenir les détails d'une série, tels que le titre, 
+ * le résumé, la date de première diffusion, les genres, etc. Les informations sont demandées en anglais.
+ * En cas d'échec de la requête, une erreur est générée et propagée pour être traitée par la fonction appelante.
+ *
+ * @param {string} movieId - L'identifiant de la série sur TMDb pour laquelle les informations sont demandées.
+ * @returns {Promise<Object>} Une promesse qui renvoie les données de la série si la requête est réussie.
+ */
+
+
+async function getSerieInfo(movieId) {
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
+        }
+    };
+    const url = `https://api.themoviedb.org/3/tv/series_id?language=en-US', options`;
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des données du film');
+        }
+        const movieData = await response.json();
+        return movieData;
+    
+    } catch (error) {
+        console.error('Error fetching movie data:', error);
+        throw error; // Propager l'erreur pour qu'elle soit capturée par l'appelant
+    }
+}
+
+async function fillData(var1, var2, type) {
     $('#dataBody').empty(); // Clear the current table content
     data = []; // Reset the data array
-    console.log(idTmdbList)
     for (const movieId of idTmdbList) {
         try {
-            const movieData = await getMovieInfo(movieId);
-            const movieVariables = {
-                title: movieData.original_title,
-                budget: movieData.budget,
-                revenue: movieData.revenue,
-                popularity: movieData.popularity,
-                runtime: movieData.runtime,
-                vote_count: movieData.vote_count
-            };
-            if (Object.values(movieVariables).some(value => value === 0)) {
+            let movieData;
+            let variables;
+            
+            if (type === 'movie') {
+                movieData = await getMovieInfo(movieId);
+                variables = {
+                    title: movieData.original_title,
+                    budget: movieData.budget,
+                    revenue: movieData.revenue,
+                    popularity: movieData.popularity,
+                    runtime: movieData.runtime,
+                    vote_count: movieData.vote_count
+                };
+            } else if (type === 'tv') {
+                movieData = await getSerieInfo(movieId);
+                variables = {
+                    title: movieData.name,
+                    numberOfSeasons: movieData.number_of_seasons,
+                    numberOfEpisodes: movieData.number_of_episodes,
+                    popularity: movieData.popularity,
+                    vote_count: movieData.vote_count
+                };
+            } else {
+                console.error('Type de contenu non reconnu:', type);
                 continue;
             }
-            data.push(movieVariables);
-            $('#dataBody').append(`<tr><td>${movieVariables.title}</td><td>${movieVariables[var1]}</td><td>${movieVariables[var2]}</td></tr>`);
+
+            if (Object.values(variables).some(value => value === 0)) {
+                continue;
+            }
+            
+            data.push(variables);
+            $('#dataBody').append(`<tr><td>${variables.title}</td><td>${variables[var1]}</td><td>${variables[var2]}</td></tr>`);
+            
         } catch (error) {
-            console.error('Error fetching movie data:', error);
+            console.error('Error fetching data:', error);
         }
     }
 }
+
 
 
 
@@ -4164,6 +4361,20 @@ async function fillData(var1, var2) {
 
 
 //--------------------------------Calcul de Pearson---------------------------------
+
+
+/**
+ * Calcule le coefficient de corrélation de Pearson entre deux ensembles de données.
+ * Ce coefficient est une mesure statistique du degré de corrélation linéaire entre deux variables.
+ * Les données pour les deux variables sont passées sous forme de tableaux (x et y), et la fonction
+ * calcule le coefficient à partir de ces valeurs.
+ *
+ * @param {Array<number>} x - Le premier ensemble de données.
+ * @param {Array<number>} y - Le second ensemble de données.
+ * @returns {number} Le coefficient de corrélation de Pearson entre les deux ensembles de données.
+ */
+
+
 function calculatePearsonCorrelation(x, y) {
     const n = x.length;
     let sumX = 0;
@@ -4185,6 +4396,20 @@ function calculatePearsonCorrelation(x, y) {
 
     return numerator / denominator;
 }
+
+
+
+/**
+ * Affiche un graphique de dispersion (scatter plot) pour deux ensembles de données avec les titres associés.
+ * Cette fonction crée un graphique de dispersion dans lequel chaque point est associé à un titre de film.
+ * Les axes du graphique et les étiquettes de données sont dynamiquement mis à jour selon les sélections 
+ * de l'utilisateur dans des menus déroulants sur la page web.
+ *
+ * @param {Array<number>} x - Les données pour l'axe des x.
+ * @param {Array<number>} y - Les données pour l'axe des y.
+ * @param {Array<string>} titles - Les titres associés à chaque paire de données (x, y).
+ */
+
 
 function displayScatterPlot(x, y, titles) {
 // Préparer les données pour le graphique
@@ -4249,6 +4474,20 @@ window.scatterChart = new Chart(ctx, {
 
 
 //--------------------------------------Regression Linéaire------------------------
+
+/**
+ * Effectue une régression linéaire sur deux ensembles de données et affiche un graphique de régression linéaire.
+ * Cette fonction calcule la pente et l'ordonnée à l'origine pour la ligne de régression linéaire basée sur les ensembles de données x et y.
+ * Les résultats sont ensuite utilisés pour créer un graphique qui montre la ligne de régression ainsi que les données ponctuelles.
+ * Les noms des variables (par exemple, des caractéristiques du film) sont passés comme arguments pour étiqueter le graphique.
+ *
+ * @param {Array<number>} x - Les données pour la variable indépendante.
+ * @param {Array<number>} y - Les données pour la variable dépendante.
+ * @param {Array<string>} titles - Les titres associés à chaque paire de données (x, y), typiquement les titres de films.
+ * @param {string} variable1 - Le nom de la variable indépendante pour l'étiquetage du graphique.
+ * @param {string} variable2 - Le nom de la variable dépendante pour l'étiquetage du graphique.
+ */
+
 function performLinearRegression(x, y, titles, variable1, variable2) {
 // Calculer les moyennes
 const n = x.length;
@@ -4269,78 +4508,91 @@ const intercept = meanY - slope * meanX;
 displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2);
 }
 
-function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2) {    // Assurez-vous que 'variable1' et 'variable2' sont correctement définis dans la portée supérieure
-var scatterData = data.map((row, index) => ({
-    x: row[variable1],
-    y: row[variable2],
-    title: titles[index] // Assurez-vous que 'titles' est le tableau des titres de films
-}));
 
-var ctx = document.getElementById('correlationChart').getContext('2d');    if (window.scatterChart !== undefined) {
-    window.scatterChart.destroy();
-}
-window.scatterChart = new Chart(ctx, {
-    type: 'scatter',
-    data: {
-        datasets: [{
-            label: 'Données',
-            data: scatterData,
-            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-        }, {
-            label: 'Régression linéaire',
-            // La ligne de régression n'a pas besoin de titres, mais vous pouvez l'ajuster si nécessaire
-            data: [{
-                x: Math.min(...data.map(row => row[variable1])), 
-                y: slope * Math.min(...data.map(row => row[variable1])) + intercept
+
+
+
+/**
+ * Affiche un graphique de dispersion avec une ligne de régression linéaire pour visualiser la relation entre deux variables.
+ * Ce graphique intègre à la fois les points de données individuels et une ligne représentant la régression linéaire calculée.
+ * La fonction prend en compte les valeurs des variables x et y, la pente, l'ordonnée à l'origine, les titres des points de données, 
+ * et les noms des variables pour étiqueter correctement le graphique.
+ *
+ * @param {Array<number>} x - Les valeurs de la variable indépendante.
+ * @param {Array<number>} y - Les valeurs de la variable dépendante.
+ * @param {number} slope - La pente de la ligne de régression.
+ * @param {number} intercept - L'ordonnée à l'origine de la ligne de régression.
+ * @param {Array<string>} titles - Les titres associés à chaque paire de données, utilisés dans les infobulles.
+ * @param {string} variable1 - Le nom de la variable indépendante pour l'étiquetage sur l'axe des x.
+ * @param {string} variable2 - Le nom de la variable dépendante pour l'étiquetage sur l'axe des y.
+ */
+
+function displayLinearRegressionPlot(x, y, slope, intercept, titles, variable1, variable2) {
+    var scatterData = data.map((row, index) => ({
+        x: row[variable1],
+        y: row[variable2],
+        title: titles[index]
+    }));
+
+    var regressionLine = [
+        { x: Math.min(...x), y: slope * Math.min(...x) + intercept },
+        { x: Math.max(...x), y: slope * Math.max(...x) + intercept }
+    ];
+
+    var ctx = document.getElementById('correlationChart').getContext('2d');
+    if (window.scatterChart !== undefined) {
+        window.scatterChart.destroy();
+    }
+    window.scatterChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Données',
+                data: scatterData,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
             }, {
-                x: Math.max(...data.map(row => row[variable1])), 
-                y: slope * Math.max(...data.map(row => row[variable1])) + intercept
-            }],
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 2,
-            fill: false
-        }]
-    },
-    options: {
-        maintainAspectRatio: false,
-        scales: {
-            x: {
-                type: 'linear',
-                position: 'bottom',
-                title: {
-                    display: true,
-                    text: $('#variableSelect1 option:selected').text()
+                label: 'Régression linéaire',
+                data: regressionLine,
+                type: 'line',
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: variable1
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: variable2
+                    }
                 }
             },
-            y: {
-                type: 'linear',
-                position: 'left',
-                title: {
-                    display: true,
-                    text: $('#variableSelect2 option:selected').text()
-                }
-            }
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        if (context.dataset.label === 'Données') {
-                            // Ici, vous pouvez formater le message du tooltip pour inclure les informations que vous voulez
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
                             const dataPoint = context.raw;
-                            return `${dataPoint.title}: ${$('#variableSelect1 option:selected').text()} = ${dataPoint.x}, ${$('#variableSelect2 option:selected').text()} = ${dataPoint.y}`;
-                        } else {
-                            // Pour la ligne de régression, on peut conserver l'affichage par défaut ou personnaliser
-                            return `Régression: y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`;
+                            return `${dataPoint.title}: ${variable1} = ${dataPoint.x}, ${variable2} = ${dataPoint.y}`;
                         }
                     }
                 }
             }
         }
-    }
-});
+    });
 }
 
 //-------------------------------------------------------------------------------
@@ -4380,85 +4632,167 @@ do {
 return { assignments, centers };
 }
 
+
+
+/**
+ * Initialise les centres pour un algorithme de clustering, tel que k-means, en sélectionnant aléatoirement des points de données.
+ * Cette fonction mélange les données fournies et sélectionne les premiers 'numClusters' éléments du tableau mélangé pour servir de centres initiaux.
+ *
+ * @param {Array} data - Un tableau de points de données où chaque point est un objet ou un tableau représentant les coordonnées d'un point.
+ * @param {number} numClusters - Le nombre de clusters à former, ce qui détermine le nombre de centres à initialiser.
+ * @returns {Array} Un tableau contenant les 'numClusters' premiers points de données du tableau mélangé, utilisés comme centres initiaux.
+ */
+
+
 function initializeCenters(data, numClusters) {
-// Sélection aléatoire de points comme centres initiaux
-let shuffled = data.sort(() => 0.5 - Math.random());
-return shuffled.slice(0, numClusters);
-}
+    // Sélection aléatoire de points comme centres initiaux
+    let shuffled = data.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, numClusters);
+    }
+
+
+
+    /**
+ * Attribue un point donné au centre le plus proche parmi un ensemble de centres.
+ * Cette fonction calcule la distance euclidienne entre le point et chaque centre,
+ * et détermine l'index du centre le plus proche au point.
+ *
+ * @param {Object} point - Un objet représentant un point avec des coordonnées 'x' et 'y'.
+ * @param {Array} centers - Un tableau d'objets où chaque objet représente un centre avec des coordonnées 'x' et 'y'.
+ * @returns {number} L'index du centre le plus proche dans le tableau des centres.
+ */
+
 
 function assignToClosestCenter(point, centers) {
-let minDistance = Infinity;
-let closestCenterIndex = -1;
+    let minDistance = Infinity;
+    let closestCenterIndex = -1;
 
-centers.forEach((center, index) => {
-    let distance = Math.sqrt((point.x - center.x) ** 2 + (point.y - center.y) ** 2);
-    if (distance < minDistance) {
-        minDistance = distance;
-        closestCenterIndex = index;
+    centers.forEach((center, index) => {
+        let distance = Math.sqrt((point.x - center.x) ** 2 + (point.y - center.y) ** 2);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestCenterIndex = index;
+        }
+    });
+
+    return closestCenterIndex;
     }
-});
 
-return closestCenterIndex;
-}
+
+
+
+
+    /**
+ * Met à jour les centres des clusters basés sur les affectations actuelles des points de données à ces clusters.
+ * Cette fonction calcule les nouvelles coordonnées de chaque centre en prenant la moyenne des points qui lui ont été assignés.
+ * Si un centre n'a aucun point assigné, il reste à sa position actuelle.
+ *
+ * @param {Array} data - Un tableau contenant les points de données, chaque point étant un objet avec des coordonnées 'x' et 'y'.
+ * @param {Array} assignments - Un tableau indiquant l'index du centre auquel chaque point de données a été assigné.
+ * @param {number} numClusters - Le nombre total de clusters, qui est aussi le nombre de centres à mettre à jour.
+ * @returns {Array} Un tableau des nouveaux centres, où chaque centre est un objet avec des coordonnées 'x', 'y'.
+ */
+
 
 function updateCenters(data, assignments, numClusters) {
-let centers = Array(numClusters).fill(null).map(() => ({ x: 0, y: 0, count: 0 }));
+    let centers = Array(numClusters).fill(null).map(() => ({ x: 0, y: 0, count: 0 }));
 
-// Accumuler les valeurs pour le calcul de la moyenne
-data.forEach((point, index) => {
-    let clusterIndex = assignments[index];
-    if (centers[clusterIndex]) { // Vérification de l'existence du centre
-        centers[clusterIndex].x += point.x;
-        centers[clusterIndex].y += point.y;
-        centers[clusterIndex].count += 1;
+    // Accumuler les valeurs pour le calcul de la moyenne
+    data.forEach((point, index) => {
+        let clusterIndex = assignments[index];
+        if (centers[clusterIndex]) { // Vérification de l'existence du centre
+            centers[clusterIndex].x += point.x;
+            centers[clusterIndex].y += point.y;
+            centers[clusterIndex].count += 1;
+        }
+    });
+
+    // Calculer la nouvelle position des centres
+    return centers.map(center => center.count > 0 ? {
+        x: center.x / center.count,
+        y: center.y / center.count
+    } : center); // Retourne le centre inchangé si aucun point ne lui est assigné
     }
-});
-
-// Calculer la nouvelle position des centres
-return centers.map(center => center.count > 0 ? {
-    x: center.x / center.count,
-    y: center.y / center.count
-} : center); // Retourne le centre inchangé si aucun point ne lui est assigné
-}
 
 
+/**
+ * Vérifie si deux tableaux sont égaux en termes de longueur et de contenu correspondant à chaque index.
+ * Cette fonction compare deux tableaux élément par élément et vérifie si chaque valeur dans le premier tableau
+ * est strictement égale à la valeur correspondante dans le deuxième tableau.
+ *
+ * @param {Array} a - Le premier tableau à comparer.
+ * @param {Array} b - Le second tableau à comparer.
+ * @returns {boolean} Retourne true si les deux tableaux sont de même longueur et contiennent les mêmes éléments dans le même ordre; sinon, false.
+ */
 
 function arraysEqual(a, b) {
-return a.length === b.length && a.every((val, index) => val === b[index]);
-}
+    return a.length === b.length && a.every((val, index) => val === b[index]);
+    }
+
+
+
+/**
+ * Affiche un graphique des clusters pour visualiser les regroupements de données selon les affectations spécifiées.
+ * Cette fonction utilise Plotly pour créer un graphique de dispersion où chaque point représente un élément de données,
+ * coloré selon le cluster auquel il appartient. Les étiquettes des axes sont paramétrables pour s'adapter à différentes données.
+ *
+ * @param {Array} data - Un tableau d'objets contenant les données à afficher. Chaque objet doit avoir les propriétés 'x', 'y', et 'movieTitle'.
+ * @param {Array} assignments - Un tableau indiquant le cluster auquel chaque point de données appartient, utilisé pour colorer les points.
+ * @param {string} xAxisLabel - L'étiquette pour l'axe des X, indiquant la variable représentée sur cet axe.
+ * @param {string} yAxisLabel - L'étiquette pour l'axe des Y, indiquant la variable représentée sur cet axe.
+ */
+
 
 function displayClusters(data, assignments, xAxisLabel, yAxisLabel) {
 // Utilisez Plotly ou une autre bibliothèque de graphiques pour afficher les clusters
-var trace = {
-    x: data.map(d => d.x), // Remplacez 'x' par la variable sélectionnée pour l'axe des X
-    y: data.map(d => d.y), // Remplacez 'y' par la variable sélectionnée pour l'axe des Y
-    mode: 'markers',
-    type: 'scatter',
-    marker: {color: assignments}, // Utilisez les affectations de cluster pour la couleur
-    text: data.map(d => d.movieTitle) // Titres des films pour les tooltips
-};
+    var trace = {
+        x: data.map(d => d.x), // Remplacez 'x' par la variable sélectionnée pour l'axe des X
+        y: data.map(d => d.y), // Remplacez 'y' par la variable sélectionnée pour l'axe des Y
+        mode: 'markers',
+        type: 'scatter',
+        marker: {color: assignments}, // Utilisez les affectations de cluster pour la couleur
+        text: data.map(d => d.movieTitle) // Titres des films pour les tooltips
+    };
 
-var layout = {
-    title: 'Visualisation des Clusters',
-    xaxis: {title: xAxisLabel}, // Mettez à jour selon la variable sélectionnée
-    yaxis: {title: yAxisLabel}, // Mettez à jour selon la variable sélectionnée
-    plot_bgcolor: 'rgba(0,0,0,0)', // Fond du plot transparent
-    paper_bgcolor: 'rgba(0,0,0,0)', // Fond du papier transparent
-};
+    var layout = {
+        title: 'Visualisation des Clusters',
+        xaxis: {title: xAxisLabel}, // Mettez à jour selon la variable sélectionnée
+        yaxis: {title: yAxisLabel}, // Mettez à jour selon la variable sélectionnée
+        plot_bgcolor: 'rgba(0, 0, 0, 0)',
+        paper_bgcolor: 'rgba(0, 0, 0, 0)',
 
-Plotly.newPlot('myDiv', [trace], layout);
-}
+    };
+
+    Plotly.newPlot('myDiv', [trace], layout);
+    }
 
 //---------------------------------------------------------------------------------
 
-  
+  /**
+ * Effectue un test statistique sélectionné sur un ensemble de données en utilisant diverses analyses comme la corrélation de Pearson,
+ * la régression linéaire ou le clustering. Ce code utilise une barre de progression animée pendant le chargement des données et affiche
+ * les résultats de manière appropriée.
+ *
+ * @param {string} selectedTest - Le type de test à effectuer ('pearson', 'regression', 'cluestering').
+ * @param {string} var1 - La première variable pour les tests ou par défaut pour le clustering ('budget').
+ * @param {string} var2 - La seconde variable pour les tests ou par défaut pour le clustering ('revenue').
+ * @param {number} numClusters - Le nombre de clusters à utiliser si le test sélectionné est 'cluestering'.
+ */
+
+
 async function performSelectedTest(selectedTest, var1, var2, numClusters) {
     // Récupérez l'élément .barreStape
     const barreStape = document.querySelector(".loadingDiv").querySelector(".barreStape");
 
     // Créez une animation GSAP pour effectuer une rotation continue
     const rotationTween = gsap.to(barreStape, { rotation: 360, duration: 2, repeat: -1, ease: "none" });
-    await fillData(variable1, variable2);
+    if(selectedTest === 'cluestering') {
+        await fillData("budget", "revenue",);
+    }
+    else{
+        await fillData(var1, var2,);
+    }
+
     rotationTween.pause();
     document.querySelector(".loadingDiv").style.display = "none";
     document.querySelector(".testData").classList.add("active");
@@ -4484,6 +4818,8 @@ async function performSelectedTest(selectedTest, var1, var2, numClusters) {
     performLinearRegression(x, y, titles, var1, var2); // Inclure var1 et var2 comme arguments
 }
 else if (selectedTest === 'cluestering') {
+        var1="budget";
+        var2="revenue";
         // Assurez-vous que la fonction fillData a été appelée pour remplir 'data' avec les données correctes
         const variableData = data.map(d => ({x: d[var1], y: d[var2], movieTitle: d.title})); // Utilisez 'title' comme titre de film
         const clusteringResult = await performClustering(variableData, numClusters); // Attendre le résultat du clustering
@@ -4707,6 +5043,7 @@ async function startTest(){
         variable1 = activeVarStape.getAttribute('var');
         const activeVarStape2 = navVariableStape[1].querySelector('.varStape.active');
         variable2 = activeVarStape2.getAttribute('var');
+        
         fillTestVariables(selectedTest, variable1, variable2);
     }
     console.log(variable1)
@@ -4800,14 +5137,3 @@ function clearTestResults() {
   
   
   
-     
-
-
-
-
-
-
-
-
-
-

@@ -3,6 +3,10 @@
   padding: auto;
   font-family: "Outfit", sans-serif;
 }
+body{
+
+  background-color: rgb(20, 20, 54);
+}
 a {
   text-decoration: none;
   color: inherit;
@@ -18,10 +22,7 @@ a {
   background-attachment: fixed;
   height: 100vh;
 }
-.Presentation {
-  background-color: rgb(20, 20, 54);
 
-}
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -108,31 +109,35 @@ a {
     color: rgb(68, 66, 66);
     border-color: black; 
   }
-  .tele {
-    height: auto;
-    max-width: 50%;
-  }
+ /* Presentation */
+ .Presentation {
+  background-color: rgba(16,23,40,255)
+ }
   .ecran{
-    width: 80%;
     position: fixed;
+    bottom: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -45%);
     text-align: center;
     margin: 0; 
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    margin-left: 8rem;
-    z-index: 1; /
+    height: 120vh;
+    width: 220vh;
+    z-index: 1; 
   }
   #TitreP { 
     color: black;
     text-align: center;
-    font-size: 30px;
-    position: fixed;
-    top: 40%; 
-    width: 100%; 
+    font-size: 35px; 
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 2;
-    animation: fadeIn 2.5s forwards;
+    animation: fadeIn 3.0s forwards;
   }
   @keyframes fadeIn {
     from {
@@ -142,27 +147,47 @@ a {
       opacity: 1; 
     }
   }
-  .cercle-avec-fleche {
-    position: fixed;
-    z-index: 2;
+  #TitreP, .bouton-gauche {
+    transition: opacity 1.5s, height 1.5s;
+}
+
+  .bouton-droite {
+    transition: opacity 1.5s, height 1.5s;
+    position: absolute;
     top: 75%;
-    right: 20%; 
-    transform: translate(0, -50%);
-    width: 25px;
-    height: 25px;
-    background-color: transparent; 
-    border-radius: 50%; 
-    border: 2px solid #6b1564;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    
-  }
+    left: 78%;
+    transform: translate(-50%, -50%);
+    width: 70px; /* Largeur de l'image */
+    height: 70px; /* Hauteur de l'image */
+    z-index: 2;
+    cursor: pointer; /* Change le curseur en main lorsque vous survolez l'image */
+}
+.bouton-gauche {
+  position: absolute;
+  top: 75%;
+  left: 22%;
+  transform: translate(-50%, -50%);
+  width: 70px; /* Largeur de l'image */
+  height: 70px; /* Hauteur de l'image */
+  z-index: 2;
+  cursor: pointer; /* Change le curseur en main lorsque vous survolez l'image */
+}
+.cacher {
+  display: none;
+}
+
+.afficher {
+  display: block;
+  /* Ajoutez d'autres styles au besoin */
+}
 
  
+
+
+/* Formulaire */
   .container {
     text-align: center;
+    background-color: rgb(20, 20, 54);
 }
 
 form {
@@ -249,57 +274,6 @@ button {
   display: block;
   cursor: pointer;
 }
-/* Presentation */ 
-
-
-/*.ButtonDroite {
-  position: absolute;
-  left: 20em;
-  top: 20rem;
-  z-index: 1;
-  border: none;
-  background: none;
-  padding: 0; 
-  cursor: pointer; 
-}
-.ButtonDroite:hover {
-  opacity: 0.7; 
-}
-.ButtonHaut {
-  position: absolute;
-  left: 90%;
-  bottom: 10%;
-  background: none;
-  border: none;
-}
-#bienvenue {
-  font-size: 48px;
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.ButtonHaut {
-  position: fixed;
-  right: 20px; 
-  bottom: 20px; 
-  background: none;
-  background-color: none;
-  border: none;
-}
-.ButtonHaut:hover {
-  opacity: 0.7;
-}
-.TextP{
-  font-family: "Outfit", sans-serif;
-  font-size: 70px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  white-space: nowrap;
-  text-align: center;
-} */
 
 /* Formulaire */
 
@@ -374,7 +348,6 @@ button {
 .containerflex {
   display: flex;
   align-items: flex-start; /* Alignement au début pour aligner la photo avec l'input du nom */
-
   margin-bottom: 10rem;
 }
 
@@ -383,7 +356,6 @@ button {
 }
 .photo-input2 {
   margin-left: 60rem; /* Espacement à droite de la photo */
-
 }
 
 .photo-preview {
@@ -414,7 +386,7 @@ button {
 }
 
 .containerformulaire2 input {
-  text-align: left;
+  text-align: center;
   margin-bottom: 10px; /* Espacement entre les champs de saisie */
 }
 /* Styles pour le thème sombre */
@@ -429,4 +401,32 @@ button {
   background-color: #fff; /* Couleur de fond claire */
   color: #333; /* Couleur de texte sombre */
   /* Ajoutez d'autres styles pour le thème clair ici */
+}
+/* Style pour le conteneur des cartes */
+#cards-container {
+  display: flex;          /* Alignement horizontal des éléments */
+  overflow-x: auto;       /* Permet le défilement horizontal si le contenu dépasse */
+  scrollbar-width: thin;  /* Réduit la taille de la barre de défilement pour les navigateurs qui supportent cette propriété */
+  scrollbar-color: #666 #e0e0e0; /* Couleur de la barre de défilement */
+}
+
+/* Style pour chaque carte à l'intérieur du conteneur */
+.movie-card {
+  flex: 0 0 auto;         /* Les cartes ne grandissent pas, ne rétrécissent pas mais gardent leur taille automatique */
+  margin-right: 20px;     /* Espace entre les cartes */
+  width: 300px;           /* Largeur fixe pour chaque carte, ajustez selon votre design */
+}
+
+/* Style pour la barre de défilement pour Webkit (Chrome, Safari, etc.) */
+#cards-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+#cards-container::-webkit-scrollbar-thumb {
+  background-color: #666;
+  border-radius: 10px;
+}
+
+#cards-container::-webkit-scrollbar-track {
+  background-color: #e0e0e0;
 }

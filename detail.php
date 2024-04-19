@@ -98,8 +98,8 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
           <input type="hidden" id="id_type" value=""> 
           <input type="hidden" id="imdb_id" value=""> 
           <input type="hidden" id="id_commentaire_parent" value=""> 
-          <textarea id="contenu" placeholder="Ajouter un commentaire"></textarea>
-          <button type="submit">Envoyer</button>
+          <input id="contenu" placeholder="Ajouter un commentaire">
+          <button id="commentBtn" type="submit">Envoyer</button>
         </form>
 
         <p class="retour-fiche">Retour à la fiche</p>

@@ -14,7 +14,7 @@ if (isset($_POST['message'])) {
 
 function callOpenAI($message) {
     $openai_endpoint = "https://api.openai.com/v1/chat/completions";
-    $openai_token = "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";
+    $openai_token = "API_KEY";
     $data = array(
         "model" => "gpt-3.5-turbo",
         "messages" => array(
@@ -31,8 +31,7 @@ function callOpenAI($message) {
                 Cependant, soyez honnête avec l'utilisateur. Si une question ne concerne pas le cinéma ou les séries TV, veuillez indiquer que vous ne pouvez pas répondre car votre expertise se limite à ce domaine. Soyez amical, informatif et divertissant dans vos réponses liées au cinéma et aux séries TV. Prêt à briller sous les projecteurs de la connaissance cinématographique !
                 Voici le message de l'utilisateur".$message
             ),
-        ),
-        "max_tokens" => 500,
+        ), "max_tokens" => 500,
         "temperature" => 0.7
     );
 

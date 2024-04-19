@@ -8,6 +8,7 @@ import { sidebar } from "./sidebar.js";
 import { fetchAPIKeys, imageBaseURL, fetchDataFromServer } from "./api.js";
 import { createMovieCard } from "./movie-card.js";
 import { search } from "./search.js";
+import { popcorn } from "./popcorn.js";
 
 let api_key;
 const pageContent = document.querySelector("[page-content]");
@@ -105,7 +106,18 @@ const createMovieList = function ({ results: movieList }, title) {
 }
 
 
+window.addEventListener('message', function(event) {
+  // Vérifie si le message reçu est celui indiquant que le contenu de l'iframe a été modifié
+  if (event.data === 'contenuModifie') {
+      // Actualise l'iframe en rechargeant son contenu
+      document.getElementById('iframe').contentWindow.location.reload();
+  }
+}, false);
+
+window.onload = clearLocalStorageIfIframeNotActive;
+
 
 closeIframe();
 search();
+popcorn();
 }

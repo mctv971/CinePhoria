@@ -457,10 +457,10 @@ body {
 
 .search-btn:is(:hover, :focus-visible) img { opacity: 1; }
 
-.menu-btn.active .menu,
+.menu-btn.active .menu2,
 .menu-btn .close { display: none; }
 
-.menu-btn .menu,
+.menu-btn .menu2,
 .menu-btn.active .close { display: block; }
 .logo-right{
   display: flex;
@@ -1198,7 +1198,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--surface);
-  overflow: hidden;
+  overflow: scroll;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
 }
@@ -1292,7 +1292,6 @@ body {
 
 .commentaire-enfant.active {
   display: flex;
-  background-color: rgba(83, 40, 255, 0.418);
   left: 5%;
 
 }
@@ -1838,7 +1837,7 @@ body {
 }
 
 .popcorn-container{
-  bottom: 20vh;
+  bottom: 40vh;
   right: 0px;
   position: fixed;
   z-index: 1000000;
@@ -2566,5 +2565,50 @@ body {
   border: 1px solid white;
   border-radius: var(--radius-24);
   text-align: center;
+}  
 
+.filter-form{
+  max-width: 200px;
+}
+#country-select{
+  width: 100px;
+}
+.filter-form button{
+  border: 1px solid white;
+}
+
+#filterbtn{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+  border: 1px solid white;
+  border-radius: var(--radius-24);
+  padding: 1em;
+  margin: auto;
+  display: block;
+  cursor: pointer;
+}
+
+#commentBtn{
+  background: linear-gradient(to right, #ff0000 -111%, #0000ff 158%);
+  border: 1px solid white;
+  border-radius: var(--radius-24);
+  padding: 0.8em;
+  margin: auto;
+  display: block;
+  cursor: pointer;
+}
+
+#commentBtn:hover{
+  background: linear-gradient(to right, rgba(216, 44, 76, 0.318), #4053ff72);
+}
+
+#contenu{
+  width: 30vw;
+  border: 1px solid white;
+  border-radius: var(--radius-24);
+  padding: 1em;
+  margin: auto;
+  display: block;
+  background: white;
+  color: black;
+  margin-bottom: 1em;
 }

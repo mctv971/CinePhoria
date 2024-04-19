@@ -1,7 +1,16 @@
 <?php
 require_once 'bd.php';
 
-// Fonction pour récupérer la clé API pour un service spécifique
+/**
+ * Récupère la clé API pour un service spécifié depuis une base de données.
+ * Cette fonction établit une connexion à la base de données via la fonction `getBD()`,
+ * prépare et exécute une requête SQL pour obtenir la clé API associée à un service donné.
+ * Elle utilise des requêtes préparées pour prévenir les injections SQL.
+ * La fonction retourne la clé API sous forme de chaîne de caractères si elle est trouvée, ou null si aucune clé n'est associée au service.
+ *
+ * @param string $service Le nom du service pour lequel la clé API est requise.
+ * @return string|null La clé API pour le service spécifié, ou null si aucune clé n'est trouvée.
+ */
 function getAPIKey($service) {
     $bdd = getBD();
     $query = $bdd->prepare("SELECT api_key FROM api_keys WHERE service = :service");
