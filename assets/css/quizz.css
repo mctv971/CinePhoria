@@ -67,9 +67,9 @@ input{
     height: 50px; /* Augmenter la hauteur */
     border-radius: 20px; /* Bords arrondis */
     background-image: linear-gradient(to right, #ff7e5f, #feb47b); /* Dégradé de couleurs de gauche à droite */
-    padding: 5px 10px; /* Ajout de padding pour mieux aligner le texte à l'intérieur */
+    text-align: center; /* Centrer le texte */
     font-size: 16px; /* Taille de police plus grande pour une meilleure lisibilité */
-    color: white; /* Couleur du texte blanc */
+    color: black; /* Couleur du texte blanc */
     border: none; /* Retirer la bordure par défaut */
     -webkit-appearance: none; /* Enlever l'aspect par défaut pour WebKit/Blink */
     -moz-appearance: none; /* Enlever l'aspect par défaut pour Firefox */

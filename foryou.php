@@ -139,6 +139,26 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <!-- 
       - #SIDEBAR
     -->
+      <div class="foryouGen">
+        <h1 class="foryouTitle">For You</h1>
+        <div class="foryouContainer">
+          <div class="posterContainer">
+            <div id="imageContainer">
+             
+            </div>
+            <button id="generatePosterButton">Générer Poster</button>
+
+          </div>
+
+          <div class="quizzContainer">
+            <button class="quizzBtn">Trouve ton bonheur <img src="assets/images/baguette.png" id="baguette" alt=""></button>
+            
+          </div>
+
+
+        </div>
+
+      </div>
 
 
 

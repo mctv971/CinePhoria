@@ -195,7 +195,49 @@ function creerBouquetPersonnalise(favoris, heuresChoisies) { // Bouquet créé p
     return bouquet;
 }
 
+
+
+
+
+
+
+
+
+
 // Appeler la fonction pour récupérer les favoris au chargement de la page
 $(document).ready(function() {
-    getFavorites();
+
+    $('#generatePosterButton').click(function() {
+        $.ajax({
+            type: "POST",
+            url: "Poster/ton_serveur.php",  // Assurez-vous que cette URL est correcte
+            data: {generatePoster: true},
+            dataType: "json",
+            success: function(response) {
+                if(response && response.url) {
+                    $('#imageContainer').empty();  // Efface les images précédentes
+                    $('#imageContainer').append('<img src="' + response.url + '" alt="Poster de film";">');
+                }
+            },
+            error: function() {
+                alert("Erreur lors de la génération des images.");
+            }
+        });
+    });
+
+    $('.quizzBtn').click(function() {
+        $('#iframe').attr('src', 'quizzgpt.php?reset=true');       
+        $('.backgroundOverlay').addClass('active');
+        $('.iframeContainer').addClass('active');
+        $('.closeIcon').addClass('active');
+
+    });
+    $('.closeIcon').click(function() {
+        $('#iframe').attr('src', '');       
+        $('.backgroundOverlay').removeClass('active');
+        $('.iframeContainer').removeClass('active');
+        $('.closeIcon').removeClass('active');
+    });
+
+
 });
