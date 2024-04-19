@@ -36,10 +36,7 @@ function checkIfFavorite($data) {
 
         $count = $stmt->fetchColumn();
         
-        // Ajout de logs pour débogage
-        error_log('CheckIfFavorite Data: ' . print_r($data, true));
-        error_log('CheckIfFavorite Query: ' . $query . ' - Params: id_user=' . $id_user . ', imdb_id=' . $imdb_id);
-        error_log('CheckIfFavorite Result: ' . $count);
+
 
         return $count > 0;
     } catch (PDOException $e) {

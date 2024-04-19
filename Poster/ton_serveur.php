@@ -24,6 +24,7 @@ if (!$stmtFavorisMovie->execute()) {
 // Récupère les résultats sous forme de tableau associatif.
 $favorismovie = $stmtFavorisMovie->fetchAll(PDO::FETCH_ASSOC);
 $listeImdbMovie = array_column($favorismovie, 'imdb_id');
+error_log("Liste des films favoris: " . implode(',', $listeImdbMovie));
 
 // Répète le processus pour les favoris de type "tv".
 $queryFavorisTV = "SELECT imdb_id FROM Favoris WHERE id_user = :id_user AND id_type = 'tv' LIMIT 1";
@@ -40,30 +41,34 @@ $listeImdbTV = array_column($favoristv, 'imdb_id');
 
 // Fonction pour interroger une API externe afin de récupérer le titre d'un média basé sur son ID IMDb.
 function fetchMediaTitle($imdb_id, $mediaType) {
+    error_log("Fetchin for: " . $imdb_id);
     $curl = curl_init();
 
     curl_setopt_array($curl, [
         CURLOPT_URL => "https://api.themoviedb.org/3/{$mediaType}/{$imdb_id}?language=en-US",
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 30,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => [
-            "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU",
-            "accept: application/json"
+          "Authorization: Bearer ",
+          "accept: application/json"
         ],
     ]);
 
     $response = curl_exec($curl);
     $err = curl_error($curl);
     curl_close($curl);
+    error_log("API response: " . $err);
 
     if ($err) {
         echo "cURL Error #:" . $err;
         return null;
     } else {
+
         $responseData = json_decode($response, true);
         return $responseData['name'] ?? $responseData['title'] ?? null;
     }
@@ -72,8 +77,11 @@ function fetchMediaTitle($imdb_id, $mediaType) {
 // Collecte les titres des films favoris.
 $movieTitles = [];
 foreach ($listeImdbMovie as $imdb_id) {
+    error_log("Fetching title for movie: " . $imdb_id);
     $movieTitles[] = fetchMediaTitle($imdb_id, 'movie');
+    error_log("Fetched title: " . $movieTitles[count($movieTitles) - 1]);
 }
+error_log("Movie titles: " . implode(',', $movieTitles));
 
 // Collecte les titres des séries TV favoris.
 $tvShowTitles = [];
@@ -83,14 +91,16 @@ foreach ($listeImdbTV as $imdb_id) {
 
 // Fusionne et filtre les titres récupérés.
 $allTitles = array_merge($movieTitles, $tvShowTitles);
+error_log("All titles: " . implode(',', $allTitles));
 $allTitlesString = implode(',', array_filter($allTitles));
-$randomKey = array_rand($allTitlesString);
+$randomKey = array_rand($allTitles);
 $randomTitle = $allTitles[$randomKey];
 
 // Fonction pour appeler l'API d'OpenAI pour générer une image basée sur des titres de films.
 function callOpenAIForImage($titles) {
+    error_log("Generating poster for titles: " . $titles);
     $openai_endpoint = "https://api.openai.com/v1/images/generations";
-    $openai_token = "Mettre la logique du tokken";
+    $openai_token = "";
     $prompt = "Create a visually appealing and realistic movie poster based on the following titles: " . $titles;
 
     $data = array(
@@ -110,11 +120,13 @@ function callOpenAIForImage($titles) {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     $response = curl_exec($ch);
     $err = curl_error($ch);
     curl_close($ch);
+    error_log("OpenAI response: " . $response);
 
     if ($err) {
         return "Erreur cURL: " . $err;

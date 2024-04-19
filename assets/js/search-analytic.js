@@ -27,7 +27,51 @@ export function search() {
       modeSwitchIcon.src = './assets/images/play_circle.png';
       searchField.placeholder = 'Search any movies...';
     }
+
+    if (!searchField.value.trim()) {
+      searchWrapper.classList.remove("searching");
+      clearTimeout(searchTimeout);
+      return;
+    }
+
+    searchWrapper.classList.add("searching");
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(recherche, 500);
   });
+  var recherche = function() {
+    let apiUrl;
+    if (mode === 'movie') {
+      apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${searchField.value}&page=1&include_adult=false`;
+    } else if (mode === 'person') {
+      apiUrl = `https://api.themoviedb.org/3/search/person?api_key=${api_key}&query=${searchField.value}&page=1&include_adult=false`;
+    } else if (mode === 'tv') {
+      apiUrl = `https://api.themoviedb.org/3/search/tv?api_key=${api_key}&query=${searchField.value}&page=1&include_adult=false`;
+    }
+
+    fetchDataFromServer(apiUrl, function ({ results: searchResults }) {
+      searchWrapper.classList.remove("searching");
+      searchResultModal.innerHTML = ""; // remove old results
+
+
+
+      for (const item of searchResults) {
+        let card;
+        if (mode === 'movie') {
+          card = createMovieCardAna(item);
+        } else if (mode === 'person') {
+          card = createPeopleCardAna(item);
+        } else if (mode === 'tv') {
+          card = createTvCardAna(item);
+        }
+
+        searchResultModal.appendChild(card);
+      }
+    });
+
+    
+
+  }
 
   const searchResultModal = document.querySelector(".slider-inner");
 
@@ -43,36 +87,7 @@ export function search() {
     searchWrapper.classList.add("searching");
     clearTimeout(searchTimeout);
 
-    searchTimeout = setTimeout(function () {
-      let apiUrl;
-      if (mode === 'movie') {
-        apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${searchField.value}&page=1&include_adult=false`;
-      } else if (mode === 'person') {
-        apiUrl = `https://api.themoviedb.org/3/search/person?api_key=${api_key}&query=${searchField.value}&page=1&include_adult=false`;
-      } else if (mode === 'tv') {
-        apiUrl = `https://api.themoviedb.org/3/search/tv?api_key=${api_key}&query=${searchField.value}&page=1&include_adult=false`;
-      }
-
-      fetchDataFromServer(apiUrl, function ({ results: searchResults }) {
-        searchWrapper.classList.remove("searching");
-        searchResultModal.innerHTML = ""; // remove old results
-
-
-
-        for (const item of searchResults) {
-          let card;
-          if (mode === 'movie') {
-            card = createMovieCardAna(item);
-          } else if (mode === 'person') {
-            card = createPeopleCardAna(item);
-          } else if (mode === 'tv') {
-            card = createTvCardAna(item);
-          }
-
-          searchResultModal.appendChild(card);
-        }
-      });
-    }, 500);
+    searchTimeout = setTimeout(recherche, 500);
   });
 }
 

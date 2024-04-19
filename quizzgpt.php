@@ -1,6 +1,17 @@
 <?php
 session_start();
 
+if (isset($_GET['reset'])) {
+
+    // Réinitialiser les variables spécifiques de session, si nécessaire
+    $_SESSION['current_question'] = 0;
+    $_SESSION['responses'] = [];
+
+    // Rediriger vers la page de début du quizz
+    header("Location: quizzgpt.php");
+    exit;
+}
+
 // Vérifier si c'est un nouveau questionnaire ou une réinitialisation demandée
 if (!isset($_SESSION['current_question']) || isset($_GET['reset'])) {
     $_SESSION['current_question'] = 0;
@@ -38,12 +49,24 @@ function callOpenAI($messages) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
     $response = curl_exec($ch);
+
+    // Vérification des erreurs cURL
+    if ($response === false) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        error_log("Erreur cURL: " . $error);
+        return false; // Retourne false en cas d'erreur
+    }
+
     curl_close($ch);
+    error_log("OpenAI response: " . $prompt);
 
     return $response;
 }
+
 
 $questions = [
     "Quels genres de films ou de séries apprécies-tu le plus ? (Action, comédie, drame, science-fiction, fantastique, documentaire, etc.)",
@@ -75,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $response = callOpenAI($user_responses);
         $data = json_decode($response, true);
+        error_log("OpenAI response: " . print_r($data, true));
 
         if (isset($data['choices'][0]['message']['content'])) {
             $imdb_ids_raw = $data['choices'][0]['message']['content'];
@@ -113,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="<?php echo $option; ?>"><?php echo $option; ?></option>
                 <?php endforeach; ?>
             </select><br>
-            <input type="image" src="assets/images/Bouton2.png">
+            <input type="image" src="assets/images/bouton.png">
         </form>
     </div>
 </div>
