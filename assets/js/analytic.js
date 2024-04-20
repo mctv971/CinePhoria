@@ -5347,14 +5347,14 @@ window.addEventListener('message', function(event) {
                 }
             ]
         }],
-        max_tokens: 300
+        max_tokens: 200
     };
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer `
+            'Authorization': `Bearer`
         },
         body: JSON.stringify(requestData)
     });

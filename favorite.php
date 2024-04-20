@@ -5,7 +5,7 @@ session_start();
 // Vérification si l'utilisateur est connecté
 if (!isset($_SESSION['client'])) {
     // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
-    header("Location: connecter_test.php");
+    header("Location: Filmaxium Accueil/Filmaxium Connexion/Inscription/inscription.php");
     exit;
 }
 

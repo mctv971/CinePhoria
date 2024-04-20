@@ -27,6 +27,7 @@ if ($row) {
             'naissance' => $row['naissance'],
             'mail' => $row['mail'],
             'pays' => $row['pays'],
+            'demo' => $row['demo'],
         );
         echo json_encode(['connected' => true]);
         exit();

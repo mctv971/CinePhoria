@@ -493,7 +493,7 @@ async function sendImageToAPI(imageBase64) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer`
+                'Authorization': `Bearer `
             },
             body: JSON.stringify(requestData)
         });
