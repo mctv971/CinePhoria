@@ -5,7 +5,7 @@ session_start();
 // Vérification si l'utilisateur est connecté
 if (!isset($_SESSION['client'])) {
     // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
-    header("Location: connexion.php");
+    header("Location: Filmaxium Accueil/Filmaxium Connexion/Inscription/inscription.php");
     exit;
 }
 
@@ -100,7 +100,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <a href="analytic.php">
         <img src="./assets/images/logo-stats.png" width="60" height="60" alt="Analytics home">
       </a>
-      <a href="./favorite.php">
+      <a href="./profil.php">
         <img src="./assets/images/logo-profil.png" width="60" height="60" alt="Profil">
       </a>
     </div>

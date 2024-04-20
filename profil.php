@@ -52,7 +52,7 @@ $items = array_map(function ($item) {
     <!-- Conteneur flex pour la photo et le formulaire -->
     <div class="containerflex">
         <div class="logomp">
-            <a href="Filmaxium Accueil/Filmaxium Connexion/Inscription/inscription.html"><img src="Filmaxium Accueil/Filmaxium Connexion/images/logo.png" alt="Logo"></a>
+            <a href="index.php"><img src="Filmaxium Accueil/Filmaxium Connexion/images/logo.png" alt="Logo"></a>
         </div>
         <!-- Photo de profil -->
         <div class="photo-input">
