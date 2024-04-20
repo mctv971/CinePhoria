@@ -1816,10 +1816,10 @@ function initializeScene4() {
 
         document.body.appendChild(contentAnalytic); 
     } else {
-        // Si les nominations ont déjà été chargées, vous pouvez directement afficher la scène des nominations
+        
         displayOscarNominations();
     }
-
+    
 
     async function fetchPosterPath(itemId) {
         const url = `https://api.themoviedb.org/3/movie/${itemId}?api_key=${api_key}`;
@@ -1889,6 +1889,7 @@ function initializeScene4() {
     
                 
                 const imgElement = document.createElement('img');
+                imgElement.classList.add('movie-P');
                 imgElement.src = completePosterPath;
                 imgElement.alt = `${film.title} Poster`;
                 imgElement.style.width = '200px'; 
@@ -1897,32 +1898,85 @@ function initializeScene4() {
                 
                 filmElement.appendChild(imgElement);  
                 filmElement.onclick = function() {
-                    // Appeler la fonction getMovieDetail avec l'ID du film comme argument
+                    
                     getMovieDetail(film.itemId);
                 };  
 
                 nominationsContainer.appendChild(filmElement);
             }
         }
-    
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.style.display = 'flex'; // Utilisation de Flexbox pour aligner les boutons côte à côte
+        buttonsContainer.style.justifyContent = 'space-around'; // Espacement autour des boutons
+        buttonsContainer.style.marginTop = '20px'; // Espace au-dessus du conteneur de boutons
+        
+        // Création du premier bouton pour les résultats
+        const resultatButton = document.createElement('button');
+        resultatButton.textContent = 'Cliquez ici pour découvrir le gagnant';
+        resultatButton.style.marginTop = '0px';
+        resultatButton.style.border = 'none';
+        resultatButton.style.borderRadius = '5px';
+        resultatButton.style.backgroundColor = 'red';
+        resultatButton.style.color = 'white';
+        resultatButton.style.fontSize = '24px';
+        resultatButton.style.padding = '10px 20px'; // Uniformisation du padding avec le deuxième bouton
+        resultatButton.style.cursor = 'pointer'; // Ajout du curseur pointeur
+        
+        // Création du deuxième bouton pour la prédiction
         const predictionButton = document.createElement('button');
         predictionButton.textContent = 'Découvrez comment fonctionne le système de Prédiction';
-        predictionButton.style.marginTop = '20px'; 
-        predictionButton.style.padding = '10px 20px'; 
-        predictionButton.style.border = 'none'; 
-        predictionButton.style.cursor = 'pointer'; 
-        predictionButton.style.borderRadius = '5px'; 
+        predictionButton.style.border = 'none';
+        predictionButton.style.borderRadius = '5px';
         predictionButton.style.backgroundColor = '#808080';
-        predictionButton.style.color = 'white'; 
-        predictionButton.style.fontSize = '16px'; 
-    
-        // Optionnel : Ajoute un gestionnaire d'événement au bouton pour faire quelque chose quand il est cliqué
-        predictionButton.addEventListener('click', function() {
-        window.location.href = 'prediction.php';
+        predictionButton.style.color = 'white';
+        predictionButton.style.fontSize = '16px';
+        predictionButton.style.padding = '10px 20px';
+        predictionButton.style.cursor = 'pointer'; // Ajout du curseur pointeur
+        
+        // Ajout des boutons au conteneur
+        buttonsContainer.appendChild(resultatButton);
+        buttonsContainer.appendChild(predictionButton);
+
+
+
+
+        const modalContainer = document.createElement('div');
+        modalContainer.style.cssText = 'position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000;';
+
+        const modalContent = document.createElement('div');
+        modalContent.style.cssText = 'background-color: white; padding: 20px; border-radius: 5px; width: 80%; max-width: 600px; position: relative; overflow-y: auto; max-height: 80vh;';
+
+        const bouttonFermeture = document.createElement('span');
+        bouttonFermeture.textContent = 'x';
+        bouttonFermeture.style.cssText = 'position: fixed; cursor: pointer; font-size: 24px; font-weight: bold; color: #333;';
+
+        const mediumWidget = document.createElement('div');
+        mediumWidget.classList = 'sk-ww-medium-post';
+        mediumWidget.setAttribute('data-embed-id', '25400423');
+
+        modalContent.appendChild(bouttonFermeture);
+        modalContent.appendChild(mediumWidget);
+        modalContainer.appendChild(modalContent);
+        nominationsContainer.appendChild(modalContainer);
+        nominationsContainer.appendChild(buttonsContainer);
+
+        predictionButton.addEventListener('click', function(){
+            modalContainer.style.display = 'flex';
         });
-    
-        // Ajoute le bouton au conteneur des nominations
-        nominationsContainer.appendChild(predictionButton);
+        resultatButton.addEventListener('click', animateBorderOnNominations);
+
+        
+        
+        bouttonFermeture.addEventListener('click', function(){
+            modalContainer.style.display = 'none';
+        });
+
+        
+        const skScript = document.createElement('script');
+        skScript.src = 'https://widgets.sociablekit.com/medium-post/widget.js';
+        skScript.async = true;
+        skScript.defer = true;
+        document.body.appendChild(skScript);
     
     }
 
@@ -1930,6 +1984,56 @@ function initializeScene4() {
         gsap.from('.right', { x: '100%', opacity: 0, duration: 1.5, stagger: 0.1 });
         gsap.from('.left', { x: '-100%', opacity: 0, duration: 1.5, stagger: 0.1 });
     }
+
+    function animateBorderOnNominations() {
+    const movieImages = document.querySelectorAll('.movie-P');
+    let previousIndex = -1;  // Garder une trace de l'index précédent
+    
+    // Fonction pour réinitialiser la bordure de l'image précédente
+    function resetPreviousBorder() {
+        if (previousIndex !== -1) {
+            movieImages[previousIndex].style.border = 'none'; // Réinitialiser seulement l'image précédente
+        }
+    }
+
+    // Fonction pour animer les bordures
+    const intervalId = setInterval(() => {
+        resetPreviousBorder();
+        // Choisir une image au hasard, mais pas la même consécutivement
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * movieImages.length);
+        } while (randomIndex === previousIndex);
+        previousIndex = randomIndex;
+        
+        // Mettre une bordure rouge sur l'image choisie
+        movieImages[randomIndex].style.border = '3px solid gold';
+    }, 150); // Changer de bordure toutes les 150 millisecondes
+
+    // Arrêter l'animation après 3.75 secondes
+    setTimeout(() => {
+        clearInterval(intervalId);
+        resetPreviousBorder();  // Réinitialiser la dernière image avant de mettre en évidence Oppenheimer
+        // Mettre en évidence Oppenheimer
+        const oppenheimerImage = Array.from(movieImages).find(img => img.alt.includes('Oppenheimer'));
+        if (oppenheimerImage) {
+            oppenheimerImage.style.border = '3px solid gold';
+        }
+
+        // Afficher un message sur la droite de la page
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = "D'après le modèle, Oppenheimer a remporté les Oscars avec une probabilité de 94.4%.Pour en savoir plus, découvrez comment on a crée notre système de prédiction";
+        messageDiv.style.cssText = 'position: absolute; right: 100px; top: 50%; transform: translateY(-50%); background-color: transparent; color: white; padding: 10px; border-radius: 5px; z-index: 100; font-size: 25px; width: 250px;';
+
+        document.body.appendChild(messageDiv);
+
+    }, 3750);
+}
+
+    
+
+    
+    
 
 
 
@@ -5385,6 +5489,3 @@ $('#downloadButton').click(function() {
         link.click();
     }
 });  
-
-  
-  

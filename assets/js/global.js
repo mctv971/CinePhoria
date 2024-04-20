@@ -114,7 +114,24 @@ const getMovieDetail = function (movieId) {
   $('.backgroundOverlay').addClass('active');
   $('.iframeContainer').addClass('active');
   $('.closeIcon').addClass('active');
-  addToHistory(String(movieId), "movie")
+  addToHistory(String(movieId), "movie");
+
+  // Appliquez une bordure jaune et ajoutez une couronne si l'ID du film est 872585 (Oppenheimer)
+  if (movieId === 872585) {
+    // Supposons que vous avez un élément avec l'ID 'filmDetail'
+    const filmElement = document.getElementById('filmElement');
+    if (filmElement) {
+      filmDetail.style.border = '5px solid yellow'; // Applique une bordure jaune
+      
+      // Créer et ajouter une image de couronne
+      const crownImg = document.createElement('img');
+      crownImg.src = './images/crown-3d-illustration-png.webp';
+      crownImg.style.position = 'absolute';
+      crownImg.style.top = '0';
+      crownImg.style.right = '0'; 
+      filmElement.appendChild(crownImg);
+    }
+  }
 
   const closeIconDetail = document.getElementById('closeIconDetail');
   if (closeIconDetail) {

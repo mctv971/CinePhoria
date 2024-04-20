@@ -2718,3 +2718,8 @@ body {
   text-align: center;
   margin-top: 1em;
 }
+
+.border-animation {
+  border: 2px solid red;
+  transition: all 0.5s ease;
+}
