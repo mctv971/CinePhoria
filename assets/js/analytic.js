@@ -1673,10 +1673,17 @@ function initializeScene3(scene,renderer,camera){
           <p class="testVar" type="var2"></p>
         </div>
         <button class="backTest" onclick="backTest()">Nouvelle Recherche</button>
+        <button class="backTest" onclick="downloadGraph()" >Download le graphique</button>
 
       </div>
 
-      <div class="testExplain"></div>
+      <div class="testExplain">
+        <p class="testExplainGPT"></p>
+      
+      
+
+      
+      </div>
 
 
       <div class="testData">
@@ -3609,6 +3616,7 @@ function buildRequestUrl({ type, genre, country, startDate, endDate, page }) {
 async function fetchDetails() {
     const ids = await fetchData();
     const type = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
+
     const apiKey = api_key;
     const baseUrl = 'https://api.themoviedb.org/3';
     let details = [];
@@ -4305,7 +4313,8 @@ async function getSerieInfo(movieId) {
     }
 }
 
-async function fillData(var1, var2, type) {
+async function fillData(var1, var2) {
+    const type = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
     $('#dataBody').empty(); // Clear the current table content
     data = []; // Reset the data array
     for (const movieId of idTmdbList) {
@@ -4783,10 +4792,10 @@ async function performSelectedTest(selectedTest, var1, var2, numClusters) {
     // Créez une animation GSAP pour effectuer une rotation continue
     const rotationTween = gsap.to(barreStape, { rotation: 360, duration: 2, repeat: -1, ease: "none" });
     if(selectedTest === 'cluestering') {
-        await fillData("budget", "revenue",);
+        await fillData("budget", "revenue");
     }
     else{
-        await fillData(var1, var2,);
+        await fillData(var1, var2);
     }
 
     rotationTween.pause();
@@ -4822,6 +4831,7 @@ else if (selectedTest === 'cluestering') {
         displayClusters(variableData, clusteringResult.assignments, $('#variableSelect1 option:selected').text(), $('#variableSelect2 option:selected').text()); // Utilisez les libellés des variables sélectionnées
     }
 }
+
 
 //--------------------------------------Partie Test----------------------------
 
@@ -5049,6 +5059,20 @@ async function startTest(){
 
 
     await performSelectedTest(selectedTest, variable1, variable2, numClusters); // Ajoutez await ici
+    setTimeout(async () => {
+        let imageBase64;
+        // Vérifier si c'est un graphique Plotly
+        if (document.querySelector('.plot-container')) {
+            imageBase64 = await Plotly.toImage(document.querySelector('.plot-container'), {format: 'png'});
+        } else {
+            // Sinon, traiter comme un graphique Chart.js
+            const canvas = document.getElementById('correlationChart');
+            if (canvas) {
+                imageBase64 = canvas.toDataURL('image/png');
+            }
+        }
+        sendImageToAPI(imageBase64); // Envoyer l'image à l'API
+    }, 1000);
 
 }
 function fillTestVariables(test, var1, var2) {
@@ -5104,8 +5128,12 @@ function clearTestResults() {
                 <p class="testVar" type="var2"></p>
             </div>
             <button class="backTest" onclick="backTest()">Nouvelle Recherche</button>
+            <button class="backTest" onclick="downloadGraph()" >Download le graphique</button>
         </div>
-        <div class="testExplain"></div>
+        <div class="testExplain">
+        <p class="testExplainGPT"></p>
+        
+        </div>
         <div class="testData">
             <h2 class="dataText">Données récupérées</h2>
             <table id="dataTable">
@@ -5127,9 +5155,74 @@ function clearTestResults() {
     `;
 }
 
+
+window.addEventListener('message', function(event) {
+    // Vérifie si le message reçu est celui indiquant que le contenu de l'iframe a été modifié
+    if (event.data === 'contenuModifie') {
+        // Actualise l'iframe en rechargeant son contenu
+        document.getElementById('iframe').contentWindow.location.reload();
+    }
+  }, false);
+  
+  window.onload = clearLocalStorageIfIframeNotActive;
+  closeIframe();
   
   
-  
-  
+  async function sendImageToAPI(imageBase64) {
+    const requestData = {
+        model: "gpt-4-turbo",
+        messages: [{
+            role: "user",
+            content: [{
+                    type: "text",
+                    text: "Interprete le graphique en expliquant de manière claire le résultat obtenue sachant que l'on parle d'une analyse de correlation entre deux films selon deux variables ou bien d'un clustering selon l'image que tu reçois"
+                },
+                {
+                    type: "image_url",
+                    image_url: {
+                        url: imageBase64
+                    }
+                }
+            ]
+        }],
+        max_tokens: 300
+    };
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer `
+        },
+        body: JSON.stringify(requestData)
+    });
+
+    if (response.ok) {
+    const responseData = await response.json();
+    console.log('Response from OpenAI:', responseData);
+    // Mettre à jour le contenu de la div avec la réponse
+    const outputDiv = document.querySelector('.testExplainGPT');
+    if (responseData.choices && responseData.choices.length > 0 && responseData.choices[0].message) {
+        outputDiv.innerHTML = responseData.choices[0].message.content;
+    } else {
+        outputDiv.innerHTML = 'Aucune réponse significative reçue.';
+    }
+} else {
+    console.error('Failed to send image:', response.statusText);
+    const outputDiv = document.querySelector('.testExplainGPT');
+    outputDiv.innerHTML = 'Erreur lors de l\'envoi de l\'image: ' + response.statusText;
+}
+}
+window.downloadGraph = function() {
+    const canvas = document.getElementById('correlationChart');
+    if (canvas) {
+        const imageUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'graphique.png';
+        link.href = imageUrl;
+        link.click();
+    }
+} 
+
   
   

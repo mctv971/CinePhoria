@@ -5,7 +5,7 @@ session_start();
 // Vérification si l'utilisateur est connecté
 if (!isset($_SESSION['client'])) {
     // Redirection vers la page de connexion si l'utilisateur n'est pas connecté
-    header("Location: connecter_test.php");
+    header("Location: connexion.php");
     exit;
 }
 
@@ -58,55 +58,13 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
 
 </head>
 
-<body>
+<body style="background:none">
 
   <!-- 
     - #HEADER
   -->
 
-  <header class="header">
 
-    <a href="./index.php" class="logo">
-      <img src="./assets/images/logo.png" width="140" height="32" alt="Filmaxium home">
-    </a>
-
-
-    <div class="search-box" search-box>
-      <div class="search-wrapper" search-wrapper>
-        <input type="text" name="search" aria-label="search movies" placeholder="Search any movies..."
-          class="search-field" autocomplete="off" search-field>
-
-        <img src="./assets/images/search.png" width="24" height="24" alt="search" class="leading-icon">
-        <img src="./assets/images/play_circle.png" width="24" height="24" alt="search" class="leading-icon2">
-      </div>
-
-      <button class="search-btn" search-toggler>
-        <img src="./assets/images/close.png" width="24" height="24" alt="close search box">
-      </button>
-    </div>
-
-    <button class="search-btn" search-toggler menu-close>
-      <img src="./assets/images/search.png" width="24" height="24" alt="open search box">
-    </button>
-
-    <div class="logo-right">
-      <a href="./catalogue.php">
-        <img src="./assets/images/logo-catalogue.png" width="60" height="60" alt="Catalogue">
-      </a>
-      <a href="./index.php">
-        <img src="./assets/images/logo-film.png" width="60" height="60" alt="Find Film">
-      </a>
-      <a href="./Filmaxium_Analytique/analytique_accueil.php">
-        <img src="./assets/images/logo-stats.png" width="60" height="60" alt="Analytics home">
-      </a>
-      <a href="./favorite.php">
-        <img src="./assets/images/logo-profil.png" width="60" height="60" alt="Profil">
-      </a>
-    </div>
-
-    
-
-  </header>
 
 
 
@@ -127,7 +85,7 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
 
 
 
-    <article class="container" page-content>
+    <article class="container"style="background:none" page-content>
       <!-- 
       - #SIDEBAR
     -->

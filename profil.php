@@ -16,7 +16,7 @@ session_start();
 
 if (!isset($_SESSION['client'])){
 
-    header("Location : connexion.php ");
+    header("Location : Filmaxium Accueil/Filmaxium Connexion/Inscription/inscription.php ");
     exit();
 }
 
@@ -26,7 +26,7 @@ $client=$_SESSION['client'];
     <!-- Conteneur flex pour la photo et le formulaire -->
     <div class="containerflex">
         <div class="logomp">
-            <a href="Filmaxium Accueil/Filmaxium Connexion/Inscription/inscription.html"><img src="Filmaxium Accueil/Filmaxium Connexion/images/logo.png" alt="Logo"></a>
+            <a href="index.php"><img src="Filmaxium Accueil/Filmaxium Connexion/images/logo.png" alt="Logo"></a>
         </div>
         <!-- Photo de profil -->
         <div class="photo-input">
@@ -49,18 +49,15 @@ $client=$_SESSION['client'];
                 <label for="naissance">Date de naissance :</label>
                 <input type="naissance" id="naissance" name="naissance" value="<?php echo $client['naissance']; ?>">
             </div>
-            <div class="button-container">
-                <a href="modifmdp.html"><button>Modifier mon mot de passe</button></a> 
-            </div>
         </form>
-        <div class="perso">
-            <p>Choisissez le thème de votre session :</p>
-            <select id="themeSelect" onchange="changeTheme()">
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-            </select>
-            <p>Programmes préférés :</p>
+        <div style="position:relative; top: 20vh ; width:50vw; height: 80vh">
+        <iframe src="favorite.php" frameborder="0" style="
+            height: 100%;
+            width: 100%;
+        "></iframe>
         </div>
+
+
 
         <script>
             function changeTheme() {
