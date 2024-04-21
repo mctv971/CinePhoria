@@ -122,6 +122,16 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
       <img src="./assets/images/close.png" alt="Iframe Close" class="closeIcon" id="closeIconGen">
     </div>
 
+    <div class="iframeBouquetContainer">
+      <div class="loadingBouquet active">
+        <p style="position:relative;margin:auto; text-align:center">Les bouquets GPT sont des combinaisons de films générées par l'IA. Vous pouvez les utiliser pour trouver des films à regarder en fonction de votre humeur ou de votre temps libre.
+      Etant donné que les bouquets sont générées par l'IA, il se peut que le chargement prenne un peu de temps. Merci de votre patience.</p>
+
+      </div>
+
+      <img src="./assets/images/close.png" alt="Iframe Close" class="closeIcon" id="closeIconBouquet"  onclick="closeBouquet()">
+    </div>
+
 
 
 
@@ -152,12 +162,30 @@ echo "<script>console.log('Bienvenue, ".$user_info['prenom']." ".$user_info['nom
 
           <div class="quizzContainer">
             <button class="quizzBtn">Trouve ton bonheur <img src="assets/images/baguette.png" id="baguette" alt=""></button>
-            
+            <button class="bouquetBtn" onclick="bouquetGen()">Génère tes bouquets GPT <img src="assets/images/baguette.png" id="baguette" alt=""></button>
           </div>
 
 
         </div>
 
+      </div>
+
+      <div class="foryouRec">
+        <h1 class="foryouTitle2">Recommandation Fait Pour Toi</h1>
+        <div class="foryouRecommandationList">
+
+        </div>
+
+      </div>
+      <div class="foryouBouquet">
+        <h1 class="foryouTitle2">Crée ton Bouquet</h1>
+        <p style="text-align:center">Entrez le nombre de minutes de divertissement disponible et cliquez sur le bouton pour trouver ton bouquet fait sur mesure (minimum 30min) :</p>
+        <input type="number" id="inputNombre" min="30" placeholder="Entrez vos minutes ici">
+        <button class="bouquetBtn" onclick="trouverCombinaisonAleatoire()" >Lance la création de bouquet <img src="assets/images/baguette.png" id="baguette" alt=""></button>
+
+        <div class="foryouBouquetList">
+
+        </div>
       </div>
 
 

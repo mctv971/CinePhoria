@@ -22,6 +22,7 @@ if ($row) {
     if (password_verify($password, $mdp_hache)) {
         $_SESSION['client'] = array(
             'id_user' => $row['id_user'],
+            'username' => $row['username'],
             'nom' => $row['nom'],
             'prenom' => $row['prenom'],
             'naissance' => $row['naissance'],

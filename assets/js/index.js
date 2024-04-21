@@ -629,6 +629,7 @@ function addDictacielHTML() {
     
       api_key = keys;
       initializePageDictaciel(); // Initialise la page une fois que les clés sont disponibles
+      searchDictaciel();
     
     });
 
@@ -648,5 +649,4 @@ if(window.addDictaciel){
 
 
 closeIframe();
-searchDictaciel();
 popcorn();

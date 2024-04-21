@@ -2,202 +2,96 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Graphique Personnalisé avec Chart.js</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <style>
-        /* Changer la taille du graphique */
-        #myChart {
-            width: 600px; /* Largeur désirée */
-            height: 300px; /* Hauteur désirée */
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de la fonction de combinaisons aléatoires</title>
 </head>
 <body>
-    <canvas id="myChart"></canvas>
-    <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Popularity'],
-                datasets: [{
-                    label: 'Produit A',
-                    data: [12],
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    borderRadius: {
-                        topLeft: 20,
-                        bottomLeft:20
-                    }, // Arrondir les bords
-                    borderSkipped: "right",
-                    datalabels: {
-                        align: 'start',
-                        anchor: 'start'
-                    }
-                }, {
-                    label: 'Produit B',
-                    data: [2],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    borderRadius: 20,
+    <h1>Test de la fonction de combinaisons aléatoires</h1>
+    
+    <p>Entrez un nombre et cliquez sur le bouton pour trouver une combinaison :</p>
+    <input type="number" id="inputNombre">
+    <button onclick="trouverCombinaisonAleatoire()">Trouver une combinaison aléatoire</button>
 
-                    datalabels: {
-                        align: 'end',
-                        anchor: 'end'
-                    }
-                }],
-            },
-            options: {
-                indexAxis: 'y',
-                plugins: {
-                    legend: {
-                        display: false // Enlever la légende
-                    },
-                    datalabels: {
-                        color: '#000',
-                        font: {
-                            weight: 'bold'
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        display: false,
-                        stacked: true,
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        display: false,
-                        stacked: true,
-                        grid: {
-                            display: false
-                        }
-                    }
+    <p>Résultat :</p>
+    <div id="resultat"></div>
+
+    <script>
+        const liste_contenu_duree = {
+            30: ['A', 'B'],
+            45: ['D', 'E'],
+            60: ['F', 'G'],
+            90: ['H'],
+            120: ['I'],
+            300: ['J', 'K']
+        };
+        
+        function combinaisonAleatoireProche(nombre) {
+            const valeurs = [30, 45, 60, 90, 120, 300];
+            let meilleuresCombinaisons = [];
+            let meilleureDifference = Number.MAX_SAFE_INTEGER;
+
+            function trouverCombinaison(index, sommeActuelle, combinaisonActuelle) {
+                const difference = Math.abs(sommeActuelle - nombre);
+                if (difference < meilleureDifference) {
+                    meilleuresCombinaisons = [combinaisonActuelle];
+                    meilleureDifference = difference;
+                } else if (difference === meilleureDifference) {
+                    meilleuresCombinaisons.push(combinaisonActuelle);
+                }
+                if (index >= valeurs.length || sommeActuelle >= nombre) {
+                    return;
+                }
+                let i = 0;
+                while (valeurs[index] * i + sommeActuelle <= nombre && i <= liste_contenu_duree[valeurs[index]].length) {
+                    trouverCombinaison(index + 1, sommeActuelle + valeurs[index] * i, {...combinaisonActuelle, [valeurs[index]]: i});
+                    i++;
                 }
             }
-        });
+
+            trouverCombinaison(0, 0, valeurs.reduce((acc, val) => ({...acc, [val]: 0}), {}));
+
+            const randomIndex = Math.floor(Math.random() * meilleuresCombinaisons.length);
+            return meilleuresCombinaisons[randomIndex];
+        }
+
+        function trouverCombinaisonAleatoire() {
+            const nombre = parseInt(document.getElementById('inputNombre').value);
+            const resultatDiv = document.getElementById('resultat');
+            const combinaison = combinaisonAleatoireProche(nombre);
+            console.log(Object.keys(combinaison));
+            let resultatText = '';
+            for (let cle in combinaison) {
+                resultatText += `${cle}: ${combinaison[cle]}, `;
+            }
+            resultatDiv.innerHTML = resultatText.slice(0, -2);
+        }
+
+
+        function piocherElements(liste, n) {
+            // Copier la liste originale pour éviter de modifier la liste passée en paramètre
+            let listeTemporaire = [...liste];
+            let resultat = [];
+
+            // Vérifier si n est supérieur à la longueur de la liste
+            if (n > listeTemporaire.length) {
+                throw new Error("Le nombre d'éléments à piocher ne peut pas être supérieur à la longueur de la liste.");
+            }
+
+            // Piocher n éléments
+            for (let i = 0; i < n; i++) {
+                let indexAleatoire = Math.floor(Math.random() * listeTemporaire.length);
+                resultat.push(listeTemporaire[indexAleatoire]);
+                listeTemporaire.splice(indexAleatoire, 1);  // Retirer l'élément pioché de la liste temporaire
+            }
+
+            return resultat;
+        }
+
+        // Utilisation de la fonction
+        const maListe = ['A', 'B', 'C'];
+        const elementsPioches = piocherElements(maListe, 2);
+        console.log(elementsPioches);
+
     </script>
 </body>
 </html>
-
-
-
-<div class="analyse-genre">
-    <p class="contenu-text2" style ="height: auto; margin-left:10vw">* : Filtre obligatoire</p>
-    <div class="selection-form" data-selection="1">
-      <h1 class="title-test">Test 1</h1>
-      
-      <div class="selection-label-form">
-
-        <div class="dropdown">
-          <div class="select">
-            <span class="selected">Type :</span>
-            <div class="caret"></div>
-          </div>
-          <ul class="menu">
-            <li data-value="movie">Film</li>
-            <li data-value="tv">Série</li>
-          </ul>
-        </div>
-
-        <div class="dropdown">
-          <div class="select">
-            <span class="selected">Genre * :</span>
-            <div class="caret"></div>
-          </div>
-          <ul class="menu" id="genre-menu">
-            <!-- Les options seront ajoutées dynamiquement ici -->
-          </ul>
-        </div>
-
-        <div class="dropdown">
-          <div class="select">
-            <span class="selected">Pays d'origine :</span>
-            <div class="caret"></div>
-          </div>
-          <ul class="menu" id="country-menu">
-            <!-- Les options seront ajoutées dynamiquement ici -->
-          </ul>
-        </div>
-
-        <div class="dropdown">
-          <div class="select dated">
-            <span class="selected">Date de départ :</span>
-            <input type="date" id="date_depart" name="date_depart" class="form-input">
-          </div>
-
-        </div>
-
-        <div class="dropdown">
-          <div class="select dated">
-            <span class="selected">Date de fin :</span>
-            <input type="date" id="date_fin" name="date_fin" class="form-input">
-          </div>
-          
-        </div>
-
-
-      </div>
-    </div>
-    <div class="selection-form" data-selection="2" style="display: none;">
-      <h1 class="title-test">Test 2</h1>
-      
-      <div class="selection-label-form">
-
-        <div class="dropdown">
-          <div class="select">
-            <span class="selected">Type :</span>
-            <div class="caret"></div>
-          </div>
-          <ul class="menu">
-            <li data-value="movie">Film</li>
-            <li data-value="tv">Série</li>
-          </ul>
-        </div>
-
-        <div class="dropdown">
-          <div class="select">
-            <span class="selected">Genre :</span>
-            <div class="caret"></div>
-          </div>
-          <ul class="menu" id="genre-menu">
-            <!-- Les options seront ajoutées dynamiquement ici -->
-          </ul>
-        </div>
-
-        <div class="dropdown">
-          <div class="select">
-            <span class="selected">Pays d'origine :</span>
-            <div class="caret"></div>
-          </div>
-          <ul class="menu" id="country-menu">
-            <!-- Les options seront ajoutées dynamiquement ici -->
-          </ul>
-        </div>
-
-        <div class="dropdown">
-          <div class="select dated">
-            <span class="selected">Date de départ :</span>
-            <input type="date" id="date_depart" name="date_depart" class="form-input">
-          </div>
-
-        </div>
-
-        <div class="dropdown">
-          <div class="select dated">
-            <span class="selected">Date de fin :</span>
-            <input type="date" id="date_fin" name="date_fin" class="form-input">
-          </div>
-          
-        </div>
-
-
-      </div>
-    </div>   
-    <button class="rounded-square-btn" onclick="activeSearch()">Lance la visualisation <img src="assets/images/flame.png" style="width:24px; height:24px" alt="flame" ></button>   
-  </div>

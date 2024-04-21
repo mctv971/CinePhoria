@@ -16,7 +16,7 @@ session_start();
 
 if (!isset($_SESSION['client'])){
 
-    header("Location : connexion.php ");
+    header("Location : Filmaxium Accueil/Filmaxium Connexion/Inscription/inscription.php ");
     exit();
 }
 
@@ -73,16 +73,22 @@ $items = array_map(function ($item) {
                 <label for="mail">Adresse mail :</label>
                 <input type="email" id="mail" name="mail" value="<?php echo $client['mail']; ?>" readOnly="readOnly" >
                 <label for="naissance">Date de naissance :</label>
-                <input type="naissance" id="naissance" name="naissance" value="<?php echo $client['naissance']; ?>"readOnly="readOnly" >
+                <input type="naissance" id="naissance" name="naissance" value="<?php echo $client['naissance']; ?>">
             </div>
         </form>
+        <div style="position:relative; top: 20vh ; width:50vw; height: 80vh">
+        <iframe src="favorite.php" frameborder="0" style="
+            height: 100%;
+            width: 100%;
+        "></iframe>
+        </div>
 
-        <div class="slider-inner">
-    <div id="cards-container"  style="margin: 20px 0;">
-    <div>
-</div>
 
-</div>
+
+        <script>
+            function changeTheme() {
+                const themeSelect = document.getElementById('themeSelect');
+                const body = document.body;
         
         <script>
             
