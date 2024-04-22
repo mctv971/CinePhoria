@@ -41,7 +41,7 @@ function getFavoritesByType($id_user, $id_type) {
     try {
         $bd = getBD();
 
-        $query = "SELECT * FROM Favoris WHERE id_user = :id_user AND id_type = :id_type";
+        $query = "SELECT * FROM favoris WHERE id_user = :id_user AND id_type = :id_type";
         $stmt = $bd->prepare($query);
 
         $stmt->bindParam(':id_user', $id_user);

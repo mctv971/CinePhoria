@@ -11,7 +11,7 @@ $userId = $_SESSION['client']['id_user'];
 $bdd = getBD(); // Obtient une instance de connexion à la base de données.
 
 // Prépare une requête SQL pour récupérer le premier favori de type "movie" pour l'utilisateur.
-$queryFavorisMovie = "SELECT imdb_id FROM Favoris WHERE id_user = :id_user AND id_type = 'movie' LIMIT 1";
+$queryFavorisMovie = "SELECT imdb_id FROM favoris WHERE id_user = :id_user AND id_type = 'movie' LIMIT 1";
 $stmtFavorisMovie = $bdd->prepare($queryFavorisMovie);
 $stmtFavorisMovie->bindParam(':id_user', $userId);
 
@@ -27,7 +27,7 @@ $listeImdbMovie = array_column($favorismovie, 'imdb_id');
 error_log("Liste des films favoris: " . implode(',', $listeImdbMovie));
 
 // Répète le processus pour les favoris de type "tv".
-$queryFavorisTV = "SELECT imdb_id FROM Favoris WHERE id_user = :id_user AND id_type = 'tv' LIMIT 1";
+$queryFavorisTV = "SELECT imdb_id FROM favoris WHERE id_user = :id_user AND id_type = 'tv' LIMIT 1";
 $stmtFavorisTV = $bdd->prepare($queryFavorisTV);
 $stmtFavorisTV->bindParam(':id_user', $userId);
 
@@ -54,7 +54,7 @@ function fetchMediaTitle($imdb_id, $mediaType) {
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => [
-          "Authorization: Bearer ",
+          "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0YmZmNTQyYjA2OGMwZmZmODU1ODlkNzJjMzYzMDUxZCIsInN1YiI6IjY1NDNiNzkzNzcxOWQ3MDExYzkyOGM1NSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2lzy4nx7ZwOKqTXWda9xsTNJOlzp-24WeU_Ps095dSs",
           "accept: application/json"
         ],
     ]);

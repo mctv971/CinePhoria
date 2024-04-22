@@ -5,7 +5,7 @@ try {
     $passwordHash = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $bdd = getBD();
 
-    $requete = $bdd->prepare('INSERT INTO Users (username, nom, prenom, naissance, mail, mdp, pays) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $requete = $bdd->prepare('INSERT INTO users (username, nom, prenom, naissance, mail, mdp, pays) VALUES (?, ?, ?, ?, ?, ?, ?)');
 
     if ($requete->execute(array($_POST['username'], $_POST['nom'], $_POST['prenom'], $_POST['naissance'], $_POST['mail'], $passwordHash, $_POST['pays']))) {
         $userId = $bdd->lastInsertId();
@@ -16,7 +16,7 @@ try {
 
         foreach ($platforms as $platformId) {
             if (!empty($platformId)) {  // Check if the platform ID is not empty
-                $plateformeRequete = $bdd->prepare('INSERT INTO Plateforme_Users (id_user, plateforme_id) VALUES (?, ?)');
+                $plateformeRequete = $bdd->prepare('INSERT INTO plateforme_users (id_user, plateforme_id) VALUES (?, ?)');
                 if (!$plateformeRequete->execute(array($userId, $platformId))) {
                     $errorInfo = implode(', ', $plateformeRequete->errorInfo());
                     file_put_contents('platform_log.txt', "Error inserting platform ID $platformId for user $userId: $errorInfo\n", FILE_APPEND);

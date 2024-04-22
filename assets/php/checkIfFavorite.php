@@ -26,7 +26,7 @@ function checkIfFavorite($data) {
         $id_user = $_SESSION['client']['id_user'];
         $imdb_id = $data['imdb_id'];
 
-        $query = "SELECT COUNT(*) FROM Favoris WHERE id_user = :id_user AND imdb_id = :imdb_id";
+        $query = "SELECT COUNT(*) FROM favoris WHERE id_user = :id_user AND imdb_id = :imdb_id";
         $stmt = $bd->prepare($query);
 
         $stmt->bindParam(':id_user', $id_user);

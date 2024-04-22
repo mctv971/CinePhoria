@@ -1464,7 +1464,7 @@ function initializeScene2(scene, renderer, camera) {
 
 }
 
-function initializeScene3(scene,renderer,camera){
+function initializeScene3(scene, renderer, camera) {
     const analyseHTML = `
     <div class="analyse active">
       <div class="analyse-resum">
@@ -1729,47 +1729,72 @@ function initializeScene3(scene,renderer,camera){
     section.insertAdjacentHTML('beforeend', testResultHTML);
     gsap.from('.analyse', { opacity: 0, duration: 1, ease: 'power2.out' });
 
-    // Sélection de tous les éléments avec la classe "testStape"
-    const testStapes = document.querySelectorAll('.testStape');
-
-    // Parcourir chaque élément et ajouter un écouteur d'événements
-    testStapes.forEach(testStape => {
-        testStape.addEventListener('click', () => {
-            // Supprimer la classe "active" de tous les éléments
-            testStapes.forEach(element => {
-                element.classList.remove('active');
-            });
-            // Ajouter la classe "active" à l'élément cliqué
-            testStape.classList.add('active');
-        });
-    });
-
-    const navVariable3 = document.querySelector('.divStape[stape="3"]');
-
-    navVariable3.querySelectorAll('.navVariableStape').forEach(nav => {
-        nav.addEventListener('click', () => {
-            // Remove 'active' class from all varStape elements within the same navVariableStape
-            nav.querySelectorAll('.varStape').forEach(varStape => {
-                varStape.classList.remove('active');
-            });
-            // Add 'active' class to the clicked varStape element
-            event.target.closest('.varStape').classList.add('active');
-        });
-    });
-
+    // Ajout des écouteurs d'événements pour les différentes étapes et options
+    attachEventListeners();
 
     loadCountries();
-
-
     dropdown();
-
-    
-    
-    
     document.querySelector('.dropdown:nth-child(1) .menu').addEventListener('click', loadGenres);
 
+    function attachEventListeners() {
+        const typeDropdown = document.querySelector('.dropdown:nth-child(1) .menu');
+        typeDropdown.addEventListener('click', function(event) {
+            const type = event.target.getAttribute('data-value');
+            updateVariables(type);
+        });
 
+        const testStapes = document.querySelectorAll('.testStape');
+        testStapes.forEach(testStape => {
+            testStape.addEventListener('click', function() {
+                testStapes.forEach(element => element.classList.remove('active'));
+                testStape.classList.add('active');
+            });
+        });
 
+        const navVariable3 = document.querySelector('.divStape[stape="3"]');
+        navVariable3.querySelectorAll('.navVariableStape').forEach(nav => {
+            nav.addEventListener('click', function(event) {
+                nav.querySelectorAll('.varStape').forEach(varStape => {
+                    varStape.classList.remove('active');
+                });
+                const targetVarStape = event.target.closest('.varStape');
+                if (targetVarStape) {
+                    targetVarStape.classList.add('active');
+                }
+            });
+        });
+    }
+
+    function updateVariables(type) {
+        const varOptions = {
+            movie: [
+                { var: 'budget', text: 'Budget' },
+                { var: 'revenue', text: 'Revenue' },
+                { var: 'popularity', text: 'Popularité' },
+                { var: 'runtime', text: 'Durée' },
+                { var: 'vote_count', text: 'Nombre de votes' }
+            ],
+            tv: [
+                { var: 'number_of_seasons', text: 'Nombre de saisons' },
+                { var: 'number_of_episodes', text: 'Nombre d\'épisodes' },
+                { var: 'popularity', text: 'Popularité' },
+                { var: 'vote_count', text: 'Nombre de votes' }
+            ]
+        };
+
+        const variables = varOptions[type] || [];
+        const variableStapes = document.querySelectorAll('.navVariableStape');
+
+        variableStapes.forEach(nav => {
+            let variableHTML = '';
+            variables.forEach(v => {
+                variableHTML += `<div class="varStape" var="${v.var}">
+                    <h1 class="textVarStape">${v.text}</h1>
+                </div>`;
+            });
+            nav.innerHTML = variableHTML;
+        });
+    }
 }
 
 let nominationsLoaded = false;
@@ -2340,7 +2365,59 @@ window.activeSearch = async function (){
     }
     else if(!containOn && !comparerbtnOn){
         const filmsData = await fetchDetails();
+
+
+
+
         createFilmBubbleChart(filmsData);
+        // Sélectionner tous les éléments avec la classe 'statsInfo'
+        const elements = document.querySelectorAll('p.statsInfo');
+        const type4 = document.querySelector('.selected[data-type="type"]').getAttribute("data-value");
+        elements.forEach(el => {
+        const text = el.textContent.trim();
+        switch (text) {
+            case 'Popularity':
+                el.textContent = 'Moyenne Popularity'; // Changer le texte si nécessaire
+                break;
+            case 'Budget':
+                if(type4 =="movie"){
+                    el.textContent = 'Moyenne Runtime'; // Changer le texte si nécessaire
+                }
+                else{
+                    el.textContent = 'Moyenne Episodes'; // Changer le texte si nécessaire
+                }
+                break;
+            case 'Nomination':
+
+                el.textContent ='Moyenne Vote Average' ; // Changer le texte si nécessaire
+            break;
+        }
+        });
+        const elements2 = document.querySelectorAll('p.contenu-text');
+        elements2.forEach(el => {
+            const text = el.textContent.trim();
+            switch (text) {
+                case 'Votes':
+                    el.textContent = 'Popularité par Note Moyenne'; // Changer le texte si nécessaire
+                    break;
+                case 'Revenus':
+                    if (type4 =="movie"){
+                        el.textContent = 'Revenue et Budget par genre'; // Changer le texte si nécessaire
+                    }
+                    else{
+                        el.textContent = 'Nombre de Saison par période et genre '; // Changer le texte si nécessaire
+                    }
+                    break;
+                case 'Casting':
+                    if (type4 =="movie"){
+                        el.textContent = 'Durée Moyenne par Genre et par Année '; // Changer le texte si nécessaire
+                    }
+                    else{
+                        el.textContent = `Nombre d'episode Moyen par Saison `; // Changer le texte si nécessaire
+                    }
+                    break;
+            }
+        });
 
 
         document.querySelector(".analyse").classList.remove("active");
@@ -4577,7 +4654,7 @@ async function getSerieInfo(movieId) {
             Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NjVlNWQ5OTUxYTdiNzg0ZTZkMDBjZjk3OGU4YjcyYyIsInN1YiI6IjY1Mzc3YzIxYzUwYWQyMDEyZGY0YjI2NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jMOywP2uIuyrtnbX0kYWNkbGf0wTMUnNmKsFrNhcVXU'
         }
     };
-    const url = `https://api.themoviedb.org/3/tv/series_id?language=en-US', options`;
+    const url = `https://api.themoviedb.org/3/tv/${movieId}?language=en-US`;
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
@@ -4615,8 +4692,8 @@ async function fillData(var1, var2) {
                 movieData = await getSerieInfo(movieId);
                 variables = {
                     title: movieData.name,
-                    numberOfSeasons: movieData.number_of_seasons,
-                    numberOfEpisodes: movieData.number_of_episodes,
+                    number_of_seasons: movieData.number_of_seasons,
+                    number_of_episodes: movieData.number_of_episodes,
                     popularity: movieData.popularity,
                     vote_count: movieData.vote_count
                 };
@@ -5485,7 +5562,7 @@ window.addEventListener('message', function(event) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer`
+            'Authorization': `Bearer `
         },
         body: JSON.stringify(requestData)
     });

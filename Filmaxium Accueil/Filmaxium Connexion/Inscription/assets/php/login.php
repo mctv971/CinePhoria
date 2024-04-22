@@ -7,7 +7,7 @@ $password = isset($_POST['password']) ? $_POST['password'] : '';
 
 $bdd = getBD();
 
-$query = "SELECT * FROM Users WHERE username = :username";
+$query = "SELECT * FROM users WHERE username = :username";
 $stmt = $bdd->prepare($query);
 $stmt->bindParam(':username', $username);
 $stmt->execute();
@@ -17,7 +17,7 @@ if ($row) {
     $mdp_hache = $row['mdp'];
     if (password_verify($password, $mdp_hache)) {
         $_SESSION['client'] = array(
-            'id_users' => $row['id_users'],
+            'id_user' => $row['id_user'],
             'username' =>$row['username'],
             'nom' => $row['nom'],
             'prenom' => $row['prenom'],

@@ -10,7 +10,7 @@ $password = isset($_POST['password']) ? $_POST['password'] : '';
 $bdd = getBD();
 
 //Requête permettant de vérifier si le username correspond à un username dans la base de données avec verification du mot de passe
-$query = "SELECT * FROM Users WHERE username = :username";
+$query = "SELECT * FROM users WHERE username = :username";
 $stmt = $bdd->prepare($query);
 $stmt->bindParam(':username', $username);
 $stmt->execute();

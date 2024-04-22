@@ -1,4 +1,4 @@
-import { createMovieCard, createTvCard } from "./movie-card";
+import { createMovieCard, createTvCard } from "./movie-card.js";
 import { popcorn } from "./popcorn.js";
 
 

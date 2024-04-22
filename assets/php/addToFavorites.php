@@ -34,7 +34,7 @@ function addToFavorites($data) {
         $imdb_id = $data['imdb_id'];
 
 
-        $query = "INSERT INTO Favoris (id_user, id_type, imdb_id) VALUES (:id_user, :id_type, :imdb_id)";
+        $query = "INSERT INTO favoris (id_user, id_type, imdb_id) VALUES (:id_user, :id_type, :imdb_id)";
         $stmt = $bd->prepare($query);
 
         $stmt->bindParam(':id_user', $id_user);

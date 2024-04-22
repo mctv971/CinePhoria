@@ -28,7 +28,7 @@
         
         <p id="assistantText" style="display:none;">Bienvenue sur la page d'inscription de la Plateforme Filmaxium.</p>
         <p id="guideText" style="display:none;">Je vais être ton assistant tout au long de ton aventure !</p>
-        <p id="Oups" style="display:none;">Oups! Ici on m'appel Bugs, et toi c'est quoi ton pseudonyme ?</p>
+        <p id="Oups" style="display:none;">Oups! Ici on m'appelle Bugs, et toi c'est quoi ton pseudonyme ?</p>
         <input type="text" id="usernameInput" style="display:none;" placeholder="Entrez votre username">  <br /> 
     </div>
 

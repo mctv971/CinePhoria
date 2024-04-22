@@ -14,7 +14,7 @@ if (isset($_POST['message'])) {
 
 function callOpenAI($message) {
     $openai_endpoint = "https://api.openai.com/v1/chat/completions";
-    $openai_token = "API_KEY";
+    $openai_token = "";
     $data = array(
         "model" => "gpt-3.5-turbo",
         "messages" => array(
@@ -37,7 +37,7 @@ function callOpenAI($message) {
 
     $headers = array(
         "Content-Type: application/json",
-        "Authorization: Bearer " . $openai_token
+        "Authorization: Bearer "
     );
 
     $ch = curl_init();
@@ -46,6 +46,7 @@ function callOpenAI($message) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
     $response = curl_exec($ch);
     curl_close($ch);

@@ -26,26 +26,7 @@ require("assets/php/bd.php");
 
 // Récupère l'ID utilisateur à partir de la session.
 $userId = $_SESSION['client']['id_user'];
-$bdd = getBD(); // Obtient une instance de connexion à la base de données.
 
-// Prépare une requête SQL pour récupérer les favoris avec leur type pour l'utilisateur.
-$queryFavoris = "SELECT imdb_id, id_type FROM Favoris WHERE id_user = :id_user";
-$stmtFavoris = $bdd->prepare($queryFavoris);
-$stmtFavoris->bindParam(':id_user', $userId);
-
-// Exécute la requête et gère les erreurs potentielles.
-if (!$stmtFavoris->execute()) {
-    echo json_encode(array('error' => 'Erreur lors de l\'exécution de la requête SQL pour les favoris'));
-    exit();
-}
-
-// Récupère les résultats sous forme de tableau associatif.
-$favoris = $stmtFavoris->fetchAll(PDO::FETCH_ASSOC);
-
-// Prépare les données pour JavaScript
-$items = array_map(function ($item) {
-    return ['id' => $item['imdb_id'], 'type' => $item['id_type']];
-}, $favoris);
 
 ?>
     

@@ -12,7 +12,7 @@
     <title>Filmaxium | Inscription</title>
 </head>
 <div class="logo">
-  <a href="inscription.html">  <img src="assets/images/logo.png" alt="Logo"></a>
+  <a href="index.php">  <img src="assets/images/logo.png" alt="Logo"></a>
 </div>
 <body class="Inscription">
     <div class="container">
@@ -24,8 +24,7 @@
                 <input type="password" id="password" name="password" placeholder="Mot de passe" required>
             </div>
             <div class="signup-link">
-                <a>Mot de passe oublié ? </a> <br /> <br/>
-                Vous n'êtes toujours pas inscrit ? <a href="pageinscription.php">Cliquez ici !</a> 
+                Vous n'êtes toujours pas inscrit ? <a href="Filmaxium Accueil/Filmaxium Connexion/Inscription/pageinscription.php">Cliquez ici !</a> 
                 
             </div>
             <button type="submit">Se connecter</button>

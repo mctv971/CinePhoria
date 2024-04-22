@@ -35,7 +35,7 @@ function getFavorites($id_user) {
     try {
         $bd = getBD(); 
 
-        $query = "SELECT * FROM Favoris WHERE id_user = :id_user";
+        $query = "SELECT * FROM favoris WHERE id_user = :id_user";
         $stmt = $bd->prepare($query);
 
         $stmt->bindParam(':id_user', $id_user);

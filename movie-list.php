@@ -75,13 +75,13 @@
       <a href="./catalogue.php">
         <img src="./assets/images/logo-catalogue.png" width="60" height="60" alt="Catalogue">
       </a>
-      <a href="./index.php">
+      <a href="./foryou.php">
         <img src="./assets/images/logo-film.png" width="60" height="60" alt="Find Film">
       </a>
-      <a href="./Filmaxium_Analytique/analytique_accueil.php">
+      <a href="./analytic.php">
         <img src="./assets/images/logo-stats.png" width="60" height="60" alt="Analytics home">
       </a>
-      <a href="./index.php">
+      <a href="./profil.php">
         <img src="./assets/images/logo-profil.png" width="60" height="60" alt="Profil">
       </a>
     </div>
